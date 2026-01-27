@@ -1,0 +1,29 @@
+css
+    /* style.css */
+    /* Эти стили дополняют (или могут переопределять) встроенные в index.html */
+
+    /* Общие стили для кнопок, если вы хотите вынести их сюда */
+    button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Дополнительные стили для основного контента */
+    #main-content h1 {
+        margin-top: 50px; /* Отступ сверху для заголовка основного контента */
+    }
+    #main-content p {
+        font-size: 1.1em;
+        line-height: 1.5;
+    }
+    
