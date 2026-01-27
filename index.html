@@ -1,127 +1,70 @@
-DOCTYPE html>
+```html
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Подарки Тови Mini App</title>
-    <!-- Подключаем внешний файл стилей. Если у вас нет отдельного style.css, 
-         тогда удалите эту строку или создайте пустой файл style.css. -->
+    
     <link rel="stylesheet" href="style.css">
     
-    <!-- ВАЖНО: Подключаем Telegram Web Apps SDK -->
-    <!-- Этот скрипт ДОЛЖЕН быть подключен ДО вашей основной логики, 
-         чтобы объект Telegram.WebApp был доступен. -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- Встроенные стили для экрана загрузки и базового поведения.
-         Вы можете перенести их в style.css при желании. -->
     <style>
-        /* Общие стили для body - убираем стандартные отступы */
+        :root {
+            --text-color: #e0e0e0;
+            --bg-color: #000000;
+            --primary-color: #A020F0;
+            --secondary-bg-color: #1a0026;
+            --button-bg: #8A2BE2;
+            --button-text: #ffffff;
+            --border-color: #58189e;
+        }
+
+        body.light-theme {
+            --text-color: #1a1a1a;
+            --bg-color: #ffffff;
+            --primary-color: #8A2BE2;
+            --secondary-bg-color: #f0f0f0;
+            --button-bg: #8A2BE2;
+            --button-text: #ffffff;
+            --border-color: #ccc;
+        }
+
         body {
             margin: 0;
-            font-family: sans-serif;
-            background-color: #2c2c2c; /* Темный фон по умолчанию */
-            color: #f0f0f0; /* Светлый цвет текста по умолчанию */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* Стили для экрана загрузки */
         #loading-screen {
-            position: fixed; /* Фиксированное положение, чтобы занимал весь экран */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #2c2c2c; /* Фон экрана загрузки */
-            display: flex; /* Используем flexbox для центрирования контента */
-            flex-direction: column; /* Элементы будут располагаться вертикально */
-            justify-content: center; /* Выравнивание по центру по вертикали */
-            align-items: center; /* Выравнивание по центру по горизонтали */
-            color: #f0f0f0; /* Цвет текста на экране загрузки */
-            font-size: 2em; /* Размер шрифта для названия */
-            z-index: 9999; /* Чтобы экран загрузки был поверх всех других элементов */
-        }
-        #loading-screen h1 {
-            color: #8aff8a; /* Цвет названия "Towi Gifts" */
-            margin-bottom: 20px;
-        }
-        .spinner {
-            border: 8px solid rgba(255, 255, 255, 0.3); /* Цвет основы спиннера */
-            border-top: 8px solid #8aff8a; /* Цвет вращающейся части спиннера */
-            border-radius: 50%; /* Делаем круглым */
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite; /* Анимация вращения */
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Стили для скрытия основного контента по умолчанию */
-        #main-content {
-            display: none; /* Основной контент скрыт, пока не загрузится приложение */
-            padding: 20px; /* Добавляем отступы, когда контент станет видимым */
-            text-align: center; /* Центрируем текст внутри основного контента */
-        }
-
-        /* Базовые стили для кнопки, если они не будут в style.css */
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <!-- ЭКРАН ЗАГРУЗКИ -->
-    <div id="loading-screen">
-        <h1>Towi Gifts</h1>
-        <div class="spinner"></div>
-        <p style="font-size: 0.5em; margin-top: 20px;">Загрузка...</p>
-    </div
-    /* Стили для экрана загрузки */
-        #loading-screen {
-            position: fixed; /* Фиксированное положение, чтобы занимал весь экран */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-color); /* Используем переменную */
-            display: flex; /* Используем flexbox для центрирования контента */
-            flex-direction: column; /* Элементы будут располагаться вертикально */
-            justify-content: center; /* Выравнивание по центру по вертикали */
-            align-items: center; /* Выравнивание по центру по горизонтали */
-            color: var(--text-color); /* Используем переменную */
-            font-size: 2em; /* Размер шрифта для названия */
-            z-index: 9999; /* Чтобы экран загрузки был поверх всех других элементов */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; color: var(--text-color);
+            font-size: 2em; z-index: 9999;
         }
         #loading-screen h1 { 
-            color: var(--primary-color); /* Используем переменную */
+            color: var(--primary-color);
             margin-bottom: 20px; 
         }
         .spinner {
-            border: 8px solid rgba(255, 255, 255, 0.3); /* Цвет основы спиннера */
-            border-top: 8px solid var(--primary-color); /* Используем переменную */
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid var(--primary-color);
             border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}
         
-        /* Стили для скрытия основного контента по умолчанию */
         #main-content {
-            display: none; /* Скрыт по умолчанию */
+            display: none;
             flex-grow: 1; 
             flex-direction: column; 
         }
 
-        /* Базовые стили для кнопки (встроенные, но можно перенести в style.css) */
         button {
             background-color: var(--button-bg); 
             color: var(--button-text); 
@@ -132,14 +75,12 @@ DOCTYPE html>
         }
         button:hover { opacity: 0.9; }
         
-        /* Стили для кнопки закрытия приложения */
         #closeButton {
             margin-top: 30px;
-            background-color: #dc3545; /* Красная кнопка для закрытия */
+            background-color: #dc3545;
         }
         #closeButton:hover { background-color: #c82333; }
 
-        /* Стили для header, main, footer (если вы их добавили в index.html) */
         header {
             background-color: var(--secondary-bg-color);
             color: var(--primary-color);
@@ -150,12 +91,12 @@ DOCTYPE html>
         }
 
         main {
-            flex-grow: 1; /* Основной контент занимает все доступное пространство */
+            flex-grow: 1;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto; /* Для прокрутки, если контента много */
+            overflow-y: auto;
         }
 
         footer {
@@ -167,17 +108,15 @@ DOCTYPE html>
             box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Стили для сетки инвентаря */
         #inventory-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Адаптивная сетка */
-            gap: 15px; /* Расстояние между элементами */
-            max-width: 800px; /* Максимальная ширина сетки */
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 800px;
             width: 100%;
             margin-top: 20px;
         }
 
-        /* Стили для отдельных элементов подарков в инвентаре */
         .gift-item {
             background-color: var(--secondary-bg-color);
             border: 1px solid var(--border-color);
@@ -187,7 +126,7 @@ DOCTYPE html>
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-.gift-item:hover {
+       .gift-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0,0,0,0.4);
         }
@@ -215,17 +154,15 @@ DOCTYPE html>
             font-size: 0.9em;
         }
 
-        /* Стили для открытых подарков */
         .gift-item.opened {
-            opacity: 0.7; /* Сделать открытые подарки немного бледнее */
+            opacity: 0.7;
             cursor: default;
         }
 
         .gift-item.opened button {
-            display: none; /* Скрыть кнопку "Открыть" для открытых подарков */
+            display: none;
         }
 
-        /* Медиа-запросы для небольших экранов */
         @media (max-width: 600px) {
             #inventory-grid {
                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -241,81 +178,66 @@ DOCTYPE html>
     </style>
 </head>
 <body>
-    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="loading-screen">
         <h1>Towi Gifts</h1>
         <div class="spinner"></div>
         <p style="font-size: 0.5em; margin-top: 20px;">Загрузка...</p>
     </div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
     <div id="main-content">
-        <!-- Шапка приложения -->
         <header>
             <h1>Мои Подарки</h1>
         </header>
 
-        <!-- Главная секция для инвентаря -->
         <main>
             <p>Здесь вы можете открывать полученные подарки!</p>
-            <!-- Здесь будет отображаться сетка подарков -->
             <div id="inventory-grid">
-                <!-- Элементы подарков будут генерироваться JavaScript-ом -->
             </div>
             
             <button id="closeButton">Закрыть приложение</button>
         </main>
 
-        <!-- Футер приложения -->
         <footer>
             <p>&copy; 2025 Towi Gifts. Все права защищены.</p>
         </footer>
     </div>
     
-    <!-- Подключаем ваш основной скрипт. -->
-    <!-- Он должен быть загружен после Telegram Web App SDK и после DOM-элементов, с которыми он будет работать. -->
     <script src="script.js"></script>
 
-    <!-- Встроенный JavaScript для управления экраном загрузки и инициализации Telegram.WebApp. -->
     <script>
-        // Функция для определения светлого/темного цвета (для адаптации темы)
         function isLightColor(color) {
             if (!color) return false;
             const hex = color.startsWith('#') ? color.slice(1) : color;
-            if (hex.length !== 6) return false; // Простая проверка на формат hex
+            if (hex.length !== 6) return false;
             const r = parseInt(hex.substring(0, 2), 16);
             const g = parseInt(hex.substring(2, 4), 16);
             const b = parseInt(hex.substring(4, 6), 16);
-            // Используем формулу для яркости, чтобы определить, светлый ли цвет
             return (r * 299 + g * 587 + b * 114) / 1000 > 186; 
         }
 
-        // Функция применения темы Telegram
         function applyTheme() {
             const themeParams = Telegram.WebApp.themeParams;
             const body = document.body;
             if (themeParams.bg_color) {
-                // Устанавливаем цвет фона для body
                 document.documentElement.style.setProperty('--bg-color', themeParams.bg_color);
                 
                 if (isLightColor(themeParams.bg_color)) {
                     body.classList.add('light-theme');
                     document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#1a1a1a');
-                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#8A2BE2'); // Фиолетовый для светлой темы
+                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#8A2BE2');
                     document.documentElement.style.setProperty('--secondary-bg-color', themeParams.secondary_bg_color || '#f0f0f0');
                     document.documentElement.style.setProperty('--border-color', themeParams.hint_color || '#ccc');
                     document.documentElement.style.setProperty('--button-bg', themeParams.button_color || '#8A2BE2');
                 } else {
                     body.classList.remove('light-theme');
                     document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#e0e0e0');
-                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#A020F0'); // Фиолетовый для темной темы
+                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#A020F0');
                     document.documentElement.style.setProperty('--secondary-bg-color', themeParams.secondary_bg_color || '#1a0026');
                     document.documentElement.style.setProperty('--border-color', themeParams.hint_color || '#58189e');
                     document.documentElement.style.setProperty('--button-bg', themeParams.button_color || '#8A2BE2');
                 }
             }
             
-            // Также можно установить цвета для Header и Background через API Telegram
             if (Telegram.WebApp.setHeaderColor && themeParams.header_bg_color) {
                 Telegram.WebApp.setHeaderColor(themeParams.header_bg_color);
             }
@@ -329,46 +251,35 @@ DOCTYPE html>
             const loadingScreen = document.getElementById('loading-screen');
             const mainContent = document.getElementById('main-content');
 
-            // Проверяем, готов ли Telegram Web App SDK
             if (Telegram.WebApp.ready) {
                 console.log('Telegram Web App SDK готов!');
-                Telegram.WebApp.expand(); // Разворачиваем мини-приложение на весь экран
+                Telegram.WebApp.expand();
 
-                // Вызываем функции из script.js, которые должны быть доступны глобально
-                // Убедитесь, что функции loadInventory, applyTheme, displayInventory определены в script.js
-                if (typeof loadInventory === 'function') loadInventory();    // Загружаем инвентарь (из localStorage)
-                if (typeof applyTheme === 'function') applyTheme();       // Применяем тему Telegram
-                if (typeof displayInventory === 'function') displayInventory(); // Отображаем инвентарь
+                if (typeof loadInventory === 'function') loadInventory();
+                if (typeof applyTheme === 'function') applyTheme();
+                if (typeof displayInventory === 'function') displayInventory();
 
-                // Добавляем слушатель для изменения темы в Telegram
                 Telegram.WebApp.onEvent('themeChanged', applyTheme);
-                // Имитация задержки загрузки или ожидание загрузки ресурсов
-                // В реальном приложении здесь вы бы ждали загрузки всех игровых ресурсов
+
                 setTimeout(() => {
-                    loadingScreen.style.display = 'none'; // Скрываем экран загрузки
-                    mainContent.style.display = 'flex';  // Показываем основной контент (flex для header/main/footer)
-                }, 1000); // Задержка 1 секунда для демонстрации. 
-                          // Можно убрать или сделать динамической в зависимости от загрузки ресурсов.
+                    loadingScreen.style.display = 'none';
+                    mainContent.style.display = 'flex';
+                }, 1000);
                 
-                // Добавляем обработчик для кнопки закрытия приложения
                 const closeButton = document.getElementById('closeButton');
                 if (closeButton) {
                     closeButton.addEventListener('click', () => {
-                        Telegram.WebApp.close(); // Закрываем мини-приложение
+                        Telegram.WebApp.close();
                     });
                 }
 
-                // Дополнительные данные, которые можно получить от Telegram:
                 console.log('Имя пользователя:', Telegram.WebApp.initDataUnsafe?.user?.first_name);
                 console.log('Параметры темы:', Telegram.WebApp.themeParams);
 
             } else {
-                // Если SDK не загрузился (что крайне редко, но возможно),
-                // все равно скрываем загрузочный экран, чтобы пользователь не завис.
                 console.error('Telegram Web App SDK не загружен. Возможно, приложение открыто вне Telegram.');
                 loadingScreen.style.display = 'none';
                 mainContent.style.display = 'flex'; 
-                // Здесь можно показать сообщение об ошибке или предложить обновить страницу.
             }
         });
     </script>
