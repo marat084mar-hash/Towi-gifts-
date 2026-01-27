@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подарки Тови Mini App</title>
+    <!-- Подключаем внешний файл стилей. Если у вас нет отдельного style.css, 
+         тогда удалите эту строку или создайте пустой файл style.css. -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- ВАЖНО: Подключаем Telegram Web Apps SDK -->
+    <!-- Этот скрипт ДОЛЖЕН быть подключен ДО вашей основной логики, 
+         чтобы объект Telegram.WebApp был доступен. -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Встроенные стили для экрана загрузки и базового поведения.
+         Вы можете перенести их в style.css при желании. -->
+    <style>
+        /* Общие стили для body - убираем стандартные отступы */
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #2c2c2c; /* Темный фон по умолчанию */
+            color: #f0f0f0; /* Светлый цвет текста по умолчанию */
+        }
+
+        /* Стили для экрана загрузки */
+        #loading-screen {
+            position: fixed; /* Фиксированное положение, чтобы занимал весь экран */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #2c2c2c; /* Фон экрана загрузки */
+            display: flex; /* Используем flexbox для центрирования контента */
+            flex-direction: column; /* Элементы будут располагаться вертикально */
+            justify-content: center; /* Выравнивание по центру по вертикали */
+            align-items: center; /* Выравнивание по центру по горизонтали */
+            color: #f0f0f0; /* Цвет текста на экране загрузки */
+            font-size: 2em; /* Размер шрифта для названия */
+            z-index: 9999; /* Чтобы экран загрузки был поверх всех других элементов */
+        }
+        #loading-screen h1 {
+            color: #8aff8a; /* Цвет названия "Towi Gifts" */
+            margin-bottom: 20px;
+        }
+        .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.3); /* Цвет основы спиннера */
+            border-top: 8px solid #8aff8a; /* Цвет вращающейся части спиннера */
+            border-radius: 50%; /* Делаем круглым */
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite; /* Анимация вращения */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Стили для скрытия основного контента по умолчанию */
+        #main-content {
+            display: none; /* Основной контент скрыт, пока не загрузится приложение */
+            padding: 20px; /* Добавляем отступы, когда контент станет видимым */
+            text-align: center; /* Центрируем текст внутри основного контента */
+        }
+
+        /* Базовые стили для кнопки, если они не будут в style.css */
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <div id="loading-screen">
+        <h1>Towi Gifts</h1>
+        <div class="spinner"></div>
+        <p style="font-size: 0.5em; margin-top: 20px;">Загрузка...</p>
+    </div>
+    
