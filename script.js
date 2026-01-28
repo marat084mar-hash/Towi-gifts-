@@ -88,9 +88,9 @@ async function fetchUserData() {
     async function fetchCasesData() {
         // Для MVP: только 3 статических кейса
         return [
-            { id: 'case_1', name: 'Стартовый Кейс', cost: 0.5, imageUrl: 'https://via.placeholder.com/80/FFA500/000000?text=C1' },
-            { id: 'case_2', name: 'Обычный Кейс', cost: 1.0, imageUrl: 'https://via.placeholder.com/80/007bff/FFFFFF?text=C2' },
-            { id: 'case_3', name: 'Редкий Кейс', cost: 2.0, imageUrl: 'https://via.placeholder.com/80/8A2BE2/FFFFFF?text=C3' }
+            { id: 'case_1', name: 'бомж', cost: 0.5, imageUrl: 'https://via.placeholder.com/80/FFA500/000000?text=C1' },
+            { id: 'case_2', name: 'премиум', cost: 1.0, imageUrl: 'https://via.placeholder.com/80/007bff/FFFFFF?text=C2' },
+            { id: 'case_3', name: 'ночная коллекция', cost: 2.0, imageUrl: 'https://via.placeholder.com/80/8A2BE2/FFFFFF?text=C3' }
         ];
     }
 
