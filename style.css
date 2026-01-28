@@ -1,29 +1,581 @@
-css
-    /* style.css */
-    /* Эти стили дополняют (или могут переопределять) встроенные в index.html */
 
-    /* Общие стили для кнопок, если вы хотите вынести их сюда */
-    button {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
+```css
+    :root {
+        /* Цвета из Telegram Web App */
+        --tg-theme-bg-color: #212121; /* Темный фон по умолчанию */
+        --tg-theme-text-color: #f0f0f0;
+        --tg-theme-hint-color: #aaaaaa;
+        --tg-theme-link-color: #64b5f6;
+        --tg-theme-button-color: #5e35b1; /* Фиолетовая кнопка */
+        --tg-theme-button-text-color: #ffffff;
+        --tg-theme-secondary-bg-color: #333333; /* Дополнительный фон */
+    }
+
+    /* Переопределение для светлой темы (если Telegram Web App сообщит о ней) */
+    @media (prefers-color-scheme: light) {
+        body {
+            --tg-theme-bg-color: #f0f2f5;
+            --tg-theme-text-color: #000000;
+            --tg-theme-hint-color: #666666;
+            --tg-theme-secondary-bg-color: #ffffff;
+        }
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--tg-theme-bg-color);
+        color: var(--tg-theme-text-color);
+        -webkit-tap-highlight-color: transparent; /* Убираем эффект при нажатии на мобильных */
+    }
+
+    .screen {
+        display: none; /* Все экраны скрыты по умолчанию */
+        height: 100vh;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding-bottom: 60px; /* Отступ для нижней навигации */
+    }
+
+    .screen.active {
+        display: block; /* Активный экран виден */
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background-color: var(--tg-theme-secondary-bg-color);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .close-button, .back-button {
+        background: none;
         border: none;
-        border-radius: 5px;
+        color: var(--tg-theme-text-color);
+        font-size: 1.2em;
         cursor: pointer;
-        font-size: 16px;
-        margin-top: 20px;
-        transition: background-color 0.3s ease;
-    }
-    button:hover {
-        background-color: #0056b3;
+        padding: 5px;
     }
 
-    /* Дополнительные стили для основного контента */
-    #main-content h1 {
-        margin-top: 50px; /* Отступ сверху для заголовка основного контента */
-    }
-    #main-content p {
+    .app-title {
+        font-weight: bold;
         font-size: 1.1em;
-        line-height: 1.5;
+    }
+
+    .balance-info {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        color: var(--tg-theme-text-color);
+    }
+
+    .plus-button {
+        background-color: #007bff; /* Пример, можно изменить */
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 1.2em;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        cursor: pointer;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+.action-button {
+        background-color: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1em;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .primary-button {
+        background-color: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+    .secondary-button {
+        background-color: transparent;
+        border: 1px solid var(--tg-theme-hint-color);
+        color: var(--tg-theme-text-color);
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+
+    /* Нижняя навигация */
+    .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: var(--tg-theme-secondary-bg-color);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 5px 0;
+        height: 55px; /* Фиксированная высота */
+        box-sizing: border-box;
+    }
+
+    .nav-item {
+        background: none;
+        border: none;
+        color: var(--tg-theme-hint-color);
+        font-size: 0.7em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        padding: 5px 0;
+    }
+
+    .nav-item.active {
+        color: var(--tg-theme-link-color); /* Активный элемент */
+    }
+
+    .nav-item i.icon { /* Иконки */
+        font-size: 1.5em;
+        margin-bottom: 3px;
+    }
+
+    /* Иконки (для примера, в реале используй SVG или иконочные шрифты) */
+    .icon-friends::before { content: '👥'; }
+    .icon-leaderboard::before { content: '📊'; }
+    .icon-play::before { content: '🎮'; }
+    .icon-tasks::before { content: '⭐'; }
+    .icon-profile::before { content: '👤'; }
+
+
+    /* Стили для упрощенного главного меню */
+    .main-menu-content {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .main-menu-card {
+        background-color: var(--tg-theme-secondary-bg-color);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: none;
+        color: var(--tg-theme-text-color);
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease-in-out;
+        flex-grow: 1; /* Чтобы кнопки занимали доступное пространство */
+    }
+
+    .main-menu-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .main-menu-card h2 {
+        margin-top: 0;
+        font-size: 1.5em;
+        color: var(--tg-theme-link-color); /* Или другой яркий цвет */
+    }
+
+    .main-menu-card p {
+        font-size: 0.9em;
+        color: var(--tg-theme-hint-color);
+    }
+
+
+    /* Стили для экрана Кейсов */
+    .case-card {
+        background-color: var(--tg-theme-secondary-bg-color);
+        border-radius: 12px;
+        margin-bottom: 15px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .case-card-image {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        margin-right: 15px;
+    }
+    .case-info h3 {
+        margin: 0 0 5px 0;
+        font-size: 1.1em;
+    }
+    .case-info p {
+        margin: 0;
+        font-size: 0.9em;
+        color: var(--tg-theme-hint-color);
+    }
+    .case-info .cost {
+        font-weight: bold;
+        color: var(--tg-theme-text-color);
+    }
+
+
+    /* Стили для Профиля */
+    .profile-content {
+        text-align: center;
+    }
+
+    .user-info-header {
+        margin-bottom: 20px;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        background-color: #555; /* Заглушка для аватара */
+        border-radius: 50%;
+        margin: 0 auto 10px auto;
+    }
+
+    .user-name {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+.stats-row {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        background-color: var(--tg-theme-secondary-bg-color);
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 0.9em;
+    }
+    .stat-card span {
+        font-weight: bold;
+        font-size: 1.1em;
+        color: var(--tg-theme-text-color);
+    }
+
+
+    /* Стили для экрана Инвентаря */
+    .inventory-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 2-3 колонки */
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .inventory-item-card {
+        background-color: var(--tg-theme-secondary-bg-color);
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Для выравнивания кнопок внизу */
+    }
+
+    .inventory-item-card img {
+        max-width: 80%;
+        height: auto;
+        object-fit: contain;
+        margin: 0 auto 10px auto;
+        border-radius: 8px;
+    }
+
+    .item-value {
+        font-weight: bold;
+        color: var(--tg-theme-text-color);
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
+
+    .item-metadata {
+        font-size: 0.8em;
+        color: var(--tg-theme-hint-color);
+        margin-bottom: 8px;
+    }
+
+    .item-metadata p {
+        margin: 2px 0;
+    }
+
+    .item-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .item-button {
+        background-color: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        cursor: pointer;
+    }
+
+    .item-timer {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--tg-theme-text-color);
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 0.8em;
+        margin-top: 10px;
+    }
+
+    /* Дополнительные стили для шапки инвентаря */
+    .header .top-stats {
+        color: var(--tg-theme-hint-color);
+        font-size: 0.9em;
+    }
+    .header .top-stats .available-to-withdraw {
+        font-weight: bold;
+        color: var(--tg-theme-text-color);
+    }
+
+
+    /* Стили для экрана игры "Ракета" */
+    .game-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .multiplier-history {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        flex-wrap: wrap; /* Для небольших экранов */
+        justify-content: center;
+    }
+
+    .history-item {
+        background-color: var(--tg-theme-secondary-bg-color);
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 0.9em;
+        color: var(--tg-theme-hint-color);
+    }
+
+    .history-item.current-last {
+        color: var(--tg-theme-text-color);
+        font-weight: bold;
+    }
+
+    .game-area {
+        width: 100%;
+        max-width: 400px;
+        height: 250px;
+        background-color: #1a0f3d; /* Темно-фиолетовый фон космоса */
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .current-multiplier {
+        font-size: 3em;
+        font-weight: bold;
+        color: #fff; /* Белый для множителя */
+        position: relative;
+        z-index: 2; /* Поверх анимации */
+    }
+
+    .game-animation {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+    }
+
+    #monkey-rocket {
+        width: 120px; /* Размер обезьянки на банане */
+        height: auto;
+        animation: flyUp 5s infinite ease-out; /* Пример анимации */
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+@keyframes flyUp {
+        0% { transform: translateY(50px) scale(0.8); opacity: 0.5; }
+        50% { transform: translateY(-50px) scale(1.1); opacity: 1; }
+        100% { transform: translateY(50px) scale(0.8); opacity: 0.5; }
+    }
+
+
+    .betting-controls {
+        width: 100%;
+        max-width: 400px;
+        background-color: var(--tg-theme-secondary-bg-color);
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .auto-cashout-section, .bet-amount-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .auto-cashout-section label {
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .betting-controls input[type="number"] {
+        background-color: var(--tg-theme-bg-color);
+        border: 1px solid var(--tg-theme-hint-color);
+        color: var(--tg-theme-text-color);
+        border-radius: 8px;
+        padding: 8px;
+        width: 80px;
+        text-align: center;
+        font-size: 1em;
+    }
+
+    .minus-button, .plus-button, .quick-bet-button {
+        background-color: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 1em;
+        cursor: pointer;
+        min-width: 40px;
+        box-sizing: border-box;
+    }
+    .minus-button, .plus-button {
+        padding: 8px;
+    }
+
+    .quick-bet-button {
+        flex-grow: 1;
+    }
+
+    .main-game-button {
+        background-color: #e040fb; /* Яркий фиолетовый */
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        text-align: center;
+    }
+    .main-game-button.betting {
+        background-color: #4CAF50; /* Зеленый, когда можно ставить */
+    }
+    .main-game-button.cashout {
+        background-color: #FFC107; /* Желтый, когда можно выводить */
+    }
+    .main-game-button.waiting {
+        background-color: #607d8b; /* Серый, ожидание */
+    }
+
+
+    /* Модальное окно */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background-color: var(--tg-theme-secondary-bg-color);
+        margin: auto;
+        padding: 20px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .top-up-options button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .text-input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid var(--tg-theme-hint-color);
+        border-radius: 8px;
+        background-color: var(--tg-theme-bg-color);
+        color: var(--tg-theme-text-color);
+        font-size: 1em;
+    }
+
+    .modal-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .modal-buttons .primary-button {
+        width: 100%;
+    }
+
+    .close-modal-withdraw {
+        width: 100%;
     }
     
