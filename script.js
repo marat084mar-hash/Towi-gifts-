@@ -1,4 +1,3 @@
-
 // Инициализация Telegram Web App
 Telegram.WebApp.ready();
 Telegram.WebApp.showAlert('JS: 1. SDK Ready'); // <<< ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
