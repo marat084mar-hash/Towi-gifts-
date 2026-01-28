@@ -1,5 +1,4 @@
-```javascript
-    // Инициализация Telegram Web App
+// Инициализация Telegram Web App
     Telegram.WebApp.ready();
     Telegram.WebApp.expand();
 
