@@ -1,4 +1,4 @@
-// Инициализация Telegram Web App
+ // Инициализация Telegram Web App
     Telegram.WebApp.ready();
     Telegram.WebApp.expand();
 
@@ -16,13 +16,34 @@
 
     // Функция для переключения экранов
     function showScreen(screenId) {
+        Telegram.WebApp.showAlert('DEBUG: showScreen called for: ' + screenId); // <<< ВСТАВЬ ЭТУ СТРОКУ
+        // Управляем активным состоянием кнопок нижней навигации
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+            if (item.dataset.screenId === screenId) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Скрываем все экраны и показываем нужный
         document.querySelectorAll('.screen').forEach(screen => {
             screen.classList.remove('active');
         });
         document.getElementById(screenId).classList.add('active');
+        
+        // Дополнительные действия при переключении на определенные экраны
+        if (screenId === 'rocket-game-screen') {
+            startGameUI();
+        } else {
+            stopGameUI(); // Останавливаем игру, если уходим с экрана ракеты
+        }
+        if (screenId === 'profile-screen' || screenId === 'inventory-screen') {
+            fetchUserData(); // Обновляем данные при входе в профиль/инвентарь
+        }
     }
 
-    // Глобальная переменная для хранения информации о пользователе
+// Глобальная переменная для хранения информации о пользователе
     let currentUser = {
         id: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.id : null,
         username: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.username : 'Guest',
@@ -38,7 +59,7 @@
     // import { createClient } from '@supabase/supabase-js'
     // const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-async function fetchUserData() {
+    async function fetchUserData() {
         // В реальном приложении: запросить данные пользователя из Supabase по currentUser.id
         // const { data, error } = await supabase.from('users').select('*').eq('id', currentUser.id).single()
         // if (data) {
@@ -97,13 +118,13 @@ async function fetchUserData() {
         renderInventory(); // Эта функция теперь будет рендерить для inventory-screen
     }
 
-    function renderInventory() {
+function renderInventory() {
         const inventoryContainer = document.getElementById('inventory-items-container'); // Теперь это контейнер на отдельном экране
         if (!inventoryContainer) return;
 
         inventoryContainer.innerHTML = ''; // Очищаем
 
-if (currentUser.inventory.length === 0) {
+        if (currentUser.inventory.length === 0) {
             inventoryContainer.innerHTML = '<p style="color:var(--tg-theme-hint-color); text-align:center; padding: 20px;">Ваш инвентарь пуст.</p>';
         } else {
             currentUser.inventory.forEach(item => {
@@ -168,35 +189,52 @@ function formatTimeRemaining(endTime) {
 
 // --- Обработчики событий ---
 
-// Навигация
-document.getElementById('profile-nav-button').addEventListener('click', () => {
-    showScreen('profile-screen');
-    fetchUserData(); // Обновляем данные пользователя при переходе в профиль
-});
-// Кнопка профиля на экране игры
-if (document.getElementById('profile-nav-button-from-game')) { 
-    document.getElementById('profile-nav-button-from-game').addEventListener('click', () => {
-        showScreen('profile-screen');
-        fetchUserData();
-        stopGameUI(); // Останавливаем игру при выходе
+// Общий обработчик для кнопок нижней навигации
+document.querySelectorAll('.bottom-nav .nav-item').forEach(button => {
+    button.addEventListener('click', () => {
+        Telegram.WebApp.showAlert('DEBUG: Bottom nav button clicked! Screen: ' + button.dataset.screenId); // <<< ВСТАВЬ ЭТУ СТРОКУ
+        const screenId = button.dataset.screenId;
+        showScreen(screenId);
     });
-}
+});
 
-// Пополнение баланса (кнопка "+" и в профиле)
+// Кнопки Главного экрана
+document.getElementById('play-rocket-button').addEventListener('click', () => {
+    Telegram.WebApp.showAlert('DEBUG: Play Rocket button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
+    showScreen('rocket-game-screen');
+});
+
+document.getElementById('open-cases-button').addEventListener('click', async () => {
+    Telegram.WebApp.showAlert('DEBUG: Open Cases button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
+    showScreen('cases-list-screen');
+    renderCases(await fetchCasesData()); // Загружаем и рендерим кейсы
+});
+
+document.getElementById('go-to-profile-button').addEventListener('click', () => {
+    Telegram.WebApp.showAlert('DEBUG: Go to Profile button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
+    showScreen('profile-screen');
+});
+
+
+// Кнопки пополнения баланса
 document.getElementById('top-up-button').addEventListener('click', () => {
+    Telegram.WebApp.showAlert('DEBUG: Top-up button (+) clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     document.getElementById('top-up-modal').classList.add('active');
 });
 if (document.getElementById('profile-top-up-button')) {
     document.getElementById('profile-top-up-button').addEventListener('click', () => {
+        Telegram.WebApp.showAlert('DEBUG: Profile top-up button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
         document.getElementById('top-up-modal').classList.add('active');
     });
 }
 if (document.getElementById('game-top-up-button')) { // Кнопка пополнения на экране игры
     document.getElementById('game-top-up-button').addEventListener('click', () => {
+        Telegram.WebApp.showAlert('DEBUG: Game screen top-up button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
         document.getElementById('top-up-modal').classList.add('active');
     });
 }
 document.querySelector('.close-modal').addEventListener('click', () => {
+    Telegram.WebApp.showAlert('DEBUG: Close modal button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     document.getElementById('top-up-modal').classList.remove('active');
 });
 
@@ -204,6 +242,7 @@ document.querySelector('.close-modal').addEventListener('click', () => {
 // Выбор суммы пополнения в модальном окне
 document.querySelectorAll('.top-up-option').forEach(button => {
     button.addEventListener('click', (event) => {
+        Telegram.WebApp.showAlert('DEBUG: Top-up option selected: ' + event.target.dataset.stars + ' Stars'); // <<< ВСТАВЬ ЭТУ СТРОКУ
         const starsAmount = parseInt(event.target.dataset.stars);
         const tonAmount = starsAmount / 100; // 1 TON = 100 Stars
 
@@ -227,6 +266,10 @@ document.querySelectorAll('.top-up-option').forEach(button => {
 // Рендер кейсов
 async function renderCases(cases) {
     const casesContainer = document.getElementById('cases-container');
+    if (!casesContainer) {
+        Telegram.WebApp.showAlert('ERROR: cases-container not found for rendering!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
+        return;
+    }
     casesContainer.innerHTML = '';
     cases.forEach(caseItem => {
         const caseElement = document.createElement('div');
@@ -244,9 +287,10 @@ async function renderCases(cases) {
         casesContainer.appendChild(caseElement);
     });
 }
-
+ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️:
 // Открытие кейса
 function openCase(caseItem) {
+    Telegram.WebApp.showAlert('DEBUG: openCase called for: ' + caseItem.name); // <<< ВСТАВЬ ЭТУ СТРОКУ
     if (currentUser.tonBalance < caseItem.cost) {
         Telegram.WebApp.showAlert(Недостаточно TON для открытия кейса "${caseItem.name}". Вам нужно ${caseItem.cost.toFixed(2)} TON.);
         return;
@@ -261,14 +305,12 @@ function openCase(caseItem) {
         ]
     }, function(buttonId) {
         if (buttonId === 'yes') {
-            // Отправляем запрос боту
             Telegram.WebApp.sendData(JSON.stringify({
                 action: 'open_case',
                 user_id: currentUser.id,
                 case_id: caseItem.id,
                 cost_in_ton: caseItem.cost
             }));
-            // В реальном проекте здесь будет анимация открытия
             Telegram.WebApp.showProgress(); // Показываем прогресс
         }
     });
@@ -276,6 +318,7 @@ function openCase(caseItem) {
 
 // --- Функционал продажи предмета ---
 function sellItem(itemToSell) {
+    Telegram.WebApp.showAlert('DEBUG: sellItem called for: ' + itemToSell.name); // <<< ВСТАВЬ ЭТУ СТРОКУ
     Telegram.WebApp.showPopup({
         title: 'Продать предмет?',
         message: Вы хотите продать "${itemToSell.name}" за ${itemToSell.sellValue} TON?,
@@ -300,6 +343,7 @@ function sellItem(itemToSell) {
 let currentItemToWithdraw = null; // Глобальная переменная для хранения выбранного предмета
 
 function showWithdrawModal(itemToWithdraw) {
+    Telegram.WebApp.showAlert('DEBUG: showWithdrawModal called for: ' + itemToWithdraw.name); // <<< ВСТАВЬ ЭТУ СТРОКУ
     currentItemToWithdraw = itemToWithdraw;
     document.getElementById('withdraw-item-name').textContent = itemToWithdraw.name;
     document.getElementById('ton-wallet-address').value = ''; // Очистить поле
@@ -307,6 +351,7 @@ function showWithdrawModal(itemToWithdraw) {
 }
 
 document.getElementById('confirm-withdraw-button').addEventListener('click', () => {
+    Telegram.WebApp.showAlert('DEBUG: Confirm withdraw button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     const walletAddress = document.getElementById('ton-wallet-address').value.trim();
     if (!walletAddress) {
         Telegram.WebApp.showAlert('Пожалуйста, введите адрес вашего TON-кошелька.');
@@ -339,6 +384,7 @@ document.getElementById('confirm-withdraw-button').addEventListener('click', () 
 });
 
 document.querySelector('.close-modal-withdraw').addEventListener('click', () => {
+    Telegram.WebApp.showAlert('DEBUG: Close withdraw modal button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     document.getElementById('withdraw-nft-modal').classList.remove('active');
 });
 
@@ -354,7 +400,8 @@ Telegram.WebApp.onEvent('onInvoiceClosed', function(data) {
         Telegram.WebApp.showAlert('Оплата Stars не удалась.');
     }
 });
-ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️:
+
+
 // Слушаем сообщения от бота, которые приходят через Telegram.WebApp.postEvent('receiveData', ...)
 Telegram.WebApp.onEvent('receiveData', function(eventData) {
     try {
@@ -404,7 +451,6 @@ Telegram.WebApp.onEvent('receiveData', function(eventData) {
     }
 });
 
-
 // --- WebSocket-клиент для игры "Ракета" ---
 let ws = null; // WebSocket-соединение
 // !!! ВАЖНО: Замени на URL твоего WebSocket сервера !!!
@@ -428,7 +474,7 @@ function connectWebSocket() {
     // console.log("Попытка подключения к WebSocket по адресу:", WS_URL);
     ws = new WebSocket(WS_URL);
 
-ws.onopen = function() {
+    ws.onopen = function() {
         // console.log("WebSocket подключен.");
         // Отправляем данные пользователя при подключении
         ws.send(JSON.stringify({ type: 'init', user_id: currentUser.id, username: currentUser.username, telegram_init_data: Telegram.WebApp.initData }));
@@ -481,7 +527,7 @@ function updateGameState(state, multiplier = 1.00, history = []) {
 
     const currentMultiplierElement = document.getElementById('current-multiplier');
     const mainGameButton = document.getElementById('main-game-button');
-    const monkeyRocket = document.getElementById('monkey-rocket');
+    const rocketEmoji = document.getElementById('rocket-emoji'); // Используем ID для эмодзи
     const multiplierHistoryElement = document.getElementById('multiplier-history');
 
     // Обновление истории множителей
@@ -496,8 +542,8 @@ function updateGameState(state, multiplier = 1.00, history = []) {
             span.textContent = ${m.toFixed(2)}x;
             multiplierHistoryElement.appendChild(span);
         });
-    }
-
+                  }
+    ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️:
 switch (gameRoundState) {
         case 'waiting':
             currentMultiplierElement.textContent = x${multiplier.toFixed(2)};
@@ -505,8 +551,8 @@ switch (gameRoundState) {
             mainGameButton.textContent = 'Ожидание';
             mainGameButton.classList.remove('betting', 'cashout');
             mainGameButton.classList.add('waiting');
-            monkeyRocket.style.animation = 'none'; // Останавливаем анимацию
-            monkeyRocket.style.opacity = '1';
+            rocketEmoji.style.animation = 'none'; // Останавливаем анимацию
+            rocketEmoji.style.opacity = '1';
             hasPlacedBet = false;
             hasCashedOut = false; // Сбрасываем флаг вывода
             break;
@@ -517,8 +563,8 @@ switch (gameRoundState) {
             mainGameButton.classList.remove('waiting', 'cashout');
             mainGameButton.classList.add('betting');
             mainGameButton.disabled = false; // Разрешаем ставить
-            monkeyRocket.style.animation = 'none'; // Останавливаем анимацию
-            monkeyRocket.style.opacity = '1';
+            rocketEmoji.style.animation = 'none'; // Останавливаем анимацию
+            rocketEmoji.style.opacity = '1';
             hasPlacedBet = false;
             hasCashedOut = false; // Сбрасываем флаг вывода
             break;
@@ -541,7 +587,7 @@ switch (gameRoundState) {
                 mainGameButton.classList.add('waiting');
                 mainGameButton.disabled = true;
             }
-            monkeyRocket.style.animation = 'flyUp 5s infinite ease-out'; // Запускаем анимацию
+            rocketEmoji.style.animation = 'flyUp 5s infinite ease-out'; // Запускаем анимацию
             break;
         case 'crashed':
             currentMultiplierElement.textContent = x${multiplier.toFixed(2)} (Упала!);
@@ -550,8 +596,8 @@ switch (gameRoundState) {
             mainGameButton.classList.remove('betting', 'cashout');
             mainGameButton.classList.add('waiting');
             mainGameButton.disabled = true; // Пока ждем следующего раунда
-            monkeyRocket.style.animation = 'none'; // Останавливаем анимацию
-            monkeyRocket.style.opacity = '0.5'; // Показываем, что упала
+            rocketEmoji.style.animation = 'none'; // Останавливаем анимацию
+            rocketEmoji.style.opacity = '0.5'; // Показываем, что упала
             break;
     }
     // Обновляем баланс в шапке игры
@@ -677,6 +723,7 @@ function startGameUI() {
     // Убедимся, что начальное состояние кнопки установлено правильно
     updateGameState(gameRoundState, currentMultiplier);
 }
+
 function stopGameUI() {
     if (ws) {
         ws.close();
@@ -689,8 +736,8 @@ function stopGameUI() {
     document.getElementById('main-game-button').classList.remove('betting', 'cashout');
     document.getElementById('main-game-button').classList.add('waiting');
     document.getElementById('main-game-button').disabled = true; // По умолчанию отключена
-    document.getElementById('monkey-rocket').style.animation = 'none';
-    document.getElementById('monkey-rocket').style.opacity = '1';
+    document.getElementById('rocket-emoji').style.animation = 'none'; // Используем ID для эмодзи
+    document.getElementById('rocket-emoji').style.opacity = '1';
     hasPlacedBet = false;
     hasCashedOut = false;
 }
@@ -704,7 +751,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработчики для нового главного меню
     document.getElementById('play-rocket-button').addEventListener('click', () => {
         showScreen('rocket-game-screen');
-        startGameUI(); // Запускаем UI игры
     });
 
     document.getElementById('open-cases-button').addEventListener('click', async () => {
@@ -712,20 +758,67 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCases(await fetchCasesData()); // Загружаем и рендерим кейсы
     });
 
-    document.getElementById('go-to-inventory-button').addEventListener('click', () => {
-        showScreen('inventory-screen');
-        fetchUserData(); // Обновляем данные (и инвентарь) при переходе
+    document.getElementById('go-to-profile-button').addEventListener('click', () => {
+        showScreen('profile-screen');
     });
 
-    // Убедимся, что кнопка Профиль всегда ведет на профиль и обновляет данные
-    document.querySelectorAll('.nav-item').forEach(item => {
-        if (item.id === 'profile-nav-button') {
-            item.addEventListener('click', () => {
-                showScreen('profile-screen');
-                fetchUserData();
-                stopGameUI(); // Останавливаем игру, если уходим на профиль
+    // Обработчики для кнопок нижней навигации
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(button => {
+        button.addEventListener('click', () => {
+            const screenId = button.dataset.screenId;
+            showScreen(screenId);
+        });
+    });
+
+    // Обработчик кнопки пополнения в шапке
+    document.getElementById('top-up-button').addEventListener('click', () => {
+        document.getElementById('top-up-modal').classList.add('active');
+    });
+
+    // Кнопка пополнения на экране профиля
+    if (document.getElementById('profile-top-up-button')) {
+        document.getElementById('profile-top-up-button').addEventListener('click', () => {
+            document.getElementById('top-up-modal').classList.add('active');
+        });
+    }
+
+    // Кнопка пополнения на экране игры
+    if (document.getElementById('game-top-up-button')) {
+        document.getElementById('game-top-up-button').addEventListener('click', () => {
+            document.getElementById('top-up-modal').classList.add('active');
+        });
+    }
+
+    // Закрытие модального окна пополнения
+    document.querySelector('.close-modal').addEventListener('click', () => {
+        document.getElementById('top-up-modal').classList.remove('active');
+    });
+
+    // Выбор суммы пополнения в модальном окне
+    document.querySelectorAll('.top-up-option').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const starsAmount = parseInt(event.target.dataset.stars);
+            const tonAmount = starsAmount / 100;
+
+            Telegram.WebApp.sendData(JSON.stringify({
+                action: 'top_up_ton_balance',
+                user_id: currentUser.id,
+                stars_amount_to_pay: starsAmount,
+                ton_amount_to_receive: tonAmount
+            }));
+
+            Telegram.WebApp.showPopup({
+                title: 'Пополнение',
+                message: Запрос на ${tonAmount} TON (${starsAmount} ⭐) отправлен боту.,
+                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
             });
-        }
+            document.getElementById('top-up-modal').classList.remove('active');
+        });
+    });
+
+    // Закрытие модального окна вывода NFT
+    document.querySelector('.close-modal-withdraw').addEventListener('click', () => {
+        document.getElementById('withdraw-nft-modal').classList.remove('active');
     });
 });
-``
+```
