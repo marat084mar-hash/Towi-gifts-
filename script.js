@@ -1,8 +1,8 @@
- // Инициализация Telegram Web App
+javascript
+    // Инициализация Telegram Web App
     Telegram.WebApp.ready();
     Telegram.WebApp.expand();
-
-    // Получение темы Telegram для применения CSS
+// Получение темы Telegram для применения CSS
     Telegram.WebApp.onEvent('themeChanged', function() {
         document.documentElement.style.setProperty('--tg-theme-bg-color', Telegram.WebApp.themeParams.bg_color);
         document.documentElement.style.setProperty('--tg-theme-text-color', Telegram.WebApp.themeParams.text_color);
@@ -16,7 +16,6 @@
 
     // Функция для переключения экранов
     function showScreen(screenId) {
-        Telegram.WebApp.showAlert('DEBUG: showScreen called for: ' + screenId); // <<< ВСТАВЬ ЭТУ СТРОКУ
         // Управляем активным состоянием кнопок нижней навигации
         document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
             if (item.dataset.screenId === screenId) {
@@ -43,7 +42,7 @@
         }
     }
 
-// Глобальная переменная для хранения информации о пользователе
+    // Глобальная переменная для хранения информации о пользователе
     let currentUser = {
         id: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.id : null,
         username: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.username : 'Guest',
@@ -59,7 +58,7 @@
     // import { createClient } from '@supabase/supabase-js'
     // const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-    async function fetchUserData() {
+async function fetchUserData() {
         // В реальном приложении: запросить данные пользователя из Supabase по currentUser.id
         // const { data, error } = await supabase.from('users').select('*').eq('id', currentUser.id).single()
         // if (data) {
@@ -118,13 +117,13 @@
         renderInventory(); // Эта функция теперь будет рендерить для inventory-screen
     }
 
-function renderInventory() {
+    function renderInventory() {
         const inventoryContainer = document.getElementById('inventory-items-container'); // Теперь это контейнер на отдельном экране
         if (!inventoryContainer) return;
 
         inventoryContainer.innerHTML = ''; // Очищаем
 
-        if (currentUser.inventory.length === 0) {
+if (currentUser.inventory.length === 0) {
             inventoryContainer.innerHTML = '<p style="color:var(--tg-theme-hint-color); text-align:center; padding: 20px;">Ваш инвентарь пуст.</p>';
         } else {
             currentUser.inventory.forEach(item => {
@@ -192,7 +191,6 @@ function formatTimeRemaining(endTime) {
 // Общий обработчик для кнопок нижней навигации
 document.querySelectorAll('.bottom-nav .nav-item').forEach(button => {
     button.addEventListener('click', () => {
-        Telegram.WebApp.showAlert('DEBUG: Bottom nav button clicked! Screen: ' + button.dataset.screenId); // <<< ВСТАВЬ ЭТУ СТРОКУ
         const screenId = button.dataset.screenId;
         showScreen(screenId);
     });
@@ -200,41 +198,33 @@ document.querySelectorAll('.bottom-nav .nav-item').forEach(button => {
 
 // Кнопки Главного экрана
 document.getElementById('play-rocket-button').addEventListener('click', () => {
-    Telegram.WebApp.showAlert('DEBUG: Play Rocket button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     showScreen('rocket-game-screen');
 });
 
 document.getElementById('open-cases-button').addEventListener('click', async () => {
-    Telegram.WebApp.showAlert('DEBUG: Open Cases button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     showScreen('cases-list-screen');
     renderCases(await fetchCasesData()); // Загружаем и рендерим кейсы
 });
 
 document.getElementById('go-to-profile-button').addEventListener('click', () => {
-    Telegram.WebApp.showAlert('DEBUG: Go to Profile button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     showScreen('profile-screen');
 });
 
-
 // Кнопки пополнения баланса
 document.getElementById('top-up-button').addEventListener('click', () => {
-    Telegram.WebApp.showAlert('DEBUG: Top-up button (+) clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     document.getElementById('top-up-modal').classList.add('active');
 });
 if (document.getElementById('profile-top-up-button')) {
     document.getElementById('profile-top-up-button').addEventListener('click', () => {
-        Telegram.WebApp.showAlert('DEBUG: Profile top-up button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
         document.getElementById('top-up-modal').classList.add('active');
     });
 }
 if (document.getElementById('game-top-up-button')) { // Кнопка пополнения на экране игры
     document.getElementById('game-top-up-button').addEventListener('click', () => {
-        Telegram.WebApp.showAlert('DEBUG: Game screen top-up button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
         document.getElementById('top-up-modal').classList.add('active');
     });
 }
 document.querySelector('.close-modal').addEventListener('click', () => {
-    Telegram.WebApp.showAlert('DEBUG: Close modal button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     document.getElementById('top-up-modal').classList.remove('active');
 });
 
@@ -242,7 +232,6 @@ document.querySelector('.close-modal').addEventListener('click', () => {
 // Выбор суммы пополнения в модальном окне
 document.querySelectorAll('.top-up-option').forEach(button => {
     button.addEventListener('click', (event) => {
-        Telegram.WebApp.showAlert('DEBUG: Top-up option selected: ' + event.target.dataset.stars + ' Stars'); // <<< ВСТАВЬ ЭТУ СТРОКУ
         const starsAmount = parseInt(event.target.dataset.stars);
         const tonAmount = starsAmount / 100; // 1 TON = 100 Stars
 
@@ -267,8 +256,7 @@ document.querySelectorAll('.top-up-option').forEach(button => {
 async function renderCases(cases) {
     const casesContainer = document.getElementById('cases-container');
     if (!casesContainer) {
-        Telegram.WebApp.showAlert('ERROR: cases-container not found for rendering!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
-        return;
+        return; // Возвращаемся, если контейнер не найден
     }
     casesContainer.innerHTML = '';
     cases.forEach(caseItem => {
@@ -287,10 +275,9 @@ async function renderCases(cases) {
         casesContainer.appendChild(caseElement);
     });
 }
-ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️:
+
 // Открытие кейса
 function openCase(caseItem) {
-    Telegram.WebApp.showAlert('DEBUG: openCase called for: ' + caseItem.name); // <<< ВСТАВЬ ЭТУ СТРОКУ
     if (currentUser.tonBalance < caseItem.cost) {
         Telegram.WebApp.showAlert(Недостаточно TON для открытия кейса "${caseItem.name}". Вам нужно ${caseItem.cost.toFixed(2)} TON.);
         return;
@@ -305,6 +292,7 @@ function openCase(caseItem) {
         ]
     }, function(buttonId) {
         if (buttonId === 'yes') {
+            // Отправляем запрос боту
             Telegram.WebApp.sendData(JSON.stringify({
                 action: 'open_case',
                 user_id: currentUser.id,
@@ -318,7 +306,6 @@ function openCase(caseItem) {
 
 // --- Функционал продажи предмета ---
 function sellItem(itemToSell) {
-    Telegram.WebApp.showAlert('DEBUG: sellItem called for: ' + itemToSell.name); // <<< ВСТАВЬ ЭТУ СТРОКУ
     Telegram.WebApp.showPopup({
         title: 'Продать предмет?',
         message: Вы хотите продать "${itemToSell.name}" за ${itemToSell.sellValue} TON?,
@@ -343,7 +330,6 @@ function sellItem(itemToSell) {
 let currentItemToWithdraw = null; // Глобальная переменная для хранения выбранного предмета
 
 function showWithdrawModal(itemToWithdraw) {
-    Telegram.WebApp.showAlert('DEBUG: showWithdrawModal called for: ' + itemToWithdraw.name); // <<< ВСТАВЬ ЭТУ СТРОКУ
     currentItemToWithdraw = itemToWithdraw;
     document.getElementById('withdraw-item-name').textContent = itemToWithdraw.name;
     document.getElementById('ton-wallet-address').value = ''; // Очистить поле
@@ -351,7 +337,6 @@ function showWithdrawModal(itemToWithdraw) {
 }
 
 document.getElementById('confirm-withdraw-button').addEventListener('click', () => {
-    Telegram.WebApp.showAlert('DEBUG: Confirm withdraw button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     const walletAddress = document.getElementById('ton-wallet-address').value.trim();
     if (!walletAddress) {
         Telegram.WebApp.showAlert('Пожалуйста, введите адрес вашего TON-кошелька.');
@@ -384,7 +369,6 @@ document.getElementById('confirm-withdraw-button').addEventListener('click', () 
 });
 
 document.querySelector('.close-modal-withdraw').addEventListener('click', () => {
-    Telegram.WebApp.showAlert('DEBUG: Close withdraw modal button clicked!'); // <<< ВСТАВЬ ЭТУ СТРОКУ
     document.getElementById('withdraw-nft-modal').classList.remove('active');
 });
 
@@ -400,7 +384,6 @@ Telegram.WebApp.onEvent('onInvoiceClosed', function(data) {
         Telegram.WebApp.showAlert('Оплата Stars не удалась.');
     }
 });
-
 
 // Слушаем сообщения от бота, которые приходят через Telegram.WebApp.postEvent('receiveData', ...)
 Telegram.WebApp.onEvent('receiveData', function(eventData) {
@@ -451,6 +434,7 @@ Telegram.WebApp.onEvent('receiveData', function(eventData) {
     }
 });
 
+
 // --- WebSocket-клиент для игры "Ракета" ---
 let ws = null; // WebSocket-соединение
 // !!! ВАЖНО: Замени на URL твоего WebSocket сервера !!!
@@ -474,7 +458,7 @@ function connectWebSocket() {
     // console.log("Попытка подключения к WebSocket по адресу:", WS_URL);
     ws = new WebSocket(WS_URL);
 
-    ws.onopen = function() {
+ws.onopen = function() {
         // console.log("WebSocket подключен.");
         // Отправляем данные пользователя при подключении
         ws.send(JSON.stringify({ type: 'init', user_id: currentUser.id, username: currentUser.username, telegram_init_data: Telegram.WebApp.initData }));
@@ -542,8 +526,8 @@ function updateGameState(state, multiplier = 1.00, history = []) {
             span.textContent = ${m.toFixed(2)}x;
             multiplierHistoryElement.appendChild(span);
         });
-                  }
-    ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️:
+    }
+
 switch (gameRoundState) {
         case 'waiting':
             currentMultiplierElement.textContent = x${multiplier.toFixed(2)};
@@ -617,7 +601,6 @@ function handleBetResult(success, message, newBalance) {
     }
     document.getElementById('main-game-button').disabled = false; // Включаем кнопку после ответа
 }
-
 function handleCashoutResult(success, message, newBalance, profit, multiplier) {
     if (success) {
         Telegram.WebApp.showNotification({message: Вывели ${profit.toFixed(2)} TON на x${multiplier.toFixed(2)}!, type: 'success'});
@@ -733,92 +716,4 @@ function stopGameUI() {
     document.getElementById('current-multiplier').textContent = 'x1.00';
     document.getElementById('current-multiplier').style.color = '#fff';
     document.getElementById('main-game-button').textContent = 'Ожидание';
-    document.getElementById('main-game-button').classList.remove('betting', 'cashout');
-    document.getElementById('main-game-button').classList.add('waiting');
-    document.getElementById('main-game-button').disabled = true; // По умолчанию отключена
-    document.getElementById('rocket-emoji').style.animation = 'none'; // Используем ID для эмодзи
-    document.getElementById('rocket-emoji').style.opacity = '1';
-    hasPlacedBet = false;
-    hasCashedOut = false;
-}
-
-
-// --- Инициализация при загрузке ---
-document.addEventListener('DOMContentLoaded', () => {
-    fetchUserData(); // Загружаем данные пользователя
-    showScreen('home-screen'); // Показываем главный экран
-
-    // Обработчики для нового главного меню
-    document.getElementById('play-rocket-button').addEventListener('click', () => {
-        showScreen('rocket-game-screen');
-    });
-
-    document.getElementById('open-cases-button').addEventListener('click', async () => {
-        showScreen('cases-list-screen');
-        renderCases(await fetchCasesData()); // Загружаем и рендерим кейсы
-    });
-
-    document.getElementById('go-to-profile-button').addEventListener('click', () => {
-        showScreen('profile-screen');
-    });
-
-    // Обработчики для кнопок нижней навигации
-    document.querySelectorAll('.bottom-nav .nav-item').forEach(button => {
-        button.addEventListener('click', () => {
-            const screenId = button.dataset.screenId;
-            showScreen(screenId);
-        });
-    });
-
-    // Обработчик кнопки пополнения в шапке
-    document.getElementById('top-up-button').addEventListener('click', () => {
-        document.getElementById('top-up-modal').classList.add('active');
-    });
-
-    // Кнопка пополнения на экране профиля
-    if (document.getElementById('profile-top-up-button')) {
-        document.getElementById('profile-top-up-button').addEventListener('click', () => {
-            document.getElementById('top-up-modal').classList.add('active');
-        });
-    }
-
-    // Кнопка пополнения на экране игры
-    if (document.getElementById('game-top-up-button')) {
-        document.getElementById('game-top-up-button').addEventListener('click', () => {
-            document.getElementById('top-up-modal').classList.add('active');
-        });
-    }
-
-    // Закрытие модального окна пополнения
-    document.querySelector('.close-modal').addEventListener('click', () => {
-        document.getElementById('top-up-modal').classList.remove('active');
-    });
-
-    // Выбор суммы пополнения в модальном окне
-    document.querySelectorAll('.top-up-option').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const starsAmount = parseInt(event.target.dataset.stars);
-            const tonAmount = starsAmount / 100;
-
-            Telegram.WebApp.sendData(JSON.stringify({
-                action: 'top_up_ton_balance',
-                user_id: currentUser.id,
-                stars_amount_to_pay: starsAmount,
-                ton_amount_to_receive: tonAmount
-            }));
-
-            Telegram.WebApp.showPopup({
-                title: 'Пополнение',
-                message: Запрос на ${tonAmount} TON (${starsAmount} ⭐) отправлен боту.,
-                buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-            });
-            document.getElementById('top-up-modal').classList.remove('active');
-        });
-    });
-
-    // Закрытие модального окна вывода NFT
-    document.querySelector('.close-modal-withdraw').addEventListener('click', () => {
-        document.getElementById('withdraw-nft-modal').classList.remove('active');
-    });
-});
-```
+    docum
