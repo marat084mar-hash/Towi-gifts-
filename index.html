@@ -4,755 +4,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Подарки Тови Mini App</title>
-    
-    <link rel="stylesheet" href="style.css">
-    
+    <title>Towi Gifts</title>
+    <!-- Подключение Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <style>
-        :root {
-            --text-color: #e0e0e0;
-            --bg-color: #000000;
-            --primary-color: #A020F0;
-            --secondary-bg-color: #1a0026;
-            --button-bg: #8A2BE2;
-            --button-text: #ffffff;
-            --border-color: #58189e;
-        }
-
-        body.light-theme {
-            --text-color: #1a1a1a;
-            --bg-color: #ffffff;
-            --primary-color: #8A2BE2;
-            --secondary-bg-color: #f0f0f0;
-            --button-bg: #8A2BE2;
-            --button-text: #ffffff;
-            --border-color: #ccc;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; color: var(--text-color);
-            font-size: 2em; z-index: 9999;
-        }
-        #loading-screen h1 { 
-            color: var(--primary-color);
-            margin-bottom: 20px; 
-        }
-        .spinner {
-            border: 8px solid rgba(255, 255, 255, 0.3);
-            border-top: 8px solid var(--primary-color);
-            border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}
-        
-        #main-content {
-            display: none;
-            flex-grow: 1; 
-            flex-direction: column; 
-        }
-
-        button {
-            background-color: var(--button-bg); 
-            color: var(--button-text); 
-            padding: 10px 20px;
-            border: none; border-radius: 5px; cursor: pointer;
-            font-size: 16px; margin-top: 20px;
-            transition: background-color 0.2s ease;
-        }
-        button:hover { opacity: 0.9; }
-        
-        #closeButton {
-            margin-top: 30px;
-            background-color: #dc3545;
-        }
-        #closeButton:hover { background-color: #c82333; }
-
-        header {
-            background-color: var(--secondary-bg-color);
-            color: var(--primary-color);
-            padding: 15px;
-            text-align: center;
-            font-size: 1.2em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        main {
-            flex-grow: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-        }
-
-        footer {
-            background-color: var(--secondary-bg-color);
-            padding: 10px;
-            text-align: center;
-            color: var(--text-color);
-            font-size: 0.8em;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-        }
-
-        #inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            max-width: 800px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .gift-item {
-            background-color: var(--secondary-bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-       .gift-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-        }
-
-        .gift-item img {
-            max-width: 100px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .gift-item h3 {
-            margin: 0 0 5px 0;
-            color: var(--primary-color);
-            font-size: 1.1em;
-        }
-
-        .gift-item p {
-            font-size: 0.9em;
-            color: var(--text-color);
-        }
-
-        .gift-item button {
-            margin-top: 10px;
-            padding: 8px 15px;
-            font-size: 0.9em;
-        }
-
-        .gift-item.opened {
-            opacity: 0.7;
-            cursor: default;
-        }
-
-        .gift-item.opened button {
-            display: none;
-        }
-
-        @media (max-width: 600px) {
-            #inventory-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 10px;
-            }
-            .gift-item img {
-                max-width: 80px;
-            }
-            #closeButton {
-                width: 100%;
-            }
-        }
-    </style>
+    <!-- Твои стили -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loading-screen">
-        <h1>Towi Gifts</h1>
-        <div class="spinner"></div>
-        <p style="font-size: 0.5em; margin-top: 20px;">Загрузка...</p>
-    </div>
-
-    <div id="main-content">
-        <header>
-            <h1>Мои Подарки</h1>
+    <!-- Главный экран -->
+    <div id="home-screen" class="screen active">
+        <header class="header">
+            <button class="close-button" onclick="Telegram.WebApp.close()">X Закрыть</button>
+            <span class="app-title">Towi Gifts</span>
+            <div class="balance-info">
+                <span id="user-ton-balance">0.00</span> TON <button class="plus-button" id="top-up-button">+</button>
+            </div>
         </header>
 
-        <main>
-            <p>Здесь вы можете открывать полученные подарки!</p>
-            <div id="inventory-grid">
-            </div>
-            
-            <button id="closeButton">Закрыть приложение</button>
+        <main class="content main-menu-content">
+            <button class="main-menu-card" id="play-rocket-button">
+                <h2>🚀 Играть в Ракету</h2>
+                <p>Испытай удачу и умножь свои TON!</p>
+            </button>
+            <button class="main-menu-card" id="open-cases-button">
+                <h2>🎁 Открыть Кейсы</h2>
+                <p>Выбивай уникальные NFT!</p>
+            </button>
         </main>
 
-        <footer>
-            <p>&copy; 2025 Towi Gifts. Все права защищены.</p>
-        </footer>
+        <nav class="bottom-nav">
+            <button class="nav-item">
+                <i class="icon icon-friends"></i> Друзья
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-leaderboard"></i> Лидерборд
+            </button>
+            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+                <i class="icon icon-play"></i> Играть
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-tasks"></i> Задания
+            </button>
+            <button class="nav-item" id="profile-nav-button">
+                <i class="icon icon-profile"></i> Профиль
+            </button>
+        </nav>
     </div>
-    
+
+    <!-- Экран Кейсов -->
+    <div id="cases-list-screen" class="screen">
+        <header class="header">
+            <button class="back-button" onclick="showScreen('home-screen')">&larr; Назад</button>
+            <span class="app-title">Кейсы</span>
+        </header>
+        <main class="content" id="cases-container">
+            <!-- Карточки кейсов будут загружаться сюда динамически -->
+        </main>
+        <nav class="bottom-nav">
+             <button class="nav-item">
+                <i class="icon icon-friends"></i> Друзья
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-leaderboard"></i> Лидерборд
+            </button>
+            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+                <i class="icon icon-play"></i> Играть
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-tasks"></i> Задания
+            </button>
+            <button class="nav-item" id="profile-nav-button">
+                <i class="icon icon-profile"></i> Профиль
+            </button>
+        </nav>
+    </div>
+
+<!-- Экран Профиля -->
+    <div id="profile-screen" class="screen">
+        <header class="header">
+            <button class="back-button" onclick="showScreen('home-screen')">&larr; Назад</button>
+            <span class="app-title">Профиль</span>
+        </header>
+        <main class="content profile-content">
+            <div class="user-info-header">
+                <div class="user-avatar"></div>
+                <div class="user-name" id="profile-username">@TowiTow1</div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card">Игры<br><span id="profile-games-count">0</span> 🎲</div>
+                <div class="stat-card">Баланс<br><span id="profile-ton-balance">0.00</span> TON</div>
+            </div>
+            <button class="action-button primary-button" id="profile-top-up-button">Пополнить баланс</button>
+            <button class="action-button primary-button" id="go-to-inventory-button">Инвентарь (<span id="profile-inventory-count">0</span>)</button>
+        </main>
+        <nav class="bottom-nav">
+             <button class="nav-item">
+                <i class="icon icon-friends"></i> Друзья
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-leaderboard"></i> Лидерборд
+            </button>
+            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+                <i class="icon icon-play"></i> Играть
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-tasks"></i> Задания
+            </button>
+            <button class="nav-item" id="profile-nav-button">
+                <i class="icon icon-profile"></i> Профиль
+            </button>
+        </nav>
+    </div>
+
+    <!-- Экран Инвентаря -->
+    <div id="inventory-screen" class="screen">
+        <header class="header">
+            <button class="back-button" onclick="showScreen('profile-screen')">&larr; Назад</button>
+            <span class="app-title">Инвентарь</span>
+            <div class="top-stats">
+                <span class="available-to-withdraw">0.15/15.00 ▽</span> <!-- Пример из скриншота -->
+            </div>
+        </header>
+        <main class="content inventory-grid" id="inventory-items-container">
+            <!-- Здесь будут карточки предметов инвентаря -->
+        </main>
+        <nav class="bottom-nav">
+             <button class="nav-item">
+                <i class="icon icon-friends"></i> Друзья
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-leaderboard"></i> Лидерборд
+            </button>
+            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+                <i class="icon icon-play"></i> Играть
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-tasks"></i> Задания
+            </button>
+            <button class="nav-item" id="profile-nav-button">
+                <i class="icon icon-profile"></i> Профиль
+            </button>
+        </nav>
+    </div>
+
+<!-- Экран игры "Ракета" -->
+    <div id="rocket-game-screen" class="screen">
+        <header class="header">
+            <button class="back-button" onclick="showScreen('home-screen'); stopGameUI()">&larr; Назад</button>
+            <span class="app-title">Towi Gifts</span>
+            <div class="balance-info">
+                <span id="game-ton-balance">0.00</span> TON <button class="plus-button" id="game-top-up-button">+</button>
+            </div>
+        </header>
+        <main class="content game-content">
+            <div class="multiplier-history" id="multiplier-history">
+                <!-- История множителей будет здесь -->
+                <span class="history-item">2.47x</span>
+                <span class="history-item">2.44x</span>
+                <span class="history-item">1.01x</span>
+                <span class="history-item current-last">22.83x</span>
+            </div>
+            <div class="game-area">
+                <div class="current-multiplier" id="current-multiplier">x1.00</div>
+                <div class="game-animation">
+                    <img src="images/monkey_banana.png" alt="Monkey on banana rocket" id="monkey-rocket">
+                    <!-- Здесь можно добавить фоновые звезды или анимацию полета -->
+                </div>
+            </div>
+
+            <div class="betting-controls">
+                <div class="auto-cashout-section">
+                    <input type="checkbox" id="auto-cashout-checkbox">
+                    <label for="auto-cashout-checkbox">Автовывод</label>
+                    <button class="minus-button" onclick="adjustAutoCashout(-0.5)">-</button>
+                    <input type="number" id="auto-cashout-multiplier" value="2.00" step="0.01" min="1.01">
+                    <button class="plus-button" onclick="adjustAutoCashout(0.5)">+</button>
+                </div>
+
+                <div class="bet-amount-section">
+                    <button class="minus-button" onclick="adjustBetAmount(-1)">-</button>
+                    <input type="number" id="bet-amount" value="1" step="0.01" min="0.01">
+                    <button class="plus-button" onclick="adjustBetAmount(1)">+</button>
+                    <button class="quick-bet-button" onclick="adjustBetAmount(0.5, true)">+0.5</button>
+                    <button class="quick-bet-button" onclick="adjustBetAmount(1, true)">+1</button>
+                    <button class="quick-bet-button" onclick="adjustBetAmount(2, true)">+2</button>
+                </div>
+                
+                <button class="main-game-button" id="main-game-button">Ожидание</button>
+            </div>
+        </main>
+        <nav class="bottom-nav">
+             <button class="nav-item">
+                <i class="icon icon-friends"></i> Друзья
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-leaderboard"></i> Лидерборд
+            </button>
+            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+                <i class="icon icon-play"></i> Играть
+            </button>
+            <button class="nav-item">
+                <i class="icon icon-tasks"></i> Задания
+            </button>
+            <button class="nav-item" id="profile-nav-button">
+                <i class="icon icon-profile"></i> Профиль
+            </button>
+        </nav>
+    </div>
+
+    <!-- Модальное окно для пополнения -->
+    <div id="top-up-modal" class="modal">
+        <div class="modal-content">
+            <h3>Пополнить баланс TON</h3>
+            <p>Выберите сумму Stars для обмена на TON:</p>
+            <div class="top-up-options">
+                <button class="top-up-option" data-stars="100">1 TON (100 ⭐)</button>
+                <button class="top-up-option" data-stars="500">5 TON (500 ⭐)</button>
+                <button class="top-up-option" data-stars="1000">10 TON (1000 ⭐)</button>
+            </div>
+            <button class="secondary-button close-modal">Отмена</button>
+        </div>
+    </div>
+
+<!-- Модальное окно для вывода NFT -->
+    <div id="withdraw-nft-modal" class="modal">
+        <div class="modal-content">
+            <h3>Вывести NFT</h3>
+            <p>Вы собираетесь вывести NFT: <strong id="withdraw-item-name"></strong>.</p>
+            <p>Укажите адрес вашего TON-кошелька:</p>
+            <input type="text" id="ton-wallet-address" placeholder="Ваш TON-кошелек адрес" class="text-input">
+            <div class="modal-buttons">
+                <button class="action-button primary-button" id="confirm-withdraw-button">Подтвердить вывод</button>
+                <button class="secondary-button close-modal-withdraw">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Твои скрипты -->
     <script src="script.js"></script>
-
-    <script>
-        function isLightColor(color) {
-            if (!color) return false;
-            const hex = color.startsWith('#') ? color.slice(1) : color;
-            if (hex.length !== 6) return false;
-            const r = parseInt(hex.substring(0, 2), 16);
-            const g = parseInt(hex.substring(2, 4), 16);
-            const b = parseInt(hex.substring(4, 6), 16);
-            return (r * 299 + g * 587 + b * 114) / 1000 > 186; 
-        }
-
-        function applyTheme() {
-            const themeParams = Telegram.WebApp.themeParams;
-            const body = document.body;
-            if (themeParams.bg_color) {
-                document.documentElement.style.setProperty('--bg-color', themeParams.bg_color);
-                
-                if (isLightColor(themeParams.bg_color)) {
-                    body.classList.add('light-theme');
-                    document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#1a1a1a');
-                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#8A2BE2');
-                    document.documentElement.style.setProperty('--secondary-bg-color', themeParams.secondary_bg_color || '#f0f0f0');
-                    document.documentElement.style.setProperty('--border-color', themeParams.hint_color || '#ccc');
-                    document.documentElement.style.setProperty('--button-bg', themeParams.button_color || '#8A2BE2');
-                } else {
-                    body.classList.remove('light-theme');
-                    document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#e0e0e0');
-                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#A020F0');
-                    document.documentElement.style.setProperty('--secondary-bg-color', themeParams.secondary_bg_color || '#1a0026');
-                    document.documentElement.style.setProperty('--border-color', themeParams.hint_color || '#58189e');
-                    document.documentElement.style.setProperty('--button-bg', themeParams.button_color || '#8A2BE2');
-                }
-            }
-            
-            if (Telegram.WebApp.setHeaderColor && themeParams.header_bg_color) {
-                Telegram.WebApp.setHeaderColor(themeParams.header_bg_color);
-            }
-            if (Telegram.WebApp.setBackgroundColor && themeParams.bg_color) {
-                Telegram.WebApp.setBackgroundColor(themeParams.bg_color);
-            }
-        }
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadingScreen = document.getElementById('loading-screen');
-            const mainContent = document.getElementById('main-content');
-
-            if (Telegram.WebApp.ready) {
-                console.log('Telegram Web App SDK готов!');
-                Telegram.WebApp.expand();
-
-                if (typeof loadInventory === 'function') loadInventory();
-                if (typeof applyTheme === 'function') applyTheme();
-                if (typeof displayInventory === 'function') displayInventory();
-
-                Telegram.WebApp.onEvent('themeChanged', applyTheme);
-
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    mainContent.style.display = 'flex';
-                }, 1000);
-                
-                const closeButton = document.getElementById('closeButton');
-                if (closeButton) {
-                    closeButton.addEventListener('click', () => {
-                        Telegram.WebApp.close();
-                    });
-                }
-
-                console.log('Имя пользователя:', Telegram.WebApp.initDataUnsafe?.user?.first_name);
-                console.log('Параметры темы:', Telegram.WebApp.themeParams);
-
-            } else {
-                console.error('Telegram Web App SDK не загружен. Возможно, приложение открыто вне Telegram.');
-                loadingScreen.style.display = 'none';
-                mainContent.style.display = 'flex'; 
-            }
-        });
-    </script>
 </body>
 </html>
 ```
-```html
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts App</title>
-    
-    <link rel="stylesheet" href="style.css">
-    
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <style>
-        /* Переменные для легкой смены темы, по умолчанию для ТЕМНОЙ черно-фиолетовой темы */
-        :root {
-            --text-color: #e0e0e0;          /* Светло-серый текст */
-            --bg-color: #000000;            /* Глубокий черный фон */
-            --primary-color: #A020F0;       /* Яркий фиолетовый для акцентов (Purple) */
-            --secondary-bg-color: #1a0026;  /* Очень темный фиолетовый для карточек/элементов */
-            --button-bg: #8A2BE2;           /* Сине-фиолетовый для кнопок (BlueViolet) */
-            --button-text: #ffffff;         /* Белый текст кнопок */
-            --border-color: #58189e;        /* Темный фиолетовый для границ */
-            --nav-button-bg: #2a0a4a;       /* Фон для навигационных кнопок */
-            --nav-button-active-bg: #A020F0; /* Активная навигационная кнопка */
-        }
-
-        /* Адаптация под светлую тему Telegram. */
-        body.light-theme {
-            --text-color: #1a1a1a;
-            --bg-color: #ffffff;
-            --primary-color: #8A2BE2;       /* Сине-фиолетовый для светлой темы */
-            --secondary-bg-color: #f0f0f0;
-            --button-bg: #8A2BE2;
-            --button-text: #ffffff;
-            --border-color: #ccc;
-            --nav-button-bg: #e0e0e0;
-            --nav-button-active-bg: #8A2BE2;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Стили для экрана загрузки (без изменений) */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; color: var(--text-color);
-            font-size: 2em; z-index: 9999;
-        }
-        #loading-screen h1 { 
-            color: var(--primary-color);
-            margin-bottom: 20px; 
-        }
-        .spinner {
-            border: 8px solid rgba(255, 255, 255, 0.3);
-            border-top: 8px solid var(--primary-color);
-            border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}
-        
-        /* Основной контент изначально скрыт */
-        #main-content {
-            display: none;
-            flex-grow: 1; 
-            flex-direction: column; 
-        }
-        /* Шапка приложения */
-        header {
-            background-color: var(--secondary-bg-color);
-            color: var(--primary-color);
-            padding: 15px 20px;
-            text-align: center;
-            font-size: 1.2em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            display: flex; /* Flexbox для размещения элементов */
-            justify-content: space-between; /* Заголовок слева, баланс справа */
-            align-items: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.5em;
-            color: var(--primary-color);
-        }
-        #balance-info {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Расстояние между балансом и кнопкой "+" */
-            font-size: 1em;
-            color: var(--text-color);
-        }
-        #balance-info span {
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        #balance-info button {
-            background-color: var(--primary-color);
-            color: var(--button-text);
-            border: none;
-            border-radius: 50%; /* Круглая кнопка */
-            width: 30px;
-            height: 30px;
-            font-size: 1.5em;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            padding: 0;
-            margin: 0; /* Убираем лишние отступы */
-            line-height: 1; /* Для центрирования символа "+" */
-            transition: background-color 0.2s ease;
-        }
-        #balance-info button:hover {
-            opacity: 0.8;
-        }
-
-        /* Основная область контента (будет вмещать разные секции) */
-        main {
-            flex-grow: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-        }
-        main p {
-            text-align: center;
-        }
-
-        /* Контейнер для различных видов (Кейсы, Рейтинг, Инвентарь) */
-        .view-section {
-            display: none; /* Все секции скрыты по умолчанию, кроме активной */
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-        }
-        .view-section.active {
-            display: block; /* Активная секция отображается */
-        }
-        .view-section h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-
-        /* Стили для сетки инвентаря */
-        #inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            max-width: 800px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        /* Стили для отдельных элементов подарков в инвентаре (без изменений) */
-        .gift-item {
-            background-color: var(--secondary-bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-        .gift-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-        }
-
-        .gift-item img {
-            max-width: 100px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .gift-item h3 {
-            margin: 0 0 5px 0;
-            color: var(--primary-color);
-            font-size: 1.1em;
-        }
-
-        .gift-item p {
-            font-size: 0.9em;
-            color: var(--text-color);
-        }
-
-        .gift-item button {
-            margin-top: 10px;
-            padding: 8px 15px;
-            font-size: 0.9em;
-            background-color: var(--button-bg); /* Используем переменную */
-            color: var(--button-text); /* Используем переменную */
-        }
-
-        .gift-item.opened {
-            opacity: 0.7;
-            cursor: default;
-        }
-        .gift-item.opened button {
-            display: none;
-        }
-
-        /* Футер приложения с навигационными кнопками */
-        footer {
-            background-color: var(--secondary-bg-color);
-            padding: 10px;
-            text-align: center;
-            color: var(--text-color);
-            font-size: 0.8em;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-around; /* Распределяем кнопки равномерно */
-            align-items: center;
-        }
-
-        .nav-button {
-            background-color: var(--nav-button-bg);
-            color: var(--button-text);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            flex-grow: 1; /* Кнопки занимают доступное пространство */
-            margin: 0 5px; /* Небольшие отступы между кнопками */
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-        .nav-button:hover {
-            background-color: var(--primary-color);
-        }
-        .nav-button.active {
-            background-color: var(--nav-button-active-bg); /* Цвет активной кнопки */
-            font-weight: bold;
-            box-shadow: 0 0 8px rgba(var(--primary-color-rgb), 0.5); /* Добавляем свечение */
-        }
-
-        /* Общая кнопка закрытия приложения (для примера в main) */
-        #closeAppButtonInMain { /* Переименована, чтобы не конфликтовать */
-            margin-top: 30px;
-            background-color: #dc3545;
-        }
-        #closeAppButtonInMain:hover {
-            background-color: #c82333;
-        }
-
-
-        /* Медиа-запросы для небольших экранов */
-        @media (max-width: 600px) {
-            header {
-                padding: 10px 15px;
-                font-size: 1em;
-            }
-            header h1 {
-                font-size: 1.2em;
-            }
-            #balance-info {
-                font-size: 0.9em;
-                gap: 5px;
-            }
-            #balance-info button {
-                width: 25px;
-                height: 25px;
-                font-size: 1.2em;
-            }
-            main {
-                padding: 15px;
-            }
-            #inventory-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 10px;
-            }
-            .gift-item img {
-                max-width: 80px;
-            }
-            .nav-button {
-                font-size: 0.9em;
-                padding: 8px 10px;
-            }
-            footer {
-                padding: 8px 0;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- ЭКРАН ЗАГРУЗКИ (без изменений) -->
-    <div id="loading-screen">
-        <h1>Towi Gifts</h1>
-        <div class="spinner"></div>
-        <p style="font-size: 0.5em; margin-top: 20px;">Загрузка...</p>
-    </div>
-
-    <!-- ОСНОВНОЙ КОНТЕНТ ПРИЛОЖЕНИЯ -->
-    <div id="main-content">
-        <!-- Шапка приложения: заголовок и баланс -->
-        <header>
-            <h1>Towi Gifts</h1>
-            <div id="balance-info">
-                <span id="ton-balance">Баланс: 0.00 TON</span>
-                <button id="addTonButton">+</button>
-            </div>
-        </header>
-
-        <!-- Главная секция для отображения различных видов (Кейсы, Рейтинг, Инвентарь) -->
-        <main>
-            <!-- Секция "Кейсы" -->
-            <section id="cases-view" class="view-section">
-                <h2>Кейсы</h2>
-                <p>Здесь будут отображаться доступные кейсы для открытия.</p>
-                <button id="openCaseButton">Открыть случайный кейс</button>
-            </section>
-
-            <!-- Секция "Рейтинг" -->
-            <section id="rating-view" class="view-section">
-                <h2>Рейтинг</h2>
-                <p>Здесь будет отображаться таблица лидеров.</p>
-            </section>
-            <!-- Секция "Инвентарь" (активна по умолчанию при загрузке) -->
-            <section id="inventory-view" class="view-section active">
-                <h2>Инвентарь</h2>
-                <p>Здесь вы можете открывать полученные подарки!</p>
-                <button id="getNewGiftButton" style="margin-bottom: 20px;">Получить новый подарок!</button>
-                <div id="inventory-grid">
-                    <!-- Элементы подарков будут генерироваться JavaScript-ом -->
-                </div>
-            </section>
-            
-            <button id="closeAppButtonInMain">Закрыть приложение</button>
-        </main>
-
-        <!-- Футер приложения с навигационными кнопками -->
-        <footer>
-            <button class="nav-button" id="navCases">Кейсы</button>
-            <button class="nav-button" id="navRating">Рейтинг</button>
-            <button class="nav-button active" id="navInventory">Инвентарь</button>
-        </footer>
-    </div>
-    
-    <!-- Подключаем ваш основной скрипт. -->
-    <script src="script.js"></script>
-
-    <!-- Встроенный JavaScript для управления экраном загрузки и инициализации Telegram.WebApp. -->
-    <script>
-        // Функция для определения светлого/темного цвета (для адаптации темы)
-        function isLightColor(color) {
-            if (!color) return false;
-            const hex = color.startsWith('#') ? color.slice(1) : color;
-            if (hex.length !== 6) return false;
-            const r = parseInt(hex.substring(0, 2), 16);
-            const g = parseInt(hex.substring(2, 4), 16);
-            const b = parseInt(hex.substring(4, 6), 16);
-            return (r * 299 + g * 587 + b * 114) / 1000 > 186; 
-        }
-
-        // Функция применения темы Telegram
-        function applyTheme() {
-            const themeParams = Telegram.WebApp.themeParams;
-            const body = document.body;
-
-            if (themeParams.bg_color) {
-                document.documentElement.style.setProperty('--bg-color', themeParams.bg_color);
-                
-                if (isLightColor(themeParams.bg_color)) {
-                    body.classList.add('light-theme');
-                    document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#1a1a1a');
-                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#8A2BE2');
-                    document.documentElement.style.setProperty('--secondary-bg-color', themeParams.secondary_bg_color || '#f0f0f0');
-                    document.documentElement.style.setProperty('--button-bg', themeParams.button_color || '#8A2BE2');
-                    document.documentElement.style.setProperty('--button-text', themeParams.text_color || '#ffffff');
-                    document.documentElement.style.setProperty('--border-color', themeParams.hint_color || '#ccc');
-                    document.documentElement.style.setProperty('--nav-button-bg', themeParams.secondary_bg_color || '#e0e0e0');
-                    document.documentElement.style.setProperty('--nav-button-active-bg', themeParams.button_color || '#8A2BE2');
-                    } else {
-                    body.classList.remove('light-theme');
-                    document.documentElement.style.setProperty('--text-color', themeParams.text_color || '#e0e0e0');
-                    document.documentElement.style.setProperty('--primary-color', themeParams.button_color || '#A020F0');
-                    document.documentElement.style.setProperty('--secondary-bg-color', themeParams.secondary_bg_color || '#1a0026');
-                    document.documentElement.style.setProperty('--button-bg', themeParams.button_color || '#8A2BE2');
-                    document.documentElement.style.setProperty('--button-text', themeParams.text_color || '#ffffff');
-                    document.documentElement.style.setProperty('--border-color', themeParams.hint_color || '#58189e');
-                    document.documentElement.style.setProperty('--nav-button-bg', themeParams.secondary_bg_color || '#2a0a4a');
-                    document.documentElement.style.setProperty('--nav-button-active-bg', themeParams.button_color || '#A020F0');
-                }
-            }
-            
-            if (Telegram.WebApp.setHeaderColor && themeParams.header_bg_color) {
-                Telegram.WebApp.setHeaderColor(themeParams.header_bg_color);
-            }
-            if (Telegram.WebApp.setBackgroundColor && themeParams.bg_color) {
-                Telegram.WebApp.setBackgroundColor(themeParams.bg_color);
-            }
-        }
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadingScreen = document.getElementById('loading-screen');
-            const mainContent = document.getElementById('main-content');
-
-            if (Telegram.WebApp.ready) {
-                console.log('Telegram Web App SDK готов!');
-                Telegram.WebApp.expand();
-
-                if (typeof loadInventory === 'function') loadInventory();
-                if (typeof loadBalance === 'function') loadBalance(); // Загружаем баланс
-                if (typeof applyTheme === 'function') applyTheme();
-                if (typeof displayInventory === 'function') displayInventory();
-                if (typeof updateBalanceDisplay === 'function') updateBalanceDisplay(); // Обновляем отображение баланса
-
-                Telegram.WebApp.onEvent('themeChanged', applyTheme);
-
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    mainContent.style.display = 'flex';
-                    // Инициализируем обработчики кнопок после отображения main-content
-                    if (typeof setupEventListeners === 'function') setupEventListeners();
-                }, 1000);
-                
-                // Кнопка закрытия приложения в основном контенте
-                const closeAppButtonInMain = document.getElementById('closeAppButtonInMain');
-                if (closeAppButtonInMain) {
-                    closeAppButtonInMain.addEventListener('click', () => {
-                        Telegram.WebApp.close();
-                    });
-                }
-
-                console.log('Имя пользователя:', Telegram.WebApp.initDataUnsafe?.user?.first_name);
-                console.log('Параметры темы:', Telegram.WebApp.themeParams);
-
-            } else {
-                console.error('Telegram Web App SDK не загружен. Возможно, приложение открыто вне Telegram.');
-                loadingScreen.style.display = 'none';
-                mainContent.style.display = 'flex'; 
-            }
-        });
-    </script>
-</body>
-</html>
-
-
-
----
-
-## # 2. Изменения в `script.js`
-
-Вам нужно будет добавить новые переменные для баланса, функции для его обновления, а также обработчики событий для новых кнопок.
-
-
-javascript
-// script.js
-
-// --- ИНВЕНТАРЬ ИГРОКА (БУДЕТ ЗАГРУЖАТЬСЯ/СОХРАНЯТЬСЯ) ---
-let inventory = []; // Здесь будут храниться объекты подарков
-
-// --- БАЛАНС ПОЛЬЗОВАТЕЛЯ ---
-let userBalance = {
-    ton: 0.00,
-    // Добавьте другие валюты, если нужно
-};
-
-
-// --- ФУНКЦИИ ИНВЕНТАРЯ И МЕХАНИК ---
