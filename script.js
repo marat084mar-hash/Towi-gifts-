@@ -1,5 +1,4 @@
-javascript
-    // Инициализация Telegram Web App
+ // Инициализация Telegram Web App
     Telegram.WebApp.ready();
 
     // Попытка изменить текст заголовка приложения сразу после загрузки
