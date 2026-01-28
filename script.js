@@ -1,153 +1,153 @@
-  ```javascript
-    // Инициализация Telegram Web App
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand(); // Разворачиваем Mini App на весь экран
+```javascript
+// Инициализация Telegram Web App
+Telegram.WebApp.ready();
+Telegram.WebApp.showAlert('JS: 1. SDK Ready'); // <<< ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+Telegram.WebApp.expand();
 
-    // Получение темы Telegram для применения CSS
-    Telegram.WebApp.onEvent('themeChanged', function() {
-        document.documentElement.style.setProperty('--tg-theme-bg-color', Telegram.WebApp.themeParams.bg_color);
-        document.documentElement.style.setProperty('--tg-theme-text-color', Telegram.WebApp.themeParams.text_color);
-        document.documentElement.style.setProperty('--tg-theme-hint-color', Telegram.WebApp.themeParams.hint_color);
-        document.documentElement.style.setProperty('--tg-theme-link-color', Telegram.WebApp.themeParams.link_color);
-        document.documentElement.style.setProperty('--tg-theme-button-color', Telegram.WebApp.themeParams.button_color);
-        document.documentElement.style.setProperty('--tg-theme-button-text-color', Telegram.WebApp.themeParams.button_text_color);
-        document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', Telegram.WebApp.themeParams.secondary_bg_color);
+// Получение темы Telegram для применения CSS
+Telegram.WebApp.onEvent('themeChanged', function() {
+    document.documentElement.style.setProperty('--tg-theme-bg-color', Telegram.WebApp.themeParams.bg_color);
+    document.documentElement.style.setProperty('--tg-theme-text-color', Telegram.WebApp.themeParams.text_color);
+    document.documentElement.style.setProperty('--tg-theme-hint-color', Telegram.WebApp.themeParams.hint_color);
+    document.documentElement.style.setProperty('--tg-theme-link-color', Telegram.WebApp.themeParams.link_color);
+    document.documentElement.style.setProperty('--tg-theme-button-color', Telegram.WebApp.themeParams.button_color);
+    document.documentElement.style.setProperty('--tg-theme-button-text-color', Telegram.WebApp.themeParams.button_text_color);
+    document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', Telegram.WebApp.themeParams.secondary_bg_color);
+});
+
+
+// Функция для переключения экранов
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
     });
+    document.getElementById(screenId).classList.add('active');
+}
+
+// Глобальная переменная для хранения информации о пользователе
+let currentUser = {
+    id: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.id : null,
+    username: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.username : 'Guest',
+    firstName: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.first_name : 'Пользователь',
+    tonBalance: 0,
+    gamesPlayed: 0,
+    inventory: []
+};
 
 
-    // Функция для переключения экранов
-    function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.remove('active');
-        });
-        document.getElementById(screenId).classList.add('active');
-    }
-
-    // Глобальная переменная для хранения информации о пользователе
-    let currentUser = {
-        id: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.id : null,
-        username: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.username : 'Guest',
-        firstName: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.first_name : 'Пользователь',
-        tonBalance: 0,
-        gamesPlayed: 0,
-        inventory: []
-    };
-
-
-    // --- Взаимодействие с Supabase (заглушки) ---
-    // В реальном проекте здесь будет SDK Supabase
-    // import { createClient } from '@supabase/supabase-js'
-    // const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+// --- Взаимодействие с Supabase (заглушки) ---
+// В реальном проекте здесь будет SDK Supabase
+// import { createClient } from '@supabase/supabase-js'
+// const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 async function fetchUserData() {
-        // В реальном приложении: запросить данные пользователя из Supabase по currentUser.id
-        // const { data, error } = await supabase.from('users').select('*').eq('id', currentUser.id).single()
-        // if (data) {
-        //     currentUser.tonBalance = data.ton_balance;
-        //     currentUser.gamesPlayed = data.games_played || 0;
-        //     currentUser.inventory = data.inventory || [];
-        // }
-        // Для MVP: просто симулируем данные
-        currentUser.tonBalance = parseFloat(localStorage.getItem('tonBalance_' + currentUser.id) || '0.00');
-        currentUser.gamesPlayed = parseInt(localStorage.getItem('gamesPlayed_' + currentUser.id) || '0');
-        let storedInventory = JSON.parse(localStorage.getItem('inventory_' + currentUser.id) || '[]');
-        currentUser.inventory = storedInventory.map(item => {
-            if (!item.id) item.id = 'item_' + Math.random().toString(36).substr(2, 9); // Уникальный ID для продажи/вывода
-            if (typeof item.sellValue === 'undefined') item.sellValue = (Math.random() * (5.0 - 0.1) + 0.1).toFixed(2); // Случайная цена продажи
-            if (typeof item.timerEnd === 'undefined') {
-                const now = new Date();
-                now.setDate(now.getDate() + 20); // 20 дней вперед
-                item.timerEnd = now.toISOString(); // Таймер до 20 дней
-            }
-            return item;
+    // В реальном приложении: запросить данные пользователя из Supabase по currentUser.id
+    // const { data, error } = await supabase.from('users').select('*').eq('id', currentUser.id).single()
+    // if (data) {
+    //     currentUser.tonBalance = data.ton_balance;
+    //     currentUser.gamesPlayed = data.games_played || 0;
+    //     currentUser.inventory = data.inventory || [];
+    // }
+    // Для MVP: просто симулируем данные
+    currentUser.tonBalance = parseFloat(localStorage.getItem('tonBalance_' + currentUser.id) || '0.00');
+    currentUser.gamesPlayed = parseInt(localStorage.getItem('gamesPlayed_' + currentUser.id) || '0');
+    let storedInventory = JSON.parse(localStorage.getItem('inventory_' + currentUser.id) || '[]');
+    currentUser.inventory = storedInventory.map(item => {
+        if (!item.id) item.id = 'item_' + Math.random().toString(36).substr(2, 9); // Уникальный ID для продажи/вывода
+        if (typeof item.sellValue === 'undefined') item.sellValue = (Math.random() * (5.0 - 0.1) + 0.1).toFixed(2); // Случайная цена продажи
+        if (typeof item.timerEnd === 'undefined') {
+            const now = new Date();
+            now.setDate(now.getDate() + 20); // 20 дней вперед
+            item.timerEnd = now.toISOString(); // Таймер до 20 дней
+        }
+        return item;
+    });
+    localStorage.setItem('inventory_' + currentUser.id, JSON.stringify(currentUser.inventory)); // Сохраняем обновленный инвентарь
+
+    updateUI();
+}
+
+async function fetchCasesData() {
+    // Для MVP: только 3 статических кейса
+    return [
+        { id: 'case_1', name: 'Стартовый Кейс', cost: 0.5, imageUrl: 'https://via.placeholder.com/80/FFA500/000000?text=C1' },
+        { id: 'case_2', name: 'Обычный Кейс', cost: 1.0, imageUrl: 'https://via.placeholder.com/80/007bff/FFFFFF?text=C2' },
+        { id: 'case_3', name: 'Редкий Кейс', cost: 2.0, imageUrl: 'https://via.placeholder.com/80/8A2BE2/FFFFFF?text=C3' }
+    ];
+}
+
+// --- Обновление UI ---
+function updateUI() {
+    document.getElementById('user-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
+    // Обновляем баланс в шапке игры, если мы на этом экране
+    if (document.getElementById('game-ton-balance')) {
+        document.getElementById('game-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
+    }
+
+    if (document.getElementById('profile-username')) {
+        document.getElementById('profile-username').textContent = @${currentUser.username};
+    }
+    if (document.getElementById('profile-games-count')) {
+        document.getElementById('profile-games-count').textContent = currentUser.gamesPlayed;
+    }
+    if (document.getElementById('profile-ton-balance')) {
+        document.getElementById('profile-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
+    }
+    if (document.getElementById('profile-inventory-count')) {
+        document.getElementById('profile-inventory-count').textContent = currentUser.inventory.length;
+    }
+    renderInventory(); // Эта функция теперь будет рендерить для inventory-screen
+}
+
+function renderInventory() {
+    const inventoryContainer = document.getElementById('inventory-items-container'); // Теперь это контейнер на отдельном экране
+    if (!inventoryContainer) return;
+
+    inventoryContainer.innerHTML = ''; // Очищаем
+
+    if (currentUser.inventory.length === 0) {
+        inventoryContainer.innerHTML = '<p style="color:var(--tg-theme-hint-color); text-align:center; padding: 20px;">Ваш инвентарь пуст.</p>';
+    } else {
+        currentUser.inventory.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('inventory-item-card');
+            
+            // Таймер (просто текст для MVP)
+            const timerEndDate = new Date(item.timerEnd);
+            const timeRemaining = formatTimeRemaining(timerEndDate);
+
+            itemElement.innerHTML = 
+                <img src="${item.imageUrl || 'https://via.placeholder.com/100'}" alt="${item.name}">
+                <div class="item-value">${item.sellValue} TON</div>
+                <div class="item-metadata">
+                    <p>Модель: random</p>
+                    <p>Фон: random</p>
+                </div>
+                <div class="item-buttons">
+                    <button class="item-button sell-item-button" data-item-id="${item.id}">Продать</button>
+                    <button class="item-button withdraw-item-button" data-item-id="${item.id}">Вывести</mbutton>
+                </div>
+                <div class="item-timer">${timeRemaining}</div>
+            ;
+            inventoryContainer.appendChild(itemElement);
         });
-        localStorage.setItem('inventory_' + currentUser.id, JSON.stringify(currentUser.inventory)); // Сохраняем обновленный инвентарь
 
-        updateUI();
-    }
-
-    async function fetchCasesData() {
-        // Для MVP: только 3 статических кейса
-        return [
-            { id: 'case_1', name: 'Стартовый Кейс', cost: 0.5, imageUrl: 'https://via.placeholder.com/80/FFA500/000000?text=C1' },
-            { id: 'case_2', name: 'Обычный Кейс', cost: 1.0, imageUrl: 'https://via.placeholder.com/80/007bff/FFFFFF?text=C2' },
-            { id: 'case_3', name: 'Редкий Кейс', cost: 2.0, imageUrl: 'https://via.placeholder.com/80/8A2BE2/FFFFFF?text=C3' }
-        ];
-    }
-
-    // --- Обновление UI ---
-    function updateUI() {
-        document.getElementById('user-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-        // Обновляем баланс в шапке игры, если мы на этом экране
-        if (document.getElementById('game-ton-balance')) {
-            document.getElementById('game-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-        }
-
-        if (document.getElementById('profile-username')) {
-            document.getElementById('profile-username').textContent = @${currentUser.username};
-        }
-        if (document.getElementById('profile-games-count')) {
-            document.getElementById('profile-games-count').textContent = currentUser.gamesPlayed;
-        }
-        if (document.getElementById('profile-ton-balance')) {
-            document.getElementById('profile-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-        }
-        if (document.getElementById('profile-inventory-count')) {
-            document.getElementById('profile-inventory-count').textContent = currentUser.inventory.length;
-        }
-        renderInventory(); // Эта функция теперь будет рендерить для inventory-screen
-    }
-
-    function renderInventory() {
-        const inventoryContainer = document.getElementById('inventory-items-container'); // Теперь это контейнер на отдельном экране
-        if (!inventoryContainer) return;
-
-        inventoryContainer.innerHTML = ''; // Очищаем
-
-if (currentUser.inventory.length === 0) {
-            inventoryContainer.innerHTML = '<p style="color:var(--tg-theme-hint-color); text-align:center; padding: 20px;">Ваш инвентарь пуст.</p>';
-        } else {
-            currentUser.inventory.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.classList.add('inventory-item-card');
-                
-                // Таймер (просто текст для MVP)
-                const timerEndDate = new Date(item.timerEnd);
-                const timeRemaining = formatTimeRemaining(timerEndDate);
-
-                itemElement.innerHTML = 
-                    <img src="${item.imageUrl || 'https://via.placeholder.com/100'}" alt="${item.name}">
-                    <div class="item-value">${item.sellValue} TON</div>
-                    <div class="item-metadata">
-                        <p>Модель: random</p>
-                        <p>Фон: random</p>
-                    </div>
-                    <div class="item-buttons">
-                        <button class="item-button sell-item-button" data-item-id="${item.id}">Продать</button>
-                        <button class="item-button withdraw-item-button" data-item-id="${item.id}">Вывести</mbutton>
-                    </div>
-                    <div class="item-timer">${timeRemaining}</div>
-                ;
-                inventoryContainer.appendChild(itemElement);
+        // Добавляем обработчики для новых кнопок после рендера
+        document.querySelectorAll('.sell-item-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const itemId = event.target.dataset.itemId;
+                const itemToSell = currentUser.inventory.find(i => i.id === itemId);
+                if (itemToSell) sellItem(itemToSell);
             });
+        });
 
-            // Добавляем обработчики для новых кнопок после рендера
-            document.querySelectorAll('.sell-item-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const itemId = event.target.dataset.itemId;
-                    const itemToSell = currentUser.inventory.find(i => i.id === itemId);
-                    if (itemToSell) sellItem(itemToSell);
-                });
+        document.querySelectorAll('.withdraw-item-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const itemId = event.target.dataset.itemId;
+                const itemToWithdraw = currentUser.inventory.find(i => i.id === itemId);
+                if (itemToWithdraw) showWithdrawModal(itemToWithdraw);
             });
-
-            document.querySelectorAll('.withdraw-item-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const itemId = event.target.dataset.itemId;
-                    const itemToWithdraw = currentUser.inventory.find(i => i.id === itemId);
-                    if (itemToWithdraw) showWithdrawModal(itemToWithdraw);
-                });
-            });
-        }
+        });
     }
 }
 
@@ -160,7 +160,7 @@ function formatTimeRemaining(endTime) {
 
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60)) / (1000 * 60));
     const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
     return ${days} д ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')};
@@ -182,6 +182,7 @@ if (document.getElementById('profile-nav-button-from-game')) {
         stopGameUI(); // Останавливаем игру при выходе
     });
 }
+
 
 // Пополнение баланса (кнопка "+" и в профиле)
 document.getElementById('top-up-button').addEventListener('click', () => {
@@ -253,7 +254,7 @@ function openCase(caseItem) {
         return;
     }
 
-    Telegram.WebApp.showPopup({
+Telegram.WebApp.showPopup({
         title: 'Открыть кейс?',
         message: Вы хотите открыть кейс "${caseItem.name}" за ${caseItem.cost.toFixed(2)} TON?,
         buttons: [
@@ -421,6 +422,7 @@ let hasPlacedBet = false;
 let hasCashedOut = false; // Хранит множитель, на котором вывели
 
 function connectWebSocket() {
+    Telegram.WebApp.showAlert('JS: 3. Trying to connect WebSocket'); // <<< ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
         console.log("WebSocket уже подключен или подключается.");
         return;
@@ -700,6 +702,7 @@ function stopGameUI() {
 
 // --- Инициализация при загрузке ---
 document.addEventListener('DOMContentLoaded', () => {
+    Telegram.WebApp.showAlert('JS: 2. DOM Content Loaded'); // <<< ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
     fetchUserData(); // Загружаем данные пользователя
     showScreen('home-screen'); // Показываем главный экран
 
@@ -730,3 +733,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+``.
