@@ -1,8 +1,4 @@
-
-    if (document.getElementById('profile-games-count')) {
-        document.getElementById('profile-games-count').textContent = currentUser.gamesPlayed;
-    }
-    if (document.getElementById('profile-ton-balance')) {
+.getElementById('profile-ton-balance')) {
         document.getElementById('profile-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
     }
     if (document.getElementById('profile-inventory-count')) {
