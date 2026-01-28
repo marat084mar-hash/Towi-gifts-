@@ -30,23 +30,21 @@
                 <h2>🎁 Открыть Кейсы</h2>
                 <p>Выбивай уникальные NFT!</p>
             </button>
+            <button class="main-menu-card" id="go-to-profile-button">
+                <h2>👤 Мой Профиль</h2>
+                <p>Баланс, инвентарь и статистика.</p>
+            </button>
         </main>
 
         <nav class="bottom-nav">
-            <button class="nav-item">
-                <i class="icon icon-friends"></i> Друзья
-            </button>
-            <button class="nav-item">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+            <button class="nav-item active" data-screen-id="home-screen">
                 <i class="icon icon-play"></i> Играть
             </button>
-            <button class="nav-item">
-                <i class="icon icon-tasks"></i> Задания
+            <button class="nav-item" data-screen-id="inventory-screen">
+                <i class="icon icon-inventory"></i> Инвентарь
             </button>
-            <button class="nav-item" id="profile-nav-button">
-                <i class="icon icon-profile"></i> Профиль
+            <button class="nav-item" data-screen-id="leaderboard-screen">
+                <i class="icon icon-leaderboard"></i> Лидерборд
             </button>
         </nav>
     </div>
@@ -61,20 +59,14 @@
             <!-- Карточки кейсов будут загружаться сюда динамически -->
         </main>
         <nav class="bottom-nav">
-             <button class="nav-item">
-                <i class="icon icon-friends"></i> Друзья
-            </button>
-            <button class="nav-item">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+            <button class="nav-item" data-screen-id="home-screen">
                 <i class="icon icon-play"></i> Играть
             </button>
-            <button class="nav-item">
-                <i class="icon icon-tasks"></i> Задания
+            <button class="nav-item" data-screen-id="inventory-screen">
+                <i class="icon icon-inventory"></i> Инвентарь
             </button>
-            <button class="nav-item" id="profile-nav-button">
-                <i class="icon icon-profile"></i> Профиль
+            <button class="nav-item" data-screen-id="leaderboard-screen">
+                <i class="icon icon-leaderboard"></i> Лидерборд
             </button>
         </nav>
     </div>
@@ -95,23 +87,17 @@
                 <div class="stat-card">Баланс<br><span id="profile-ton-balance">0.00</span> TON</div>
             </div>
             <button class="action-button primary-button" id="profile-top-up-button">Пополнить баланс</button>
-            <button class="action-button primary-button" id="go-to-inventory-button">Инвентарь (<span id="profile-inventory-count">0</span>)</button>
+            <button class="action-button primary-button" data-screen-id="inventory-screen" onclick="showScreen('inventory-screen'); fetchUserData();">Перейти в Инвентарь</button>
         </main>
         <nav class="bottom-nav">
-             <button class="nav-item">
-                <i class="icon icon-friends"></i> Друзья
-            </button>
-            <button class="nav-item">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+            <button class="nav-item" data-screen-id="home-screen">
                 <i class="icon icon-play"></i> Играть
             </button>
-            <button class="nav-item">
-                <i class="icon icon-tasks"></i> Задания
+            <button class="nav-item" data-screen-id="inventory-screen">
+                <i class="icon icon-inventory"></i> Инвентарь
             </button>
-            <button class="nav-item" id="profile-nav-button">
-                <i class="icon icon-profile"></i> Профиль
+            <button class="nav-item" data-screen-id="leaderboard-screen">
+                <i class="icon icon-leaderboard"></i> Лидерборд
             </button>
         </nav>
     </div>
@@ -129,20 +115,37 @@
             <!-- Здесь будут карточки предметов инвентаря -->
         </main>
         <nav class="bottom-nav">
-             <button class="nav-item">
-                <i class="icon icon-friends"></i> Друзья
-            </button>
-            <button class="nav-item">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+            <button class="nav-item" data-screen-id="home-screen">
                 <i class="icon icon-play"></i> Играть
             </button>
-            <button class="nav-item">
-                <i class="icon icon-tasks"></i> Задания
+            <button class="nav-item" data-screen-id="inventory-screen">
+                <i class="icon icon-inventory"></i> Инвентарь
             </button>
-            <button class="nav-item" id="profile-nav-button">
-                <i class="icon icon-profile"></i> Профиль
+            <button class="nav-item" data-screen-id="leaderboard-screen">
+                <i class="icon icon-leaderboard"></i> Лидерборд
+            </button>
+        </nav>
+    </div>
+
+    <!-- Экран Лидерборда (новый placeholder) -->
+    <div id="leaderboard-screen" class="screen">
+        <header class="header">
+            <button class="back-button" onclick="showScreen('home-screen')">&larr; Назад</button>
+            <span class="app-title">Лидерборд</span>
+        </header>
+        <main class="content leaderboard-content">
+            <h2>Скоро здесь будет рейтинг лучших игроков!</h2>
+            <p>Соревнуйтесь и поднимайтесь на вершину!</p>
+        </main>
+        <nav class="bottom-nav">
+            <button class="nav-item" data-screen-id="home-screen">
+                <i class="icon icon-play"></i> Играть
+            </button>
+            <button class="nav-item" data-screen-id="inventory-screen">
+                <i class="icon icon-inventory"></i> Инвентарь
+            </button>
+            <button class="nav-item" data-screen-id="leaderboard-screen">
+                <i class="icon icon-leaderboard"></i> Лидерборд
             </button>
         </nav>
     </div>
@@ -167,8 +170,7 @@
             <div class="game-area">
                 <div class="current-multiplier" id="current-multiplier">x1.00</div>
                 <div class="game-animation">
-                    <img src="images/monkey_banana.png" alt="Monkey on banana rocket" id="monkey-rocket">
-                    <!-- Здесь можно добавить фоновые звезды или анимацию полета -->
+                    <div id="rocket-emoji">🚀</div> <!-- Эмодзи ракеты -->
                 </div>
             </div>
 
@@ -194,20 +196,14 @@
             </div>
         </main>
         <nav class="bottom-nav">
-             <button class="nav-item">
-                <i class="icon icon-friends"></i> Друзья
-            </button>
-            <button class="nav-item">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-            <button class="nav-item active" onclick="showScreen('rocket-game-screen'); startGameUI()">
+            <button class="nav-item" data-screen-id="home-screen">
                 <i class="icon icon-play"></i> Играть
             </button>
-            <button class="nav-item">
-                <i class="icon icon-tasks"></i> Задания
+            <button class="nav-item" data-screen-id="inventory-screen">
+                <i class="icon icon-inventory"></i> Инвентарь
             </button>
-            <button class="nav-item" id="profile-nav-button">
-                <i class="icon icon-profile"></i> Профиль
+            <button class="nav-item" data-screen-id="leaderboard-screen">
+                <i class="icon icon-leaderboard"></i> Лидерборд
             </button>
         </nav>
     </div>
