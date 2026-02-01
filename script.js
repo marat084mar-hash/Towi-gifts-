@@ -1,4 +1,3 @@
-``javascript
 // --- Место для ваших данных Vercel API ---
 // НАЙДИТЕ И ЗАМЕНИТЕ: 'YOUR_VERCEL_API_BASE_URL' на базовый URL вашего развернутого Vercel проекта.
 // Например: 'https://my-telegram-app.vercel.app'
