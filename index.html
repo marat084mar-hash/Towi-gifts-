@@ -5,239 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts</title>
-    <!-- Подключение Telegram Web App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Твои стили -->
     <link rel="stylesheet" href="style.css">
+    <!-- Обязательный скрипт для Telegram Web Apps -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <!-- Главный экран -->
-    <div id="home-screen" class="screen active">
-        <header class="header">
-            <button class="close-button" onclick="Telegram.WebApp.close()">X Закрыть</button>
-            <span class="app-title">Towi Gifts</span>
-            <div class="balance-info">
-                <span id="user-ton-balance">0.00</span> TON <button class="plus-button" id="top-up-button">+</button>
+    <div class="app-container">
+        <!-- Шапка приложения с информацией о пользователе и балансом -->
+        <header class="app-header">
+            <div class="user-info">
+                <img src="https://via.placeholder.com/40/00ff00/FFFFFF?text=AV" alt="Аватар" class="user-avatar">
+                <div class="user-details">
+                    <span id="user-display-name">Загрузка...</span>
+                    <span id="user-ton-balance" class="balance-text">0.00 TON</span>
+                </div>
             </div>
+            <!-- Кнопка "Пополнить TON" будет вызывать окно покупки Stars -->
+            <button class="top-up-button" onclick="promptForStarsPurchase();">Пополнить TON</button>
         </header>
 
-        <main class="content main-menu-content">
-            <button class="main-menu-card" id="play-rocket-button">
-                <h2>🚀 Играть в Ракету</h2>
-                <p>Испытай удачу и умножь свои TON!</p>
-            </button>
-            <button class="main-menu-card" id="open-cases-button">
-                <h2>🎁 Открыть Кейсы</h2>
-                <p>Выбивай уникальные NFT!</p>
-            </button>
-            <button class="main-menu-card" id="go-to-profile-button">
+        <!-- Основное содержимое приложения (различные разделы) -->
+        <main class="app-main">
+            <!-- Раздел Краш-игры -->
+            <div id="crash-game-section" class="section active">
+                <h2>🚀 Краш-игра</h2>
+                <div class="crash-display">
+                    <div id="current-multiplier" class="multiplier-text">1.00x</div>
+                    <div class="game-area">
+                        <!-- Изображение ракеты -->
+                        <img src="https://via.placeholder.com/150/00ff00/FFFFFF?text=РАКЕТА" alt="Ракета" class="game-visual">
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="button primary" onclick="startGame()">Сделать ставку (1 TON)</button>
+                    <button class="button secondary" onclick="cashOut()">Забрать (x2.00)</button>
+                </div>
+                <div id="crash-game-log" class="game-log">
+                    <h3>История раундов:</h3>
+                    <!-- Логи раундов будут загружаться сюда через JavaScript -->
+                </div>
+            </div>
+
+            <!-- Раздел Открытия Кейсов -->
+            <div id="cases-section" class="section">
+                <h2>📦 Открытие Кейсов</h2>
+                <div id="cases-list" class="cases-grid">
+                    <!-- Кейсы будут загружены сюда через JavaScript -->
+                    <p>Загрузка кейсов...</p>
+                </div>
+                <div id="case-result" class="game-log"></div>
+            </div>
+
+<!-- Раздел Профиля Пользователя -->
+            <div id="profile-section" class="section">
                 <h2>👤 Мой Профиль</h2>
-                <p>Баланс, инвентарь и статистика.</p>
-            </button>
-        </main>
-
-        <nav class="bottom-nav">
-            <button class="nav-item active" data-screen-id="home-screen">
-                <i class="icon icon-play"></i> Играть
-            </button>
-            <button class="nav-item" data-screen-id="inventory-screen">
-                <i class="icon icon-inventory"></i> Инвентарь
-            </button>
-            <button class="nav-item" data-screen-id="leaderboard-screen">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-        </nav>
-    </div>
-
-    <!-- Экран Кейсов -->
-    <div id="cases-list-screen" class="screen">
-        <header class="header">
-            <button class="back-button" onclick="showScreen('home-screen')">&larr; Назад</button>
-            <span class="app-title">Кейсы</span>
-        </header>
-        <main class="content" id="cases-container">
-            <!-- Карточки кейсов будут загружаться сюда динамически -->
-        </main>
-        <nav class="bottom-nav">
-            <button class="nav-item" data-screen-id="home-screen">
-                <i class="icon icon-play"></i> Играть
-            </button>
-            <button class="nav-item" data-screen-id="inventory-screen">
-                <i class="icon icon-inventory"></i> Инвентарь
-            </button>
-            <button class="nav-item" data-screen-id="leaderboard-screen">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-        </nav>
-    </div>
-
-<!-- Экран Профиля -->
-    <div id="profile-screen" class="screen">
-        <header class="header">
-            <button class="back-button" onclick="showScreen('home-screen')">&larr; Назад</button>
-            <span class="app-title">Профиль</span>
-        </header>
-        <main class="content profile-content">
-            <div class="user-info-header">
-                <div class="user-avatar"></div>
-                <div class="user-name" id="profile-username">@TowiTow1</div>
-            </div>
-            <div class="stats-row">
-                <div class="stat-card">Игры<br><span id="profile-games-count">0</span> 🎲</div>
-                <div class="stat-card">Баланс<br><span id="profile-ton-balance">0.00</span> TON</div>
-            </div>
-            <button class="action-button primary-button" id="profile-top-up-button">Пополнить баланс</button>
-            <button class="action-button primary-button" data-screen-id="inventory-screen" onclick="showScreen('inventory-screen'); fetchUserData();">Перейти в Инвентарь</button>
-        </main>
-        <nav class="bottom-nav">
-            <button class="nav-item" data-screen-id="home-screen">
-                <i class="icon icon-play"></i> Играть
-            </button>
-            <button class="nav-item" data-screen-id="inventory-screen">
-                <i class="icon icon-inventory"></i> Инвентарь
-            </button>
-            <button class="nav-item" data-screen-id="leaderboard-screen">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-        </nav>
-    </div>
-
-    <!-- Экран Инвентаря -->
-    <div id="inventory-screen" class="screen">
-        <header class="header">
-            <button class="back-button" onclick="showScreen('profile-screen')">&larr; Назад</button>
-            <span class="app-title">Инвентарь</span>
-            <div class="top-stats">
-                <span class="available-to-withdraw">0.15/15.00 ▽</span> <!-- Пример из скриншота -->
-            </div>
-        </header>
-        <main class="content inventory-grid" id="inventory-items-container">
-            <!-- Здесь будут карточки предметов инвентаря -->
-        </main>
-        <nav class="bottom-nav">
-            <button class="nav-item" data-screen-id="home-screen">
-                <i class="icon icon-play"></i> Играть
-            </button>
-            <button class="nav-item" data-screen-id="inventory-screen">
-                <i class="icon icon-inventory"></i> Инвентарь
-            </button>
-            <button class="nav-item" data-screen-id="leaderboard-screen">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-        </nav>
-    </div>
-
-    <!-- Экран Лидерборда (новый placeholder) -->
-    <div id="leaderboard-screen" class="screen">
-        <header class="header">
-            <button class="back-button" onclick="showScreen('home-screen')">&larr; Назад</button>
-            <span class="app-title">Лидерборд</span>
-        </header>
-        <main class="content leaderboard-content">
-            <h2>Скоро здесь будет рейтинг лучших игроков!</h2>
-            <p>Соревнуйтесь и поднимайтесь на вершину!</p>
-        </main>
-        <nav class="bottom-nav">
-            <button class="nav-item" data-screen-id="home-screen">
-                <i class="icon icon-play"></i> Играть
-            </button>
-            <button class="nav-item" data-screen-id="inventory-screen">
-                <i class="icon icon-inventory"></i> Инвентарь
-            </button>
-            <button class="nav-item" data-screen-id="leaderboard-screen">
-                <i class="icon icon-leaderboard"></i> Лидерборд
-            </button>
-        </nav>
-    </div>
-
-<!-- Экран игры "Ракета" -->
-    <div id="rocket-game-screen" class="screen">
-        <header class="header">
-            <button class="back-button" onclick="showScreen('home-screen'); stopGameUI()">&larr; Назад</button>
-            <span class="app-title">Towi Gifts</span>
-            <div class="balance-info">
-                <span id="game-ton-balance">0.00</span> TON <button class="plus-button" id="game-top-up-button">+</button>
-            </div>
-        </header>
-        <main class="content game-content">
-            <div class="multiplier-history" id="multiplier-history">
-                <!-- История множителей будет здесь -->
-                <span class="history-item">2.47x</span>
-                <span class="history-item">2.44x</span>
-                <span class="history-item">1.01x</span>
-                <span class="history-item current-last">22.83x</span>
-            </div>
-            <div class="game-area">
-                <div class="current-multiplier" id="current-multiplier">x1.00</div>
-                <div class="game-animation">
-                    <div id="rocket-emoji">🚀</div> <!-- Эмодзи ракеты -->
-                </div>
-            </div>
-
-            <div class="betting-controls">
-                <div class="auto-cashout-section">
-                    <input type="checkbox" id="auto-cashout-checkbox">
-                    <label for="auto-cashout-checkbox">Автовывод</label>
-                    <button class="minus-button" onclick="adjustAutoCashout(-0.5)">-</button>
-                    <input type="number" id="auto-cashout-multiplier" value="2.00" step="0.01" min="1.01">
-                    <button class="plus-button" onclick="adjustAutoCashout(0.5)">+</button>
-                </div>
-
-                <div class="bet-amount-section">
-                    <button class="minus-button" onclick="adjustBetAmount(-1)">-</button>
-                    <input type="number" id="bet-amount" value="1" step="0.01" min="0.01">
-                    <button class="plus-button" onclick="adjustBetAmount(1)">+</button>
-                    <button class="quick-bet-button" onclick="adjustBetAmount(0.5, true)">+0.5</button>
-                    <button class="quick-bet-button" onclick="adjustBetAmount(1, true)">+1</button>
-                    <button class="quick-bet-button" onclick="adjustBetAmount(2, true)">+2</button>
-                </div>
+                <p>Ваш Telegram ID: <span id="profile-telegram-id"></span></p>
+                <p>Ваш Username: <span id="profile-telegram-username"></span></p>
+                <p>Баланс TON: <span id="profile-ton-balance">0.00</span></p>
                 
-                <button class="main-game-button" id="main-game-button">Ожидание</button>
+                <h3>Мой TON кошелек для вывода:</h3>
+                <input type="text" id="ton-wallet-input" placeholder="Введите адрес вашего TON кошелька">
+                <button class="button primary" onclick="saveTonWalletAddress()">Сохранить адрес</button>
+                <p id="wallet-status"></p>
+
+                <h3>Мой Инвентарь NFT:</h3>
+                <div id="nft-inventory-list" class="cases-grid">
+                    <!-- NFT пользователя будут загружены сюда через JavaScript -->
+                    <p>Инвентарь пуст или загружается...</p>
+                </div>
             </div>
         </main>
-        <nav class="bottom-nav">
-            <button class="nav-item" data-screen-id="home-screen">
-                <i class="icon icon-play"></i> Играть
+
+        <!-- Нижняя навигационная панель -->
+        <nav class="app-nav">
+            <button class="nav-item active" data-section="crash-game-section">
+                <img src="https://img.icons8.com/ios-filled/24/00ff00/rocket.png" alt="Играть">
+                <span>Играть</span>
             </button>
-            <button class="nav-item" data-screen-id="inventory-screen">
-                <i class="icon icon-inventory"></i> Инвентарь
+            <button class="nav-item" data-section="cases-section">
+                <img src="https://img.icons8.com/ios-filled/24/00ff00/box.png" alt="Кейсы">
+                <span>Кейсы</span>
             </button>
-            <button class="nav-item" data-screen-id="leaderboard-screen">
-                <i class="icon icon-leaderboard"></i> Лидерборд
+            <button class="nav-item" data-section="profile-section">
+                <img src="https://img.icons8.com/ios-filled/24/00ff00/user.png" alt="Профиль">
+                <span>Профиль</span>
             </button>
         </nav>
     </div>
 
-    <!-- Модальное окно для пополнения -->
-    <div id="top-up-modal" class="modal">
-        <div class="modal-content">
-            <h3>Пополнить баланс TON</h3>
-            <p>Выберите сумму Stars для обмена на TON:</p>
-            <div class="top-up-options">
-                <button class="top-up-option" data-stars="100">1 TON (100 ⭐)</button>
-                <button class="top-up-option" data-stars="500">5 TON (500 ⭐)</button>
-                <button class="top-up-option" data-stars="1000">10 TON (1000 ⭐)</button>
-            </div>
-            <button class="secondary-button close-modal">Отмена</button>
-        </div>
-    </div>
-
-<!-- Модальное окно для вывода NFT -->
-    <div id="withdraw-nft-modal" class="modal">
-        <div class="modal-content">
-            <h3>Вывести NFT</h3>
-            <p>Вы собираетесь вывести NFT: <strong id="withdraw-item-name"></strong>.</p>
-            <p>Укажите адрес вашего TON-кошелька:</p>
-            <input type="text" id="ton-wallet-address" placeholder="Ваш TON-кошелек адрес" class="text-input">
-            <div class="modal-buttons">
-                <button class="action-button primary-button" id="confirm-withdraw-button">Подтвердить вывод</button>
-                <button class="secondary-button close-modal-withdraw">Отмена</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Твои скрипты -->
+    <!-- Основной JavaScript файл -->
     <script src="script.js"></script>
 </body>
 </html>
-```
