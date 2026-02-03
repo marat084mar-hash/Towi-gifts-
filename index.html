@@ -10,19 +10,14 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Верхняя панель: Общая для всего приложения, с балансами -->
+        <!-- Верхняя панель: Балансы и пополнение -->
         <header class="top-panel" id="main-top-panel">
-            <div class="app-header-title">
-                <span class="close-button">✕</span>
-                <span>Towi gifts</span>
-                <span class="menu-dots">⋮</span>
-            </div>
             <div class="balance-section">
                 <div class="balance-info">
                     <span class="balance-item">TON: <span id="ton-balance">0.00</span> 💎</span>
                     <span class="balance-item">Stars: <span id="stars-balance">0</span> ⭐</span>
                 </div>
-                <button class="replenish-button" data-target-screen="profile-screen">+</button>
+                <button class="replenish-button" data-target-screen="topup-screen">+</button>
             </div>
         </header>
 
@@ -54,6 +49,23 @@
             <div class="cases-grid" id="cases-grid">
                 <!-- Кейсы будут загружены сюда через JavaScript -->
             </div>
+
+            <!-- Модальное окно/секция для анимации открытия кейса -->
+            <div id="case-opening-modal" class="case-opening-modal">
+                <div class="case-opening-content">
+                    <h3>Открытие кейса...</h3>
+                    <div class="case-spinner-container">
+                        <div class="case-spinner" id="case-spinner">
+                            <!-- Элементы для прокрутки будут добавлены JS -->
+                        </div>
+                        <div class="spinner-indicator"></div>
+                    </div>
+                    <div id="case-result" class="case-result">
+                        <!-- Результат открытия будет здесь -->
+                    </div>
+                    <button id="close-case-modal-button" class="action-button primary" style="display:none;">Закрыть</button>
+                </div>
+            </div>
         </div>
 
 <!-- Секция "Ракет Краш" -->
@@ -66,8 +78,8 @@
                         <span class="user-name">TowiTo</span>
                         <span class="user-tag">@TowiTov</span>
                     </div>
-                    <span class="balance-ton">0.145 💎</span>
-                    <button class="replenish-button small">+</button>
+                    <span class="balance-ton">0.00 💎</span> <!-- Баланс TON для конкретного экрана -->
+                    <button class="replenish-button small" data-target-screen="topup-screen">+</button>
                 </div>
                 <span class="menu-dots">⋮</span>
             </header>
@@ -147,11 +159,11 @@
                 </div>
                 <div class="stat-card">
                     <span>Баланс</span>
-                    <span class="stat-value">0.145 💎</span>
+                    <span class="stat-value">0.00 💎</span>
                 </div>
             </div>
 
-            <button class="replenish-balance-button">Пополнить баланс</button>
+            <button class="replenish-balance-button" data-target-screen="topup-screen">Пополнить баланс</button>
 
             <div class="withdraw-status">
                 <p>Доступно к выводу <span class="info-icon">ⓘ</span></p>
@@ -173,6 +185,49 @@
                 </div>
             </div>
         </div>
+
+        <!-- Секция "Пополнение Баланса" (новый экран) -->
+        <div id="topup-screen" class="screen">
+            <header class="sub-screen-header">
+                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+                <h2>💰 Пополнение Баланса</h2>
+                <span class="header-placeholder"></span>
+            </header>
+            <div class="topup-content">
+                <p class="topup-description">Выберите способ пополнения и введите сумму.</p>
+                
+                <div class="topup-option">
+                    <h3>Пополнить TON</h3>
+                    <div class="amount-control large-bet">
+                        <button class="control-btn minus-btn" data-target="topup-ton" data-value="-1">-</button>
+                        <input type="number" id="topup-ton-input" placeholder="Сумма TON" value="1" min="0.01" step="0.01" class="bet-input">
+                        <button class="control-btn plus-btn" data-target="topup-ton" data-value="+1">+</button>
+                    </div>
+                    <div class="quick-bet-buttons">
+                        <button class="quick-bet-btn" data-target="topup-ton" data-value="0.1">+0.1</button>
+                        <button class="quick-bet-btn" data-target="topup-ton" data-value="0.5">+0.5</button>
+                        <button class="quick-bet-btn" data-target="topup-ton" data-value="1">+1</button>
+                    </div>
+                    <button id="topup-ton-button" class="action-button primary topup-action-button">Пополнить TON</button>
+                </div>
+
+<div class="topup-option">
+                    <h3>Пополнить Stars</h3>
+                    <div class="amount-control large-bet">
+                        <button class="control-btn minus-btn" data-target="topup-stars" data-value="-10">-</button>
+                        <input type="number" id="topup-stars-input" placeholder="Сумма Stars" value="100" min="1" class="bet-input">
+                        <button class="control-btn plus-btn" data-target="topup-stars" data-value="+10">+</button>
+                    </div>
+                    <div class="quick-bet-buttons">
+                        <button class="quick-bet-btn" data-target="topup-stars" data-value="50">+50</button>
+                        <button class="quick-bet-btn" data-target="topup-stars" data-value="100">+100</button>
+                        <button class="quick-bet-btn" data-target="topup-stars" data-value="500">+500</button>
+                    </div>
+                    <button id="topup-stars-button" class="action-button primary topup-action-button">Пополнить Stars</button>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Нижняя навигация (всегда видна) -->
         <footer class="bottom-nav">
