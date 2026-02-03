@@ -1,97 +1,74 @@
+html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melon Gifts</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Обязательный скрипт для Telegram Web Apps -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="app-container">
-        <!-- Шапка приложения с информацией о пользователе и балансом -->
-        <header class="app-header">
-            <div class="user-info">
-                <img src="https://via.placeholder.com/40/00ff00/FFFFFF?text=AV" alt="Аватар" class="user-avatar">
-                <div class="user-details">
-                    <span id="user-display-name">Загрузка...</span>
-                    <span id="user-ton-balance" class="balance-text">0.00 TON</span>
-                </div>
+        <!-- Верхняя панель: Балансы и пополнение -->
+        <header class="top-panel">
+            <div class="balance-info">
+                <span class="balance-item">TON: <span id="ton-balance">0.00</span> 💎</span>
+                <span class="balance-item">Stars: <span id="stars-balance">0</span> ⭐</span>
             </div>
-            <!-- Кнопка "Пополнить TON" будет вызывать окно покупки Stars -->
-            <button class="top-up-button" onclick="promptForStarsPurchase();">Пополнить TON</button>
+            <button class="replenish-button">+</button>
         </header>
 
-        <!-- Основное содержимое приложения (различные разделы) -->
-        <main class="app-main">
-            <!-- Раздел Краш-игры -->
-            <div id="crash-game-section" class="section active">
-                <h2>🚀 Краш-игра</h2>
-                <div class="crash-display">
-                    <div id="current-multiplier" class="multiplier-text">1.00x</div>
-                    <div class="game-area">
-                        <!-- Изображение ракеты -->
-                        <img src="https://via.placeholder.com/150/00ff00/FFFFFF?text=РАКЕТА" alt="Ракета" class="game-visual">
-                    </div>
+        <!-- Главный экран навигации -->
+        <div id="main-menu-screen" class="screen active">
+            <div class="main-navigation">
+                <button class="nav-button large" data-target-screen="rocket-crash-screen">🚀 РАКЕТ КРАШ</button>
+                <button class="nav-button large" data-target-screen="cases-screen">🎁 КЕЙСЫ</button>
+            </div>
+        </div>
+
+        <!-- Секция "Кейсы" -->
+        <div id="cases-screen" class="screen">
+            <h2>🎁 Ваши Кейсы</h2>
+            <div class="cases-grid" id="cases-grid">
+                <!-- Кейсы будут загружены сюда через JavaScript -->
+            </div>
+            <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+        </div>
+
+        <!-- Секция "Ракет Краш" -->
+        <div id="rocket-crash-screen" class="screen">
+            <h2>🚀 Ракет Краш</h2>
+            <div class="crash-game-area">
+                <div class="rocket-display">
+                    <span id="rocket-emoji">🚀</span>
+                    <span id="multiplier-display">1.00x</span>
                 </div>
-                <div class="controls">
-                    <button class="button primary" onclick="startGame()">Сделать ставку (1 TON)</button>
-                    <button class="button secondary" onclick="cashOut()">Забрать (x2.00)</button>
-                </div>
-                <div id="crash-game-log" class="game-log">
-                    <h3>История раундов:</h3>
-                    <!-- Логи раундов будут загружаться сюда через JavaScript -->
+                <div class="game-status" id="game-status">Ожидание...</div>
+                <div class="game-controls">
+                    <button id="start-round-button" class="action-button primary">Начать Раунд</button>
+                    <button id="cash-out-button" class="action-button secondary" disabled>Вывести</button>
+                    <input type="number" id="bet-input" placeholder="Ставка" value="10" min="1">
                 </div>
             </div>
+            <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+        </div>
 
-            <!-- Раздел Открытия Кейсов -->
-            <div id="cases-section" class="section">
-                <h2>📦 Открытие Кейсов</h2>
-                <div id="cases-list" class="cases-grid">
-                    <!-- Кейсы будут загружены сюда через JavaScript -->
-                    <p>Загрузка кейсов...</p>
-                </div>
-                <div id="case-result" class="game-log"></div>
-            </div>
+        <!-- Секция "Инвентарь" -->
+        <div id="inventory-screen" class="screen">
+            <h2>🎒 Ваш Инвентарь</h2>
+            <ul id="inventory-list" class="inventory-list">
+                <!-- Элементы инвентаря будут загружены сюда через JavaScript -->
+            </ul>
+            <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+        </div>
 
-<!-- Раздел Профиля Пользователя -->
-            <div id="profile-section" class="section">
-                <h2>👤 Мой Профиль</h2>
-                <p>Ваш Telegram ID: <span id="profile-telegram-id"></span></p>
-                <p>Ваш Username: <span id="profile-telegram-username"></span></p>
-                <p>Баланс TON: <span id="profile-ton-balance">0.00</span></p>
-                
-                <h3>Мой TON кошелек для вывода:</h3>
-                <input type="text" id="ton-wallet-input" placeholder="Введите адрес вашего TON кошелька">
-                <button class="button primary" onclick="saveTonWalletAddress()">Сохранить адрес</button>
-                <p id="wallet-status"></p>
-
-                <h3>Мой Инвентарь NFT:</h3>
-                <div id="nft-inventory-list" class="cases-grid">
-                    <!-- NFT пользователя будут загружены сюда через JavaScript -->
-                    <p>Инвентарь пуст или загружается...</p>
-                </div>
-            </div>
-        </main>
-
-        <!-- Нижняя навигационная панель -->
-        <nav class="app-nav">
-            <button class="nav-item active" data-section="crash-game-section">
-                <img src="https://img.icons8.com/ios-filled/24/00ff00/rocket.png" alt="Играть">
-                <span>Играть</span>
-            </button>
-            <button class="nav-item" data-section="cases-section">
-                <img src="https://img.icons8.com/ios-filled/24/00ff00/box.png" alt="Кейсы">
-                <span>Кейсы</span>
-            </button>
-            <button class="nav-item" data-section="profile-section">
-                <img src="https://img.icons8.com/ios-filled/24/00ff00/user.png" alt="Профиль">
-                <span>Профиль</span>
-            </button>
-        </nav>
+        <!-- Нижняя навигация (всегда видна) -->
+        <footer class="bottom-nav">
+            <button class="nav-button" data-target-screen="main-menu-screen">🏠 Главная</button>
+            <button class="nav-button" data-target-screen="inventory-screen">🎒 Инвентарь</button>
+        </footer>
     </div>
 
-    <!-- Основной JavaScript файл -->
     <script src="script.js"></script>
 </body>
-</html>
+                </html>
