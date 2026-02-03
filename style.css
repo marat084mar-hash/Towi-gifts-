@@ -231,10 +231,6 @@
     /* Иконки (используем Emoji или SVG) */
     .icon-play::before { content: '🎮'; }
     .icon-inventory::before { content: '📦'; }
-    .icon-leaderboard::before { content: '🏆'; }
-    .icon-friends::before { content: '👥'; }
-    .icon-tasks::before { content: '⭐'; }
-    .icon-profile::before { content: '👤'; }
 
 
     /* Стили для упрощенного главного меню */
@@ -486,31 +482,6 @@
         margin-top: 15px;
         font-weight: 500;
     }
-
-
-    /* Стили для экрана Лидерборда (placeholder) */
-    .leaderboard-content {
-        text-align: center;
-        padding: 50px 20px;
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1;
-        width: 100%;
-        max-width: 450px;
-        margin: 0 auto;
-    }
-    .leaderboard-content h2 {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 2em;
-        color: var(--tg-theme-text-color);
-        margin-bottom: 20px;
-        text-shadow: 0 1px 5px rgba(0,0,0,0.3);
-    }
-    .leaderboard-content p {
-        font-size: 1.1em;
-        color: var(--tg-theme-hint-color);
-    }
-
 
     /* Стили для экрана игры "Ракета" */
     .game-content {
