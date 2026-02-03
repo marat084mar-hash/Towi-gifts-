@@ -1,74 +1,186 @@
-html
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melon Gifts</title>
+    <title>Towi Gifts</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <!-- Верхняя панель: Балансы и пополнение -->
-        <header class="top-panel">
-            <div class="balance-info">
-                <span class="balance-item">TON: <span id="ton-balance">0.00</span> 💎</span>
-                <span class="balance-item">Stars: <span id="stars-balance">0</span> ⭐</span>
+        <!-- Верхняя панель: Общая для всего приложения, с балансами -->
+        <header class="top-panel" id="main-top-panel">
+            <div class="app-header-title">
+                <span class="close-button">✕</span>
+                <span>Towi gifts</span>
+                <span class="menu-dots">⋮</span>
             </div>
-            <button class="replenish-button">+</button>
+            <div class="balance-section">
+                <div class="balance-info">
+                    <span class="balance-item">TON: <span id="ton-balance">0.00</span> 💎</span>
+                    <span class="balance-item">Stars: <span id="stars-balance">0</span> ⭐</span>
+                </div>
+                <button class="replenish-button" data-target-screen="profile-screen">+</button>
+            </div>
         </header>
 
         <!-- Главный экран навигации -->
         <div id="main-menu-screen" class="screen active">
-            <div class="main-navigation">
-                <button class="nav-button large" data-target-screen="rocket-crash-screen">🚀 РАКЕТ КРАШ</button>
-                <button class="nav-button large" data-target-screen="cases-screen">🎁 КЕЙСЫ</button>
+            <div class="main-navigation-cards">
+                <button class="nav-card cases-card" data-target-screen="cases-screen">
+                    <div class="card-content">
+                        <span class="card-title">Кейсы</span>
+                        <span class="card-description">Открывайте кейсы и получайте призы</span>
+                    </div>
+                </button>
+                <button class="nav-card rocket-card" data-target-screen="rocket-crash-screen">
+                    <div class="card-content">
+                        <span class="card-title">Ракета</span>
+                        <span class="card-description">Запускайте ракету и выигрывайте звёзды</span>
+                    </div>
+                </button>
             </div>
         </div>
 
         <!-- Секция "Кейсы" -->
         <div id="cases-screen" class="screen">
-            <h2>🎁 Ваши Кейсы</h2>
+            <header class="sub-screen-header">
+                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+                <h2>🎁 Ваши Кейсы</h2>
+                <span class="header-placeholder"></span>
+            </header>
             <div class="cases-grid" id="cases-grid">
                 <!-- Кейсы будут загружены сюда через JavaScript -->
             </div>
-            <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
         </div>
 
-        <!-- Секция "Ракет Краш" -->
+<!-- Секция "Ракет Краш" -->
         <div id="rocket-crash-screen" class="screen">
-            <h2>🚀 Ракет Краш</h2>
-            <div class="crash-game-area">
-                <div class="rocket-display">
-                    <span id="rocket-emoji">🚀</span>
-                    <span id="multiplier-display">1.00x</span>
+            <header class="sub-screen-header">
+                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+                <div class="user-profile-header">
+                    <img src="https://via.placeholder.com/40/FFF/000?text=👤" alt="User Avatar" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">TowiTo</span>
+                        <span class="user-tag">@TowiTov</span>
+                    </div>
+                    <span class="balance-ton">0.145 💎</span>
+                    <button class="replenish-button small">+</button>
                 </div>
-                <div class="game-status" id="game-status">Ожидание...</div>
-                <div class="game-controls">
-                    <button id="start-round-button" class="action-button primary">Начать Раунд</button>
-                    <button id="cash-out-button" class="action-button secondary" disabled>Вывести</button>
-                    <input type="number" id="bet-input" placeholder="Ставка" value="10" min="1">
+                <span class="menu-dots">⋮</span>
+            </header>
+
+            <div class="previous-multipliers-wrapper">
+                <div class="previous-multipliers" id="previous-multipliers">
+                    <!-- Предыдущие множители будут здесь -->
                 </div>
             </div>
-            <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+
+            <div class="crash-game-display">
+                <img src="https://i.ibb.co/C0W2L5f/banana-rocket.png" alt="Banana Rocket" class="game-object" id="game-object">
+                <span id="multiplier-display" class="large-multiplier">x1.00</span>
+            </div>
+
+            <div class="crash-game-controls-area">
+                <div class="auto-cashout-controls">
+                    <input type="checkbox" id="auto-cashout-checkbox">
+                    <label for="auto-cashout-checkbox">Автовывод</label>
+                    <div class="amount-control">
+                        <button class="control-btn minus-btn" data-target="auto-cashout" data-value="-0.1">-</button>
+                        <span class="value-display" id="auto-cashout-value">x2.00</span>
+                        <button class="control-btn plus-btn" data-target="auto-cashout" data-value="+0.1">+</button>
+                    </div>
+                </div>
+
+                <div class="bet-controls">
+                    <div class="amount-control large-bet">
+                        <button class="control-btn minus-btn" data-target="bet-amount" data-value="-1">-</button>
+                        <input type="number" id="bet-input" placeholder="Ставка" value="1" min="1" class="bet-input">
+                        <button class="control-btn plus-btn" data-target="bet-amount" data-value="+1">+</button>
+                    </div>
+                    <div class="quick-bet-buttons">
+                        <button class="quick-bet-btn" data-value="+0.5">+0.5</button>
+                        <button class="quick-bet-btn" data-value="+1">+1</button>
+                        <button class="quick-bet-btn" data-value="+2">+2</button>
+                    </div>
+                </div>
+                <button id="main-action-button" class="main-action-button primary">Ожидание</button>
+            </div>
         </div>
 
-        <!-- Секция "Инвентарь" -->
+        <!-- Секция "Инвентарь" (детальный список) -->
         <div id="inventory-screen" class="screen">
-            <h2>🎒 Ваш Инвентарь</h2>
+            <header class="sub-screen-header">
+                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+                <h2>🎒 Ваш Инвентарь</h2>
+                <span class="header-placeholder"></span>
+            </header>
             <ul id="inventory-list" class="inventory-list">
                 <!-- Элементы инвентаря будут загружены сюда через JavaScript -->
             </ul>
-            <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
+        </div>
+
+        <!-- Секция "Профиль" (новый экран) -->
+        <div id="profile-screen" class="screen profile-screen">
+            <header class="sub-screen-header profile-header">
+                <button class="back-button" data-target-screen="main-menu-screen">✕ Закрыть</button>
+                <div class="profile-dropdown">
+                    <span>Анима</span>
+                    <span class="dropdown-arrow"></span>
+                </div>
+                <span class="menu-dots">⋮</span>
+            </header>
+
+<div class="profile-main-info">
+                <img src="https://via.placeholder.com/80/FFF/000?text=👤" alt="Profile Avatar" class="profile-avatar">
+                <span class="profile-name">TowiTow1..†</span>
+                <span class="profile-tag">@TowiTow1</span>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <span>Игры</span>
+                    <span class="stat-value">517 🎰</span>
+                </div>
+                <div class="stat-card">
+                    <span>Баланс</span>
+                    <span class="stat-value">0.145 💎</span>
+                </div>
+            </div>
+
+            <button class="replenish-balance-button">Пополнить баланс</button>
+
+            <div class="withdraw-status">
+                <p>Доступно к выводу <span class="info-icon">ⓘ</span></p>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                    <span class="progress-text">6.988/6.988 💎</span>
+                </div>
+            </div>
+
+            <div class="inventory-overview">
+                <div class="inventory-overview-header">
+                    <h3>Инвентарь (<span id="profile-inventory-count">0</span>)</h3>
+                    <button class="sell-all-button">Продать все</button>
+                </div>
+                <div class="inventory-preview">
+                    <div class="gift-box-placeholder">🎁</div>
+                    <div class="gift-box-placeholder">🎁</div>
+                    <div class="inventory-arrow">›</div>
+                </div>
+            </div>
         </div>
 
         <!-- Нижняя навигация (всегда видна) -->
         <footer class="bottom-nav">
-            <button class="nav-button" data-target-screen="main-menu-screen">🏠 Главная</button>
-            <button class="nav-button" data-target-screen="inventory-screen">🎒 Инвентарь</button>
+            <button class="nav-button" data-target-screen="inventory-screen">
+                <span class="button-icon">🎒</span> Инвентарь
+            </button>
         </footer>
     </div>
 
     <script src="script.js"></script>
 </body>
-                </html>
+</html>
