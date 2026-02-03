@@ -1,797 +1,404 @@
 ```css
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #1a0a2c; /* Темно-фиолетовый фон */
+    color: #e0e0e0; /* Светлый текст */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Чтобы избежать прокрутки, если контент не помещается */
+}
 
-    :root {
-        /* Цвета из Telegram Web App - базовые */
-        --tg-theme-bg-color: #1a1a2e; /* Более глубокий темный фон */
-        --tg-theme-text-color: #e0e0e0; /* Светлее для лучшей читаемости */
-        --tg-theme-hint-color: #8b8bb1; /* Более мягкий оттенок */
-        --tg-theme-link-color: #64b5f6; /* Стандартный синий */
-        --tg-theme-button-color: #8A2BE2; /* Яркий фиолетовый */
-        --tg-theme-button-text-color: #ffffff;
-        --tg-theme-secondary-bg-color: #2c2c4d; /* Чуть светлее основного фона */
+.app-container {
+    width: 100%;
+    max-width: 420px; /* Типичная ширина для мобильных приложений */
+    height: 100vh;
+    background-color: #2c0f4d; /* Чуть светлее фон контейнера */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* Для скрытия экранов */
+}
 
-        /* Дополнительные цвета для градиентов и акцентов */
-        --accent-gradient-start: #3a1c71; /* Темный фиолетовый */
-        --accent-gradient-end: #d76d77;   /* Розовато-красный */
-        --main-card-gradient: linear-gradient(135deg, var(--accent-gradient-start), var(--tg-theme-button-color));
-        --secondary-card-gradient: linear-gradient(135deg, #4b308f, #a269e0); /* Для кейсов и других карточек */
-        --hover-card-bg: #4a4a7a; /* Цвет при наведении */
-    }
+/* --- Топ-панель (Балансы) --- */
+.top-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #3e1666; /* Темно-фиолетовый заголовок */
+    border-bottom: 1px solid #5a209b;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-    /* Переопределение для светлой темы */
-    @media (prefers-color-scheme: light) {
-        body {
-            --tg-theme-bg-color: #f0f2f5;
-            --tg-theme-text-color: #333333;
-            --tg-theme-hint-color: #777777;
-            --tg-theme-secondary-bg-color: #ffffff;
+.balance-info {
+    display: flex;
+    gap: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
 
---accent-gradient-start: #a37ee4;
-            --accent-gradient-end: #ff8b94;
-            --main-card-gradient: linear-gradient(135deg, #a37ee4, #6e43b1);
-            --secondary-card-gradient: linear-gradient(135deg, #c7a4ff, #e9b3ff);
-            --hover-card-bg: #e0e0e0;
-        }
-    }
+.balance-item span {
+    color: #ffd700; /* Золотистый для валюты */
+}
 
-    body {
-        font-family: 'Roboto', -apple-system, BlinkMacMacFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: var(--tg-theme-bg-color);
-        color: var(--tg-theme-text-color);
-        -webkit-tap-highlight-color: transparent;
-        font-size: 16px;
-        line-height: 1.5;
-    }
+.replenish-button {
+    background-color: #5a209b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
 
-    .screen {
-        display: none;
-        min-height: 100vh;
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        overflow-y: auto;
-        box-sizing: border-box;
-        padding-bottom: 70px; /* Отступ для нижней навигации, чтобы не перекрывалась */
-        animation: fadeIn 0.3s ease-in-out; /* Плавное появление экрана */
-    }
-    .screen.active {
-        display: flex;
-        flex-direction: column;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
+.replenish-button:hover {
+    background-color: #7a2ecc;
+}
 
-    .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 18px; /* Чуть больше паддинг */
-        background-color: var(--tg-theme-secondary-bg-color);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3); /* Более заметная тень */
-        z-index: 100;
-    }
+/* --- Экраны приложения --- */
+.screen {
+    flex-grow: 1;
+    padding: 20px;
+    display: none; /* Все экраны по умолчанию скрыты */
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto; /* Прокрутка для контента */
+    animation: fadeIn 0.3s ease-out; /* Анимация появления */
+}
 
-    .close-button, .back-button {
-        background: none;
-        border: none;
-        color: var(--tg-theme-text-color);
-        font-size: 1.5em; /* Крупнее */
-        cursor: pointer;
-        padding: 5px;
-        transition: color 0.2s ease;
-    }
-    .close-button:active, .back-button:active {
-        color: var(--tg-theme-link-color);
-    }
+.screen.active {
+    display: flex; /* Активный экран показывается */
+}
 
-    .app-title {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 700; /* Жирнее */
-        font-size: 1.3em;
-        color: var(--tg-theme-text-color);
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    .balance-info {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-        color: var(--tg-theme-text-color);
-        background-color: var(--tg-theme-bg-color);
-        padding: 6px 12px;
-        border-radius: 25px;
-        font-size: 0.95em;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); /* Внутренняя тень */
-    }
+h2 {
+    color: #9c27b0; /* Ярко-фиолетовый заголовок */
+    margin-bottom: 25px;
+    text-align: center;
+}
 
-    .plus-button {
-        background-color: var(--tg-theme-button-color);
-        color: var(--tg-theme-button-text-color);
-        border: none;
-        border-radius: 50%;
-        width: 32px; /* Крупнее */
-        height: 32px;
-        font-size: 1.6em;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 10px;
-        cursor: pointer;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-    .plus-button:active {
-        transform: translateY(1px) scale(0.95);
-    }
+/* --- Главное меню --- */
+.main-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
 
-    .content {
-        flex-grow: 1;
-        padding: 20px; /* Увеличиваем паддинг */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        width: 100%; /* Убедимся, что контент занимает всю ширину */
-        box-sizing: border-box;
-    }
+.nav-button.large {
+    padding: 25px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border-radius: 15px;
+    background-color: #9c27b0; /* Ярко-фиолетовый */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
 
-    .action-button {
-        background-color: var(--tg-theme-button-color);
-        color: var(--tg-theme-button-text-color);
-        border: none;
-        border-radius: 10px;
-        padding: 12px 20px;
-        font-size: 1.05em;
-        cursor: pointer;
-        margin-top: 15px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        transition: background-color 0.2s ease, transform 0.1s ease;
-        font-weight: 600;
-    }
-    .action-button:active {
-        transform: translateY(1px);
-    }
+.nav-button.large:hover {
+    background-color: #ba68c8;
+    transform: translateY(-2px);
+}
 
-.primary-button {
-        background-color: var(--tg-theme-button-color);
-        color: var(--tg-theme-button-text-color);
-        width: 100%;
-        max-width: 320px; /* Немного шире */
-        padding: 16px;
-        font-size: 1.15em;
-        margin-bottom: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-    }
-    .secondary-button {
-        background-color: var(--tg-theme-secondary-bg-color);
-        border: 1px solid var(--tg-theme-hint-color);
-        color: var(--tg-theme-text-color);
-        padding: 10px 18px;
-        border-radius: 10px;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
+.back-button {
+    background-color: #5a209b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s ease;
+}
 
+.back-button:hover {
+    background-color: #7a2ecc;
+}
 
-    /* Нижняя навигация */
-    .bottom-nav {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: var(--tg-theme-secondary-bg-color);
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 8px 0; /* Чуть больше паддинг */
-        height: 65px; /* Чуть выше */
-        box-sizing: border-box;
-        box-shadow: 0 -3px 10px rgba(0,0,0,0.3);
-        z-index: 100;
-    }
+/* --- Секция Кейсов --- */
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* 2-3 кейса в ряд */
+    gap: 15px;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 20px;
+}
 
-    .nav-item {
-        background: none;
-        border: none;
-        color: var(--tg-theme-hint-color);
-        font-family: 'Roboto', sans-serif;
-        font-size: 0.85em; /* Чуть крупнее шрифт */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        padding: 5px 0;
-        transition: color 0.2s ease, transform 0.1s ease;
-    }
-    .nav-item:active {
-        transform: translateY(1px);
-    }
+.case-card {
+    background-color: #441a73; /* Фон карточки кейса */
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
 
-    .nav-item.active {
-        color: var(--tg-theme-link-color);
-        font-weight: 700;
-    }
+.case-card:hover {
+    transform: translateY(-5px);
+}
 
-    .nav-item i.icon {
-        font-size: 2em; /* Крупнее иконки */
-        margin-bottom: 4px;
-        transition: transform 0.2s ease;
-    }
-    .nav-item.active i.icon {
-        transform: scale(1.1); /* Легкий эффект при активации */
-    }
+.case-card img {
+    width: 100px; /* Заглушка для изображения */
+    height: 100px;
+    background-color: #5a209b; /* Цвет заглушки */
+    border-radius: 8px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
 
-    /* Иконки (используем Emoji или SVG) */
-    .icon-play::before { content: '🎮'; }
-    .icon-inventory::before { content: '📦'; }
+.case-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    font-size: 1.1em;
+}
 
+.case-card .open-button {
+    background-color: #00bcd4; /* Бирюзовый для кнопки открытия */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
 
-    /* Стили для упрощенного главного меню */
-    .main-menu-content {
-        padding: 25px;
-        gap: 20px;
-        justify-content: center;
-    }
+.case-card .open-button:hover {
+    background-color: #4dd0e1;
+}
 
-    .main-menu-card {
-        background: var(--main-card-gradient);
-        border-radius: 20px; /* Более скругленные углы */
-        padding: 30px; /* Больше паддинг */
-        text-align: center;
-        border: none;
-        color: white;
-        cursor: pointer;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Более выраженная тень */
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-        flex-grow: 1;
-        max-width: 380px; /* Ограничиваем ширину */
-        display: flex; /* Для выравнивания содержимого */
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: relative; /* Для псевдоэлементов */
-        overflow: hidden;
-    }
+/* --- Секция Ракет Краш --- */
+.crash-game-area {
+    background-color: #1a0a2c;
+    border: 2px solid #5a209b;
+    border-radius: 15px;
+    padding: 30px 20px;
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
 
-    .main-menu-card:hover {
-        transform: translateY(-8px) scale(1.03); /* Более выраженный эффект */
-        box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-        background: var(--secondary-card-gradient); /* Меняем градиент при наведении */
-    }
-
-    .main-menu-card h2 {
-        font-family: 'Montserrat', sans-serif;
-        margin-top: 0;
-        font-size: 1.8em; /* Крупнее заголовок */
-        color: white;
-        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        margin-bottom: 10px;
-    }
-    .main-menu-card h2::before { /* Иконка внутри заголовка */
-        margin-right: 10px;
-        font-size: 1.2em;
-        vertical-align: middle;
-    }
-    #play-rocket-button h2::before { content: '🚀'; }
-    #open-cases-button h2::before { content: '🎁'; }
-    #go-to-profile-button h2::before { content: '👤'; }
-
-.main-menu-card p {
-        font-size: 1.05em;
-        color: rgba(255, 255, 255, 0.9);
-        max-width: 80%; /* Ограничиваем ширину текста */
-    }
-
-
-    /* Стили для экрана Кейсов */
-    .case-card {
-        background: var(--secondary-card-gradient); /* Градиент для кейсов */
-        border-radius: 15px;
-        margin-bottom: 15px;
-        padding: 18px; /* Чуть больше */
-        display: flex;
-        align-items: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        max-width: 420px;
-        width: 100%;
-        color: white;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .case-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-    }
-    .case-card-image {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-        margin-right: 18px;
-        border-radius: 12px;
-        background-color: rgba(0,0,0,0.1); /* Фон для изображения */
-        padding: 5px;
-    }
-    .case-info h3 {
-        font-family: 'Montserrat', sans-serif;
-        margin: 0 0 5px 0;
-        font-size: 1.3em;
-        color: white;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    }
-    .case-info p {
-        margin: 0;
-        font-size: 0.95em;
-        color: rgba(255, 255, 255, 0.7);
-    }
-    .case-info .cost {
-        font-weight: bold;
-        color: #ffeb3b; /* Желтый акцент для цены */
-        font-size: 1.1em;
-    }
-
-
-    /* Стили для Профиля */
-    .profile-content {
-        text-align: center;
-        padding: 25px;
-    }
-
-    .user-info-header {
-        margin-bottom: 30px;
-        padding: 20px;
-        background-color: var(--tg-theme-secondary-bg-color);
-        border-radius: 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .user-avatar {
-        width: 100px; /* Крупнее */
-        height: 100px;
-        background-color: #555;
-        border-radius: 50%;
-        margin: 0 auto 18px auto;
-        border: 4px solid var(--tg-theme-link-color);
-        box-shadow: 0 0 15px rgba(0,123,255,0.6);
-    }
-
-    .user-name {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 1.5em;
-        font-weight: 700;
-        color: var(--tg-theme-text-color);
-    }
-
-    .stats-row {
-        display: flex;
-        justify-content: space-around;
-        gap: 15px;
-        margin-bottom: 30px;
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .stat-card {
-        background-color: var(--tg-theme-secondary-bg-color);
-        padding: 18px;
-        border-radius: 15px;
-        font-size: 0.95em;
-        flex: 1;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-    .stat-card span {
-        font-weight: bold;
-        font-size: 1.3em;
-        color: var(--tg-theme-text-color);
-    }
-
-
-    /* Стили для экрана Инвентаря */
-    .inventory-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 20px; /* Увеличиваем отступы */
-        padding: 20px;
-        width: 100%;
-        max-width: 650px;
-    }
-
-    .inventory-item-card {
-        background: var(--secondary-card-gradient);
-        border-radius: 18px;
-        padding: 15px;
-        text-align: center;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        color: white;
-    }
-    .inventory-item-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
-
-    .inventory-item-card img {
-        max-width: 95%;
-        height: auto;
-        object-fit: contain;
-        margin: 0 auto 12px auto;
-        border-radius: 12px;
-        background-color: rgba(0,0,0,0.15);
-        padding: 5px;
-    }
-
-    .item-value {
-        font-weight: 700;
-        color: #ffeb3b; /* Желтый акцент */
-        font-size: 1.2em;
-        margin-bottom: 10px;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    }
-
-.item-metadata {
-        font-size: 0.8em;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 10px;
-    }
-
-    .item-metadata p {
-        margin: 2px 0;
-    }
-
-    .item-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 15px;
-    }
-
-    .item-button {
-        background-color: var(--tg-theme-button-color);
-        color: var(--tg-theme-button-text-color);
-        border: none;
-        border-radius: 10px;
-        padding: 10px 15px;
-        font-size: 0.95em;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-    .item-button:hover {
-        background-color: #6a3abf;
-    }
-    .item-button:active {
-        transform: translateY(1px);
-    }
-
-    .item-timer {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white;
-        border-radius: 10px;
-        padding: 8px;
-        font-size: 0.8em;
-        margin-top: 15px;
-        font-weight: 500;
-    }
-
-    /* Стили для экрана игры "Ракета" */
-    .game-content {
-        padding: 20px;
-        align-items: center;
-        width: 100%;
-        max-width: 480px; /* Чуть шире */
-        margin: 0 auto;
-    }
-
-    .multiplier-history {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-        padding: 12px;
-        background-color: var(--tg-theme-secondary-bg-color);
-        border-radius: 15px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    }
-
-    .history-item {
-        background-color: var(--tg-theme-bg-color);
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 0.9em;
-        color: var(--tg-theme-hint-color);
-        font-weight: 500;
-    }
-
-    .history-item.current-last {
-        color: #00e676; /* Яркий зеленый для последнего множителя */
-        font-weight: bold;
-        background-color: rgba(0,230,118,0.2);
-    }
-
-    .game-area {
-        width: 100%;
-        height: 300px; /* Еще выше */
-        background: linear-gradient(180deg, #100a20, #000000); /* Более глубокий космос */
-        border-radius: 20px;
-        margin-bottom: 30px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .game-area::before { /* Звезды на фоне */
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: radial-gradient(white 1px, transparent 1px);
-        background-size: 30px 30px;
-        opacity: 0.1;
-        animation: starfield 60s linear infinite;
-    }
-    @keyframes starfield {
-        from { transform: translateY(0px); }
-        to { transform: translateY(300px); }
-    }
-
-
-    .current-multiplier {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 4.5em; /* Еще крупнее */
-        font-weight: 700;
-        color: #fff;
-        position: relative;
-        z-index: 2;
-        text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(0,255,255,0.4);
-    }
-
-    .game-animation {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1;
-    }
+.rocket-display {
+    font-size: 4em;
+    font-weight: bold;
+    color: #ffd700; /* Золотистый */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 150px; /* Чтобы не прыгал контент */
+}
 
 #rocket-emoji {
-        font-size: 100px; /* Крупнее эмодзи */
-        line-height: 1;
-        animation: rocketFly 5s infinite ease-out; /* Отдельная анимация для ракеты */
-        transform: translateY(0);
-        opacity: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,165,0,0.7);
-    }
+    animation: bounce 0.8s infinite alternate; /* Анимация взлета */
+}
 
-    @keyframes rocketFly {
-        0% { transform: translateY(70px) scale(0.6); opacity: 0.2; }
-        50% { transform: translateY(-70px) scale(1.3); opacity: 1; }
-        100% { transform: translateY(70px) scale(0.6); opacity: 0.2; }
-    }
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
 
+#multiplier-display {
+    font-size: 1.8em;
+    color: #00ff00; /* Зеленый для множителя */
+}
 
-    .betting-controls {
-        width: 100%;
-        max-width: 420px;
-        background-color: var(--tg-theme-secondary-bg-color);
-        border-radius: 20px;
-        padding: 25px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    }
+.game-status {
+    font-size: 1.2em;
+    color: #ccc;
+    height: 30px; /* Фиксированная высота */
+}
 
-    .auto-cashout-section, .bet-amount-section {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        background-color: var(--tg-theme-bg-color);
-        padding: 12px;
-        border-radius: 12px;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-    }
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
 
-    .auto-cashout-section label {
-        flex-grow: 1;
-        text-align: left;
-        color: var(--tg-theme-text-color);
-        font-size: 1em;
-        font-weight: 500;
-    }
-    .auto-cashout-section input[type="checkbox"] {
-        transform: scale(1.4);
-        margin-right: 10px;
-        accent-color: var(--tg-theme-link-color); /* Цвет чекбокса */
-    }
+.action-button {
+    flex: 1 1 45%; /* Позволяет кнопкам быть в 2 столбца */
+    padding: 12px 10px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    min-width: 120px;
+}
 
+.action-button.primary {
+    background-color: #00c853; /* Зеленый для старта */
+    color: white;
+    border: none;
+}
 
-    .betting-controls input[type="number"] {
-        background-color: var(--tg-theme-secondary-bg-color);
-        border: 1px solid var(--tg-theme-hint-color);
-        color: var(--tg-theme-text-color);
-        border-radius: 10px;
-        padding: 10px;
-        width: 80px;
-        text-align: center;
-        font-size: 1.1em;
-        -moz-appearance: textfield;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-    }
-    .betting-controls input[type="number"]::-webkit-outer-spin-button,
-    .betting-controls input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+.action-button.primary:hover:not(:disabled) {
+    background-color: #4caf50;
+    transform: translateY(-2px);
+}
 
+.action-button.secondary {
+    background-color: #ff9800; /* Оранжевый для вывода */
+    color: white;
+    border: none;
+}
 
-    .minus-button, .plus-button, .quick-bet-button {
-        background-color: var(--tg-theme-button-color);
-        color: var(--tg-theme-button-text-color);
-        border: none;
-        border-radius: 10px;
-        padding: 12px 18px;
-        font-size: 1.05em;
-        cursor: pointer;
-        min-width: 50px;
-        box-sizing: border-box;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        transition: background-color 0.2s ease, transform 0.1s ease;
-        font-weight: 600;
-    }
-    .minus-button:active, .plus-button:active, .quick-bet-button:active {
-        transform: translateY(1px);
-    }
-    .quick-bet-button {
-        flex-grow: 1;
-    }
+.action-button.secondary:hover:not(:disabled) {
+    background-color: #ffb74d;
+    transform: translateY(-2px);
+}
 
-    .main-game-button {
-        background-color: var(--tg-theme-button-color);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        padding: 20px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 1.5em;
-        font-weight: 700;
-        cursor: pointer;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        transition: background-color 0.3s ease, transform 0.1s ease;
-    }
-    .main-game-button:active {
-        transform: translateY(2px);
-    }
-    .main-game-button.betting {
-        background-color: #4CAF50;
-        box-shadow: 0 8px 25px rgba(76,175,80,0.5);
-    }
-    .main-game-button.cashout {
-        background-color: #FFC107;
-        box-shadow: 0 8px 25px rgba(255,193,7,0.5);
-    }
-    .main-game-button.waiting {
-        background-color: #607d8b;
-        box-shadow: 0 8px 25px rgba(96,125,139,0.5);
-    }
+.action-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
-/* Модальное окно */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.7);
-        justify-content: center;
-        align-items: center;
-        animation: fadeInModal 0.2s ease-out;
-    }
-    .modal.active {
-        display: flex;
-    }
-    @keyframes fadeInModal {
-        from { opacity: 0; transform: scale(0.9); }
-        to { opacity: 1; transform: scale(1); }
-    }
+#bet-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #5a209b;
+    background-color: #1a0a2c;
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 10px;
+}
 
-    .modal-content {
-        background-color: var(--tg-theme-secondary-bg-color);
-        margin: auto;
-        padding: 30px;
-        border-radius: 20px;
-        width: 90%;
-        max-width: 480px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .modal-content h3 {
-        font-family: 'Montserrat', sans-serif;
-        margin-top: 0;
-        font-size: 1.5em;
-        color: var(--tg-theme-text-color);
-        margin-bottom: 15px;
-    }
-    .modal-content p {
-        font-size: 1em;
-        color: var(--tg-theme-hint-color);
-        margin-bottom: 20px;
-    }
+/* --- Секция Инвентаря --- */
+.inventory-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 20px;
+}
 
+.inventory-item {
+    background-color: #441a73;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
 
-    .top-up-options button {
-        display: block;
-        width: 100%;
-        padding: 15px;
-        margin-bottom: 15px;
-        background-color: var(--tg-theme-button-color);
-        color: var(--tg-theme-button-text-color);
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 1.15em;
-        font-weight: 600;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-    .top-up-options button:hover {
-        background-color: #6a3abf;
-    }
-    .top-up-options button:active {
-        transform: translateY(1px);
-    }
+.inventory-item img {
+    width: 60px;
+    height: 60px;
+    background-color: #5a209b;
+    border-radius: 6px;
+    object-fit: cover;
+}
 
-    .text-input {
-        width: calc(100% - 24px); /* Учитываем padding */
-        padding: 12px;
-        margin-bottom: 20px;
-        border: 1px solid var(--tg-theme-hint-color);
-        border-radius: 10px;
-        background-color: var(--tg-theme-bg-color);
-        color: var(--tg-theme-text-color);
-        font-size: 1em;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-    }
+.item-details {
+    flex-grow: 1;
+}
 
-    .modal-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 25px;
-    }
+.item-details h3 {
+    margin: 0;
+    color: #e0e0e0;
+    font-size: 1.1em;
+}
 
-    .modal-buttons .primary-button {
-        width: 100%;
-        max-width: none; /* Убираем ограничение */
-        margin-bottom: 0;
-    }
-    .modal-buttons .secondary-button {
-        width: 100%;
-    }
+.item-details p {
+    margin: 5px 0 0;
+    color: #bbb;
+    font-size: 0.9em;
+}
+
+.sell-withdraw-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.sell-button, .withdraw-button {
+    background-color: #ffa000;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.2s ease;
+}
+
+.withdraw-button {
+    background-color: #00bcd4;
+}
+
+.sell-button:hover {
+    background-color: #ffb300;
+}
+
+.withdraw-button:hover {
+    background-color: #4dd0e1;
+}
+
+/* --- Нижняя навигация --- */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #3e1666; /* Темно-фиолетовый футер */
+    border-top: 1px solid #5a209b;
+    padding: 10px 0;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.bottom-nav .nav-button {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 0.9em;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.bottom-nav .nav-button:hover {
+    color: #ffd700; /* Золотистый при наведении */
+}
+
+/* Скрываем скроллбар для эстетики */
+.app-container::-webkit-scrollbar,
+.screen::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
