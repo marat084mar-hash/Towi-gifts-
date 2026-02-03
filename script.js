@@ -1,719 +1,227 @@
- javascript
-    // Инициализация Telegram Web App
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
+.bottom-nav .nav-button {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 0.9em;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
 
-// Получение темы Telegram для применения CSS
-    Telegram.WebApp.onEvent('themeChanged', function() {
-        document.documentElement.style.setProperty('--tg-theme-bg-color', Telegram.WebApp.themeParams.bg_color);
-        document.documentElement.style.setProperty('--tg-theme-text-color', Telegram.WebApp.themeParams.text_color);
-        document.documentElement.style.setProperty('--tg-theme-hint-color', Telegram.WebApp.themeParams.hint_color);
-        document.documentElement.style.setProperty('--tg-theme-link-color', Telegram.WebApp.themeParams.link_color);
-        document.documentElement.style.setProperty('--tg-theme-button-color', Telegram.WebApp.themeParams.button_color);
-        document.documentElement.style.setProperty('--tg-theme-button-text-color', Telegram.WebApp.themeParams.button_text_color);
-        document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', Telegram.WebApp.themeParams.secondary_bg_color);
+.bottom-nav .nav-button:hover {
+    color: #ffd700; /* Золотистый при наведении */
+}
+
+/* Скрываем скроллбар для эстетики */
+.app-container::-webkit-scrollbar,
+.screen::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+
+
+## # 3. script.js (Функционал: навигация, кейсы, краш-игра, инвентарь)
+
+Этот файл содержит JavaScript-код, который делает ваше приложение интерактивным.
+
+
+javascript
+document.addEventListener('DOMContentLoaded', () => {
+    const screens = document.querySelectorAll('.screen');
+    const navButtons = document.querySelectorAll('.nav-button, .back-button');
+    const replenishButton = document.querySelector('.replenish-button');
+
+    // --- Навигация между экранами ---
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetScreenId = button.dataset.targetScreen;
+            showScreen(targetScreenId);
+        });
     });
 
-
-    // Функция для переключения экранов
-    function showScreen(screenId) {
-        // Управляем активным состоянием кнопок нижней навигации
-        document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
-            if (item.dataset.screenId === screenId) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
-        });
-
-        // Скрываем все экраны и показываем нужный
-        document.querySelectorAll('.screen').forEach(screen => {
+    // Функция для показа нужного экрана
+    function showScreen(id) {
+        screens.forEach(screen => {
             screen.classList.remove('active');
         });
-        document.getElementById(screenId).classList.add('active');
-        
-        // Дополнительные действия при переключении на определенные экраны
-        if (screenId === 'rocket-game-screen') {
-            startGameUI();
-        } else {
-            stopGameUI(); // Останавливаем игру, если уходим с экрана ракеты
-        }
-        if (screenId === 'profile-screen' || screenId === 'inventory-screen') {
-            fetchUserData(); // Обновляем данные при входе в профиль/инвентарь
-        }
+        document.getElementById(id).classList.add('active');
     }
 
-    // Глобальная переменная для хранения информации о пользователе
-    let currentUser = {
-        id: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.id : null,
-        username: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.username : 'Guest',
-        firstName: Telegram.WebApp.initDataUnsafe.user ? Telegram.WebApp.initDataUnsafe.user.first_name : 'Пользователь',
-        tonBalance: 0,
-        gamesPlayed: 0,
-        inventory: []
-    };
+    // Обработчик кнопки пополнения (заглушка)
+    replenishButton.addEventListener('click', () => {
+        alert('Функция пополнения баланса будет реализована позже!');
+    });
 
+    // --- Кейсы ---
+    const casesGrid = document.getElementById('cases-grid');
+    const cases = [
+        { id: 'bichara', name: 'Бичара', price: 10, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'zavodskoy', name: 'Заводской', price: 50, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'plaki', name: 'Плаки или нормалдаки?', price: 100, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'yaruy-smak', name: 'Ярый Смак', price: 250, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'elitny', name: 'Элитный', price: 500, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'ideal', name: 'Идеал', price: 1000, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'unlucky', name: 'Анлаки', price: 2000, currency: 'Stars', img: 'placeholder.png' },
+        { id: 'oligarch', name: 'Олигарх', price: 5000, currency: 'Stars', img: 'placeholder.png' },
+    ];
 
-    // --- Взаимодействие с Supabase (заглушки) ---
-    // В реальном проекте здесь будет SDK Supabase
-    // import { createClient } from '@supabase/supabase-js'
-    // const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-
-async function fetchUserData() {
-        // В реальном приложении: запросить данные пользователя из Supabase по currentUser.id
-        // const { data, error } = await supabase.from('users').select('*').eq('id', currentUser.id).single()
-        // if (data) {
-        //     currentUser.tonBalance = data.ton_balance;
-        //     currentUser.gamesPlayed = data.games_played || 0;
-        //     currentUser.inventory = data.inventory || [];
-        // }
-        // Для MVP: просто симулируем данные
-        currentUser.tonBalance = parseFloat(localStorage.getItem('tonBalance_' + currentUser.id) || '0.00');
-        currentUser.gamesPlayed = parseInt(localStorage.getItem('gamesPlayed_' + currentUser.id) || '0');
-        let storedInventory = JSON.parse(localStorage.getItem('inventory_' + currentUser.id) || '[]');
-        currentUser.inventory = storedInventory.map(item => {
-            if (!item.id) item.id = 'item_' + Math.random().toString(36).substr(2, 9); // Уникальный ID для продажи/вывода
-            if (typeof item.sellValue === 'undefined') item.sellValue = (Math.random() * (5.0 - 0.1) + 0.1).toFixed(2); // Случайная цена продажи
-            if (typeof item.timerEnd === 'undefined') {
-                const now = new Date();
-                now.setDate(now.getDate() + 20); // 20 дней вперед
-                item.timerEnd = now.toISOString(); // Таймер до 20 дней
-            }
-            return item;
+    function renderCases() {
+        casesGrid.innerHTML = '';
+        cases.forEach(caseItem => {
+            const caseCard = document.createElement('div');
+            caseCard.classList.add('case-card');
+            caseCard.innerHTML = 
+                <img src="${caseItem.img}" alt="${caseItem.name}">
+                <h3>${caseItem.name}</h3>
+                <p>Цена: ${caseItem.price} ${caseItem.currency === 'Stars' ? '⭐' : '💎'}</p>
+                <button class="open-button" data-case-id="${caseItem.id}">Открыть</button>
+            ;
+            casesGrid.appendChild(caseCard);
         });
-        localStorage.setItem('inventory_' + currentUser.id, JSON.stringify(currentUser.inventory)); // Сохраняем обновленный инвентарь
 
-        updateUI();
+        document.querySelectorAll('.open-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const caseId = event.target.dataset.caseId;
+                alert(Открываем кейс: ${caseId}! (Эта функция будет реализована на бэкенде));
+                // Здесь будет логика для запроса к Supabase Edge Function для открытия кейса
+            });
+        });
+    }
+    renderCases(); // Рендерим кейсы при загрузке
+
+    // --- Ракет Краш Игра ---
+    const rocketEmoji = document.getElementById('rocket-emoji');
+    const multiplierDisplay = document.getElementById('multiplier-display');
+    const gameStatus = document.getElementById('game-status');
+    const startRoundButton = document.getElementById('start-round-button');
+    const cashOutButton = document.getElementById('cash-out-button');
+    const betInput = document.getElementById('bet-input');
+
+    let currentMultiplier = 1.00;
+    let gameRunning = false;
+    let crashPoint = 0;
+    let gameInterval;
+
+function resetGame() {
+        clearInterval(gameInterval);
+        currentMultiplier = 1.00;
+        multiplierDisplay.textContent = '1.00x';
+        gameRunning = false;
+        gameStatus.textContent = 'Ожидание...';
+        rocketEmoji.style.animation = 'none';
+        startRoundButton.disabled = false;
+        cashOutButton.disabled = true;
+        betInput.disabled = false;
+        rocketEmoji.textContent = '🚀'; // Сброс эмодзи
+        multiplierDisplay.style.color = '#00ff00'; // Зеленый
     }
 
-    async function fetchCasesData() {
-        // Для MVP: только 3 статических кейса
-        return [
-            { id: 'case_1', name: 'Стартовый Кейс', cost: 0.5, imageUrl: 'https://via.placeholder.com/80/FFA500/000000?text=C1' },
-            { id: 'case_2', name: 'Обычный Кейс', cost: 1.0, imageUrl: 'https://via.placeholder.com/80/007bff/FFFFFF?text=C2' },
-            { id: 'case_3', name: 'Редкий Кейс', cost: 2.0, imageUrl: 'https://via.placeholder.com/80/8A2BE2/FFFFFF?text=C3' }
-        ];
+    startRoundButton.addEventListener('click', () => {
+        if (gameRunning) return; // Не начинать новый раунд, если игра уже идет
+
+        resetGame(); // Сброс перед началом нового раунда
+        gameRunning = true;
+        startRoundButton.disabled = true;
+        cashOutButton.disabled = false;
+        betInput.disabled = true;
+        gameStatus.textContent = 'Взлетаем!';
+        rocketEmoji.style.animation = 'bounce 0.8s infinite alternate';
+
+        // Генерация случайной точки краша от 1.01 до 10.00
+        // (Для более сложной логики можно использовать более распределенные значения)
+        crashPoint = parseFloat((Math.random() * (10 - 1.01) + 1.01).toFixed(2));
+        console.log('Crash point:', crashPoint);
+
+        gameInterval = setInterval(() => {
+            currentMultiplier += 0.01;
+            multiplierDisplay.textContent = ${currentMultiplier.toFixed(2)}x;
+
+            if (currentMultiplier >= crashPoint) {
+                crashGame();
+            }
+        }, 100); // Обновляем каждые 100 мс
+    });
+
+    cashOutButton.addEventListener('click', () => {
+        if (!gameRunning) return;
+
+        const bet = parseFloat(betInput.value);
+        if (isNaN(bet) || bet <= 0) {
+            alert('Введите корректную ставку!');
+            return;
+        }
+
+        const winAmount = bet * currentMultiplier;
+        alert(Вы вывели на ${currentMultiplier.toFixed(2)}x! Ваш выигрыш: ${winAmount.toFixed(2)} ⭐ (Это симуляция));
+        
+        // Здесь будет логика для сохранения выигрыша на бэкенде
+        resetGame();
+    });
+
+    function crashGame() {
+        clearInterval(gameInterval);
+        gameRunning = false;
+        gameStatus.textContent = КРАШ НА ${currentMultiplier.toFixed(2)}x!;
+        multiplierDisplay.style.color = '#ff0000'; // Красный при краше
+        rocketEmoji.style.animation = 'none';
+        rocketEmoji.textContent = '💥'; // Эмодзи взрыва
+        cashOutButton.disabled = true; // Вывести уже нельзя
+        
+        // Маленькая задержка перед сбросом для отображения результата
+        setTimeout(() => {
+            resetGame();
+        }, 3000); 
     }
 
-    // --- Обновление UI ---
-    function updateUI() {
-        document.getElementById('user-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-        // Обновляем баланс в шапке игры, если мы на этом экране
-        if (document.getElementById('game-ton-balance')) {
-            document.getElementById('game-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-        }
-
-        if (document.getElementById('profile-username')) {
-            document.getElementById('profile-username').textContent = @${currentUser.username};
-        }
-        if (document.getElementById('profile-games-count')) {
-            document.getElementById('profile-games-count').textContent = currentUser.gamesPlayed;
-        }
-        if (document.getElementById('profile-ton-balance')) {
-            document.getElementById('profile-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-        }
-        if (document.getElementById('profile-inventory-count')) {
-            document.getElementById('profile-inventory-count').textContent = currentUser.inventory.length;
-        }
-        renderInventory(); // Эта функция теперь будет рендерить для inventory-screen
-    }
+    // --- Инвентарь ---
+    const inventoryList = document.getElementById('inventory-list');
+    const userInventory = [
+        { id: 'item1', name: 'Ключ от Заводского Кейса', description: 'Позволяет открыть Заводской Кейс', img: 'placeholder.png' },
+        { id: 'item2', name: 'НФТ "Элитный Меч"', description: 'Редкий меч для коллекционеров', img: 'placeholder.png' },
+        { id: 'item3', name: '1000 Звезд TON', description: 'Переводимые звезды', img: 'placeholder.png' },
+    ];
 
     function renderInventory() {
-        const inventoryContainer = document.getElementById('inventory-items-container'); // Теперь это контейнер на отдельном экране
-        if (!inventoryContainer) return;
-
-        inventoryContainer.innerHTML = ''; // Очищаем
-
-if (currentUser.inventory.length === 0) {
-            inventoryContainer.innerHTML = '<p style="color:var(--tg-theme-hint-color); text-align:center; padding: 20px;">Ваш инвентарь пуст.</p>';
-        } else {
-            currentUser.inventory.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.classList.add('inventory-item-card');
-                
-                // Таймер (просто текст для MVP)
-                const timerEndDate = new Date(item.timerEnd);
-                const timeRemaining = formatTimeRemaining(timerEndDate);
-
-                itemElement.innerHTML = 
-                    <img src="${item.imageUrl || 'https://via.placeholder.com/100'}" alt="${item.name}">
-                    <div class="item-value">${item.sellValue} TON</div>
-                    <div class="item-metadata">
-                        <p>Модель: random</p>
-                        <p>Фон: random</p>
-                    </div>
-                    <div class="item-buttons">
-                        <button class="item-button sell-item-button" data-item-id="${item.id}">Продать</button>
-                        <button class="item-button withdraw-item-button" data-item-id="${item.id}">Вывести</mbutton>
-                    </div>
-                    <div class="item-timer">${timeRemaining}</div>
-                ;
-                inventoryContainer.appendChild(itemElement);
-            });
-
-            // Добавляем обработчики для новых кнопок после рендера
-            document.querySelectorAll('.sell-item-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const itemId = event.target.dataset.itemId;
-                    const itemToSell = currentUser.inventory.find(i => i.id === itemId);
-                    if (itemToSell) sellItem(itemToSell);
-                });
-            });
-
-            document.querySelectorAll('.withdraw-item-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const itemId = event.target.dataset.itemId;
-                    const itemToWithdraw = currentUser.inventory.find(i => i.id === itemId);
-                    if (itemToWithdraw) showWithdrawModal(itemToWithdraw);
-                });
-            });
-        }
-    }
-}
-
-// Вспомогательная функция для форматирования оставшегося времени
-function formatTimeRemaining(endTime) {
-    const now = new Date();
-    const diffMs = endTime - now;
-
-    if (diffMs <= 0) return 'Время истекло';
-
-    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-    return ${days} д ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')};
-}
-
-
-// --- Обработчики событий ---
-
-// Общий обработчик для кнопок нижней навигации
-document.querySelectorAll('.bottom-nav .nav-item').forEach(button => {
-    button.addEventListener('click', () => {
-        const screenId = button.dataset.screenId;
-        showScreen(screenId);
-    });
-});
-
-// Кнопки Главного экрана
-document.getElementById('play-rocket-button').addEventListener('click', () => {
-    showScreen('rocket-game-screen');
-});
-
-document.getElementById('open-cases-button').addEventListener('click', async () => {
-    showScreen('cases-list-screen');
-    renderCases(await fetchCasesData()); // Загружаем и рендерим кейсы
-});
-
-document.getElementById('go-to-profile-button').addEventListener('click', () => {
-    showScreen('profile-screen');
-});
-// Кнопки пополнения баланса
-document.getElementById('top-up-button').addEventListener('click', () => {
-    document.getElementById('top-up-modal').classList.add('active');
-});
-if (document.getElementById('profile-top-up-button')) {
-    document.getElementById('profile-top-up-button').addEventListener('click', () => {
-        document.getElementById('top-up-modal').classList.add('active');
-    });
-}
-if (document.getElementById('game-top-up-button')) { // Кнопка пополнения на экране игры
-    document.getElementById('game-top-up-button').addEventListener('click', () => {
-        document.getElementById('top-up-modal').classList.add('active');
-    });
-}
-document.querySelector('.close-modal').addEventListener('click', () => {
-    document.getElementById('top-up-modal').classList.remove('active');
-});
-
-
-// Выбор суммы пополнения в модальном окне
-document.querySelectorAll('.top-up-option').forEach(button => {
-    button.addEventListener('click', (event) => {
-        const starsAmount = parseInt(event.target.dataset.stars);
-        const tonAmount = starsAmount / 100; // 1 TON = 100 Stars
-
-        // Отправляем данные боту для инициирования платежа
-        Telegram.WebApp.sendData(JSON.stringify({
-            action: 'top_up_ton_balance',
-            user_id: currentUser.id,
-            stars_amount_to_pay: starsAmount,
-            ton_amount_to_receive: tonAmount
-        }));
-
-        Telegram.WebApp.showPopup({
-            title: 'Пополнение',
-            message: Запрос на ${tonAmount} TON (${starsAmount} ⭐) отправлен боту.,
-            buttons: [{id: 'ok', type: 'default', text: 'OK'}]
-        });
-        document.getElementById('top-up-modal').classList.remove('active');
-    });
-});
-
-// Рендер кейсов
-async function renderCases(cases) {
-    const casesContainer = document.getElementById('cases-container');
-    if (!casesContainer) {
-        return; // Возвращаемся, если контейнер не найден
-    }
-    casesContainer.innerHTML = '';
-    cases.forEach(caseItem => {
-        const caseElement = document.createElement('div');
-        caseElement.classList.add('case-card');
-        caseElement.dataset.caseId = caseItem.id;
-        caseElement.addEventListener('click', () => openCase(caseItem));
-        caseElement.innerHTML = 
-            <img src="${caseItem.imageUrl}" alt="${caseItem.name}" class="case-card-image">
-            <div class="case-info">
-                <h3>${caseItem.name}</h3>
-                <p>Стоимость: <span class="cost">${caseItem.cost.toFixed(2)}</span> TON</p>
-                <p>Открывай и выигрывай!</p>
-            </div>
-        ;
-        casesContainer.appendChild(caseElement);
-    });
-}
-
-// Открытие кейса
-function openCase(caseItem) {
-    if (currentUser.tonBalance < caseItem.cost) {
-        Telegram.WebApp.showAlert(Недостаточно TON для открытия кейса "${caseItem.name}". Вам нужно ${caseItem.cost.toFixed(2)} TON.);
-        return;
-    }
-
-    Telegram.WebApp.showPopup({
-        title: 'Открыть кейс?',
-        message: Вы хотите открыть кейс "${caseItem.name}" за ${caseItem.cost.toFixed(2)} TON?,
-        buttons: [
-            { id: 'yes', type: 'default', text: 'Да' },
-            { id: 'no', type: 'cancel', text: 'Нет' }
-        ]
-    }, function(buttonId) {
-        if (buttonId === 'yes') {
-            // Отправляем запрос боту
-            Telegram.WebApp.sendData(JSON.stringify({
-                action: 'open_case',
-                user_id: currentUser.id,
-                case_id: caseItem.id,
-                cost_in_ton: caseItem.cost
-            }));
-            Telegram.WebApp.showProgress(); // Показываем прогресс
-        }
-    });
-}
-
-// --- Функционал продажи предмета ---
-function sellItem(itemToSell) {
-    Telegram.WebApp.showPopup({
-        title: 'Продать предмет?',
-        message: Вы хотите продать "${itemToSell.name}" за ${itemToSell.sellValue} TON?,
-        buttons: [
-            { id: 'yes', type: 'default', text: 'Да, продать' },
-            { id: 'no', type: 'cancel', text: 'Отмена' }
-        ]
-    }, function(buttonId) {
-        if (buttonId === 'yes') {
-            Telegram.WebApp.sendData(JSON.stringify({
-                action: 'sell_item',
-                user_id: currentUser.id,
-                item_id: itemToSell.id, // ID конкретного экземпляра предмета
-                sell_value: parseFloat(itemToSell.sellValue)
-            }));
-            Telegram.WebApp.showProgress();
-        }
-    });
-}
-
-// --- Функционал вывода NFT ---
-let currentItemToWithdraw = null; // Глобальная переменная для хранения выбранного предмета
-
-function showWithdrawModal(itemToWithdraw) {
-    currentItemToWithdraw = itemToWithdraw;
-    document.getElementById('withdraw-item-name').textContent = itemToWithdraw.name;
-    document.getElementById('ton-wallet-address').value = ''; // Очистить поле
-    document.getElementById('withdraw-nft-modal').classList.add('active');
-}
-
-document.getElementById('confirm-withdraw-button').addEventListener('click', () => {
-    const walletAddress = document.getElementById('ton-wallet-address').value.trim();
-    if (!walletAddress) {
-        Telegram.WebApp.showAlert('Пожалуйста, введите адрес вашего TON-кошелька.');
-        return;
-    }
-    if (!currentItemToWithdraw) {
-        Telegram.WebApp.showAlert('Ошибка: Предмет для вывода не выбран.');
-        return;
-    }
-
-    Telegram.WebApp.showPopup({
-        title: 'Подтвердить вывод?',
-        message: Вы уверены, что хотите вывести "${currentItemToWithdraw.name}" на адрес "${walletAddress}"? Проверьте адрес внимательно!,
-        buttons: [
-            { id: 'yes', type: 'default', text: 'Да, вывести' },
-            { id: 'no', type: 'cancel', text: 'Отмена' }
-        ]
-    }, function(buttonId) {
-        if (buttonId === 'yes') {
-            Telegram.WebApp.sendData(JSON.stringify({
-                action: 'withdraw_nft',
-                user_id: currentUser.id,
-                item_id: currentItemToWithdraw.id, // ID конкретного экземпляра NFT
-                ton_wallet_address: walletAddress
-            }));
-            Telegram.WebApp.showProgress();
-            document.getElementById('withdraw-nft-modal').classList.remove('active');
-        }
-    });
-});
-
-document.querySelector('.close-modal-withdraw').addEventListener('click', () => {
-    document.getElementById('withdraw-nft-modal').classList.remove('active');
-});
-
-
-// Обработка закрытия инвойса (платежа Stars)
-Telegram.WebApp.onEvent('onInvoiceClosed', function(data) {
-    if (data.status === 'paid') {
-        // Бот пришлет receiveData с balance_updated
-        Telegram.WebApp.showAlert('Оплата Stars прошла успешно! Ваш баланс TON будет обновлен ботом.');
-    } else if (data.status === 'cancelled') {
-        Telegram.WebApp.showAlert('Оплата Stars отменена.');
-    } else if (data.status === 'failed') {
-        Telegram.WebApp.showAlert('Оплата Stars не удалась.');
-    }
-});
-
-// Слушаем сообщения от бота, которые приходят через Telegram.WebApp.postEvent('receiveData', ...)
-Telegram.WebApp.onEvent('receiveData', function(eventData) {
-    try {
-        const data = JSON.parse(eventData);
-        Telegram.WebApp.hideProgress(); // Скрываем прогресс после получения ответа
-        
-        if (data.action === 'balance_updated') {
-            currentUser.tonBalance = data.new_balance;
-            updateUI();
-            Telegram.WebApp.showNotification({message: Ваш баланс обновлен: ${data.new_balance.toFixed(2)} TON, type: 'success'});
-        } else if (data.action === 'case_opened') {
-            currentUser.tonBalance = data.new_balance;
-            currentUser.gamesPlayed++;
-            // Убеждаемся, что gift имеет все необходимые поля (id, sellValue, timerEnd)
-            let receivedGift = data.gift;
-            if (!receivedGift.id) receivedGift.id = 'item_' + Math.random().toString(36).substr(2, 9);
-            if (typeof receivedGift.sellValue === 'undefined') receivedGift.sellValue = (Math.random() * (5.0 - 0.1) + 0.1).toFixed(2);
-            if (typeof receivedGift.timerEnd === 'undefined') {
-                const now = new Date();
-                now.setDate(now.getDate() + 20);
-                receivedGift.timerEnd = now.toISOString();
-            }
-            currentUser.inventory.push(receivedGift);
-            localStorage.setItem('inventory_' + currentUser.id, JSON.stringify(currentUser.inventory)); // Обновляем локальное хранилище
-            updateUI();
-            Telegram.WebApp.showNotification({message: Вы выиграли: ${receivedGift.name}!, type: 'success'});
-            // Здесь можно показать красивую анимацию выигрыша
-        } else if (data.action === 'item_sold') {
-            currentUser.tonBalance = data.new_balance;
-            currentUser.inventory = currentUser.inventory.filter(item => item.id !== data.item_id);
-            localStorage.setItem('inventory_' + currentUser.id, JSON.stringify(currentUser.inventory)); // Обновляем локальное хранилище
-            updateUI();
-            Telegram.WebApp.showNotification({message: Предмет "${data.item_name}" продан за ${data.sell_value.toFixed(2)} TON!, type: 'success'});
-        } else if (data.action === 'nft_withdrawn') {
-            currentUser.inventory = currentUser.inventory.filter(item => item.id !== data.item_id);
-            localStorage.setItem('inventory_' + currentUser.id, JSON.stringify(currentUser.inventory)); // Обновляем локальное хранилище
-            updateUI();
-            Telegram.WebApp.showNotification({message: NFT "${data.item_name}" успешно отправлен на ваш кошелек!, type: 'success'});
-        } else if (data.action === 'error') {
-            Telegram.WebApp.showAlert(data.message || 'Произошла ошибка.');
-        }
-
-    } catch (e) {
-        console.error('Failed to parse data from bot:', eventData, e);
-        Telegram.WebApp.hideProgress();
-        Telegram.WebApp.showAlert('Произошла внутренняя ошибка.');
-    }
-});
-
-
-// --- WebSocket-клиент для игры "Ракета" ---
-let ws = null; // WebSocket-соединение
-// !!! ВАЖНО: Замени на URL твоего WebSocket сервера !!!
-// Если твой FastAPI сервер работает локально на 8000, то это: 'ws://localhost:8000/ws'
-// Если он на публичном домене, например, api.yourgame.com, то это: 'wss://api.yourgame.com/ws'
-const WS_URL = 'ws://localhost:8000/ws'; 
-
-let gameRoundState = 'waiting'; // 'waiting', 'betting', 'flying', 'crashed'
-let currentMultiplier = 1.00;
-let userBetAmount = 1.00;
-let userAutoCashoutMultiplier = 2.00;
-let hasPlacedBet = false;
-let hasCashedOut = false; // Хранит множитель, на котором вывели
-
-function connectWebSocket() {
-    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-        // console.log("WebSocket уже подключен или подключается.");
-        return;
-    }
-
-    // console.log("Попытка подключения к WebSocket по адресу:", WS_URL);
-    ws = new WebSocket(WS_URL);
-
-ws.onopen = function() {
-        // console.log("WebSocket подключен.");
-        // Отправляем данные пользователя при подключении
-        ws.send(JSON.stringify({ type: 'init', user_id: currentUser.id, username: currentUser.username, telegram_init_data: Telegram.WebApp.initData }));
-    };
-
-    ws.onmessage = function(event) {
-        const msg = JSON.parse(event.data);
-        handleWebSocketMessage(msg);
-    };
-
-    ws.onclose = function() {
-        // console.warn("WebSocket отключен. Попытка переподключения через 5 секунд...");
-        if (document.getElementById('rocket-game-screen').classList.contains('active')) {
-            setTimeout(connectWebSocket, 5000); // Переподключаемся, только если экран игры активен
-        }
-    };
-
-    ws.onerror = function(error) {
-        console.error("WebSocket ошибка:", error);
-        Telegram.WebApp.showAlert('Ошибка подключения к игре. Пожалуйста, попробуйте позже.');
-    };
-}
-
-function handleWebSocketMessage(msg) {
-    switch (msg.type) {
-        case 'game_state':
-            updateGameState(msg.state, msg.multiplier, msg.history);
-            break;
-        case 'bet_result':
-            handleBetResult(msg.success, msg.message, msg.new_balance);
-            break;
-        case 'cashout_result':
-            handleCashoutResult(msg.success, msg.message, msg.new_balance, msg.profit, msg.multiplier);
-            break;
-        case 'error':
-            Telegram.WebApp.showAlert(Ошибка игры: ${msg.message});
-            console.error("Ошибка игры от сервера:", msg.message);
-            break;
-        case 'balance_update': // Если сервер присылает обновление баланса (для всех клиентов пользователя)
-            currentUser.tonBalance = msg.new_balance;
-            updateUI();
-            // Telegram.WebApp.showNotification({message: Ваш баланс обновлен: ${msg.new_balance.toFixed(2)} TON, type: 'info'});
-            break;
-    }
-}
-
-function updateGameState(state, multiplier = 1.00, history = []) {
-    gameRoundState = state;
-    currentMultiplier = multiplier;
-
-    const currentMultiplierElement = document.getElementById('current-multiplier');
-    const mainGameButton = document.getElementById('main-game-button');
-    const rocketEmoji = document.getElementById('rocket-emoji'); // Используем ID для эмодзи
-    const multiplierHistoryElement = document.getElementById('multiplier-history');
-
-    // Обновление истории множителей
-    if (multiplierHistoryElement && history.length > 0) {
-        multiplierHistoryElement.innerHTML = ''; // Очищаем
-        history.forEach((m, index) => {
-            const span = document.createElement('span');
-            span.classList.add('history-item');
-            if (index === history.length - 1) { // Последний элемент в истории
-                 span.classList.add('current-last');
-            }
-            span.textContent = ${m.toFixed(2)}x;
-            multiplierHistoryElement.appendChild(span);
-        });
-}
-switch (gameRoundState) {
-        case 'waiting':
-            currentMultiplierElement.textContent = x${multiplier.toFixed(2)};
-            currentMultiplierElement.style.color = '#fff';
-            mainGameButton.textContent = 'Ожидание';
-            mainGameButton.classList.remove('betting', 'cashout');
-            mainGameButton.classList.add('waiting');
-            rocketEmoji.style.animation = 'none'; // Останавливаем анимацию
-            rocketEmoji.style.opacity = '1';
-            hasPlacedBet = false;
-            hasCashedOut = false; // Сбрасываем флаг вывода
-            break;
-        case 'betting':
-            currentMultiplierElement.textContent = x${multiplier.toFixed(2)};
-            currentMultiplierElement.style.color = '#fff';
-            mainGameButton.textContent = 'Сделать ставку';
-            mainGameButton.classList.remove('waiting', 'cashout');
-            mainGameButton.classList.add('betting');
-            mainGameButton.disabled = false; // Разрешаем ставить
-            rocketEmoji.style.animation = 'none'; // Останавливаем анимацию
-            rocketEmoji.style.opacity = '1';
-            hasPlacedBet = false;
-            hasCashedOut = false; // Сбрасываем флаг вывода
-            break;
-        case 'flying':
-            currentMultiplierElement.textContent = x${multiplier.toFixed(2)};
-            currentMultiplierElement.style.color = '#4CAF50'; // Зеленый во время полета
-            if (hasPlacedBet && !hasCashedOut) {
-                mainGameButton.textContent = Вывод x${multiplier.toFixed(2)};
-                mainGameButton.classList.remove('betting', 'waiting');
-                mainGameButton.classList.add('cashout');
-                mainGameButton.disabled = false; // Разрешаем выводить
-            } else if (hasCashedOut) { // Если уже вывели
-                mainGameButton.textContent = Выведено x${hasCashedOut.toFixed(2)}; 
-                mainGameButton.classList.remove('betting', 'cashout');
-                mainGameButton.classList.add('waiting'); 
-                mainGameButton.disabled = true;
-            } else { // Просто наблюдаем
-                mainGameButton.textContent = Игра x${multiplier.toFixed(2)}; 
-                mainGameButton.classList.remove('betting', 'cashout');
-                mainGameButton.classList.add('waiting');
-                mainGameButton.disabled = true;
-            }
-            rocketEmoji.style.animation = 'flyUp 5s infinite ease-out'; // Запускаем анимацию
-            break;
-        case 'crashed':
-            currentMultiplierElement.textContent = x${multiplier.toFixed(2)} (Упала!);
-            currentMultiplierElement.style.color = '#F44336'; // Красный при падении
-            mainGameButton.textContent = 'Ожидание';
-            mainGameButton.classList.remove('betting', 'cashout');
-            mainGameButton.classList.add('waiting');
-            mainGameButton.disabled = true; // Пока ждем следующего раунда
-            rocketEmoji.style.animation = 'none'; // Останавливаем анимацию
-            rocketEmoji.style.opacity = '0.5'; // Показываем, что упала
-            break;
-    }
-    // Обновляем баланс в шапке игры
-    document.getElementById('game-ton-balance').textContent = currentUser.tonBalance.toFixed(2);
-}
-
-function handleBetResult(success, message, newBalance) {
-    if (success) {
-        Telegram.WebApp.showNotification({message: message, type: 'success'});
-        currentUser.tonBalance = newBalance;
-        updateUI();
-        hasPlacedBet = true;
-        hasCashedOut = false; // Сброс для новой ставки
-    } else {
-        Telegram.WebApp.showAlert(message);
-        hasPlacedBet = false;
-    }
-    document.getElementById('main-game-button').disabled = false; // Включаем кнопку после ответа
-}
-
-function handleCashoutResult(success, message, newBalance, profit, multiplier) {
-    if (success) {
-        Telegram.WebApp.showNotification({message: Вывели ${profit.toFixed(2)} TON на x${multiplier.toFixed(2)}!, type: 'success'});
-        currentUser.tonBalance = newBalance;
-        updateUI();
-        hasCashedOut = multiplier; // Запоминаем на каком множителе вывели
-    } else {
-        Telegram.WebApp.showAlert(message);
-    }
-    document.getElementById('main-game-button').disabled = false; // Включаем кнопку после ответа
-}
-
-
-// --- Функции управления ставками ---
-function adjustBetAmount(amount, isQuickBet = false) {
-    const betInput = document.getElementById('bet-amount');
-    let currentBet = parseFloat(betInput.value);
-    if (isNaN(currentBet)) currentBet = 0;
-
-    if (isQuickBet) {
-        currentBet += amount;
-    } else {
-        currentBet += amount;
-    }
-    
-    if (currentBet < 0.01) currentBet = 0.01; // Минимальная ставка
-    betInput.value = currentBet.toFixed(2);
-    userBetAmount = parseFloat(betInput.value);
-}
-
-function adjustAutoCashout(amount) {
-    const autoCashoutInput = document.getElementById('auto-cashout-multiplier');
-    let currentAutoCashout = parseFloat(autoCashoutInput.value);
-    if (isNaN(currentAutoCashout)) currentAutoCashout = 1.00;
-
-    currentAutoCashout += amount;
-    if (currentAutoCashout < 1.01) currentAutoCashout = 1.01; // Минимальный автовывод
-    autoCashoutInput.value = currentAutoCashout.toFixed(2);
-    userAutoCashoutMultiplier = parseFloat(autoCashoutInput.value);
-}
-
-document.getElementById('bet-amount').addEventListener('change', (event) => {
-    let val = parseFloat(event.target.value);
-    if (isNaN(val) || val < 0.01) val = 0.01;
-    event.target.value = val.toFixed(2);
-    userBetAmount = val;
-});
-
-document.getElementById('auto-cashout-multiplier').addEventListener('change', (event) => {
-    let val = parseFloat(event.target.value);
-    if (isNaN(val) || val < 1.01) val = 1.01;
-    event.target.value = val.toFixed(2);
-    userAutoCashoutMultiplier = val;
-});
-
-
-// --- Главная кнопка игры ---
-document.getElementById('main-game-button').addEventListener('click', () => {
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-        Telegram.WebApp.showAlert('Соединение с игрой потеряно. Попробуйте обновить страницу.');
-        return;
-    }
-    if (!currentUser.id) {
-         Telegram.WebApp.showAlert('Не удалось получить ID пользователя Telegram. Пожалуйста, перезапустите приложение.');
-         return;
-    }
-
-    const autoCashoutEnabled = document.getElementById('auto-cashout-checkbox').checked;
-    let autoCashoutValue = autoCashoutEnabled ? userAutoCashoutMultiplier : null;
-    
-    if (gameRoundState === 'betting' && !hasPlacedBet) {
-        // Размещаем ставку
-        if (userBetAmount > currentUser.tonBalance) {
-            Telegram.WebApp.showAlert('Недостаточно TON для этой ставки.');
+        inventoryList.innerHTML = '';
+        if (userInventory.length === 0) {
+            inventoryList.innerHTML = '<p style="text-align: center; color: #bbb;">Ваш инвентарь пуст.</p>';
             return;
         }
-        if (userBetAmount <= 0) {
-             Telegram.WebApp.showAlert('Ставка должна быть больше 0.');
-            return;
-        }
-        
-        ws.send(JSON.stringify({
-            type: 'place_bet',
-            user_id: currentUser.id,
-            bet_amount: userBetAmount,
-            auto_cashout: autoCashoutValue
-        }));
-        document.getElementById('main-game-button').disabled = true; // Отключаем кнопку пока не получим ответ
-    } else if (gameRoundState === 'flying' && hasPlacedBet && !hasCashedOut) {
-        // Выводим ставку
-        ws.send(JSON.stringify({
-            type: 'cashout',
-            user_id: currentUser.id,
-        }));
-        document.getElementById('main-game-button').disabled = true; // Отключаем кнопку пока не получим ответ
+
+userInventory.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('inventory-item');
+            listItem.innerHTML = 
+                <img src="${item.img}" alt="${item.name}">
+                <div class="item-details">
+                    <h3>${item.name}</h3>
+                    <p>${item.description}</p>
+                </div>
+                <div class="sell-withdraw-buttons">
+                    <button class="sell-button" data-item-id="${item.id}">Продать</button>
+                    <button class="withdraw-button" data-item-id="${item.id}">Вывести</button>
+                </div>
+            ;
+            inventoryList.appendChild(listItem);
+        });
+
+        document.querySelectorAll('.sell-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const itemId = event.target.dataset.itemId;
+                alert(Продаем предмет: ${itemId}! (Эта функция будет реализована на бэкенде));
+            });
+        });
+
+        document.querySelectorAll('.withdraw-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const itemId = event.target.dataset.itemId;
+                alert(Выводим предмет: ${itemId}! (Эта функция будет реализована на бэкенде, потребуется TON Connect));
+            });
+        });
     }
+    renderInventory(); // Рендерим инвентарь при загрузке
 });
+``
 
-// --- Функции для запуска/остановки UI игры ---
-function startGameUI() {
-    connectWebSocket();
-    fetchUserData(); // Обновляем баланс в шапке
-    // Убедимся, что начальное состояние кнопки установлено правильно
-    updateGameState(gameRoundState, currentMultiplier);
-}
-
-function stopGameUI() {
-    if (ws) {
-        ws.close();
-        ws = null;
-    }
-    // Сброс UI игры
-    document.getElementById('current-multiplier').textContent = 'x1.00';
-    document.getElementById('current-multiplier').style.color = '#fff';
-    document.getElementById('main-game-button').textContent = 'Ожидание';
-    docum
+Этот фундамент дает вам полностью интерактивный фронтенд, готовый к подключению к мощной бэкенд-логике! Удачи с вашим проектом!
