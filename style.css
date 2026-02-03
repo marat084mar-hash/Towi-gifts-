@@ -1,1 +1,922 @@
+css
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #000; /* Чисто черный фон */
+    color: #e0e0e0; /* Светлый текст */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    overflow: hidden;
+}
 
+.app-container {
+    width: 100%;
+    max-width: 420px; /* Типичная ширина для мобильных приложений */
+    height: 100vh;
+    background-color: #1a0a2c; /* Основной темный фиолетовый фон */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Верхняя панель: Общая для всего приложения --- */
+.top-panel {
+    background-color: #210d33;
+    border-bottom: 1px solid #3c195a;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #000;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-bottom: 1px solid #333;
+}
+
+.close-button, .menu-dots {
+    font-size: 1.5em;
+    cursor: pointer;
+    opacity: 0.7;
+}
+.close-button { font-size: 2em; line-height: 0.5; }
+
+.balance-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+.balance-info {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.balance-item span {
+    color: #ffd700;
+}
+
+.replenish-button {
+    background-color: #5d2b8c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 1.8em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.replenish-button.small {
+    width: 28px;
+    height: 28px;
+    font-size: 1.5em;
+}
+
+.replenish-button:hover {
+    background-color: #7d4ba9;
+}
+
+/* --- Экраны приложения --- */
+.screen {
+    flex-grow: 1;
+    display: none; /* Все экраны по умолчанию скрыты */
+    flex-direction: column;
+    overflow-y: auto; /* Прокрутка для контента */
+    animation: fadeIn 0.3s ease-out; /* Анимация появления */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 70px; /* Отступ для нижней навигации */
+}
+
+.screen.active {
+    display: flex; /* Активный экран показывается */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    color: #d19fe0;
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+    flex-grow: 1; /* Центрируем заголовок */
+}
+
+/* --- Заголовки суб-экранов --- */
+.sub-screen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: #210d33;
+    border-bottom: 1px solid #3c195a;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sub-screen-header .back-button {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.sub-screen-header .back-button:hover {
+    background-color: #3c195a;
+}
+.header-placeholder { width: 50px; } /* Для выравнивания заголовка */
+
+/* --- Главное меню с карточками --- */
+.main-menu-screen {
+    justify-content: flex-start; /* Выравниваем карточки сверху */
+    padding: 20px;
+}
+
+.main-navigation-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-top: 15px; /* Отступ от баланса */
+}
+
+.nav-card {
+    position: relative;
+    width: 100%;
+    height: 180px; /* Фиксированная высота карточки */
+    border-radius: 20px; /* Большие закругления */
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-start; /* Контент сверху */
+    text-align: left;
+}
+
+.nav-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+}
+
+.cases-card {
+    background-image: url('https://i.ibb.co/fQ53D1v/cases-bg.png'); /* Фон для Кейсов */
+    background-color: #ff9800; /* Резервный цвет */
+}
+
+.rocket-card {
+    background-image: url('https://i.ibb.co/P4h8m0x/rocket-bg.png'); /* Фон для Ракеты */
+    background-color: #5d2b8c; /* Резервный цвет */
+}
+
+.nav-card .card-content {
+    padding: 25px;
+    background: linear-gradient(to right, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0) 70%); /* Темный градиент слева для текста */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрируем текст по вертикали внутри градиента */
+    align-items: flex-start;
+}
+
+.card-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.card-description {
+    font-size: 0.9em;
+    color: #eee;
+    line-height: 1.4;
+    max-width: 60%; /* Ограничиваем ширину для лучшего вида */
+}
+
+
+/* --- Секция Кейсов --- */
+.cases-screen {
+    padding-top: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.case-card {
+    background-color: #210d33;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+    border: 1px solid #3c195a;
+}
+
+.case-card:hover {
+    transform: translateY(-5px);
+}
+
+.case-card img {
+    width: 100px;
+    height: 100px;
+    background-color: #3c195a;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.case-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.case-card p {
+    font-size: 0.9em;
+    color: #bbb;
+    margin-bottom: 15px;
+}
+
+.case-card .open-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.case-card .open-button:hover {
+    background-color: #66BB6A;
+}
+
+/* --- Секция Ракет Краш --- */
+.rocket-crash-screen {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="%231a0a2c"/><circle cx="5" cy="5" r="0.5" fill="%233c195a"/></svg>'); /* Звездный фон с точками */
+    background-size: 10px 10px;
+    padding: 0; /* Убираем паддинги, все внутри контейнеров */
+    align-items: stretch; /* Растягиваем дочерние элементы */
+}
+
+.rocket-crash-screen .sub-screen-header {
+    background-color: #210d33;
+    border-bottom: 1px solid #3c195a;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rocket-crash-screen .user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1; /* Чтобы занимал доступное место */
+    margin-left: 10px; /* Отступ от кнопки назад */
+}
+.rocket-crash-screen .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #5d2b8c;
+    object-fit: cover;
+}
+.rocket-crash-screen .user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+.rocket-crash-screen .user-name {
+    font-weight: 600;
+    font-size: 1em;
+}
+.rocket-crash-screen .user-tag {
+    font-size: 0.8em;
+    color: #bbb;
+}
+.rocket-crash-screen .balance-ton {
+    font-weight: bold;
+    color: #ffd700;
+    margin-left: auto; /* Прижимает к правому краю */
+    margin-right: 10px;
+}
+
+.previous-multipliers-wrapper {
+    width: 100%;
+    padding: 10px 0;
+    overflow-x: auto; /* Горизонтальная прокрутка */
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid #3c195a;
+    background-color: #210d33;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.previous-multipliers {
+    display: flex;
+    gap: 8px;
+    padding: 0 15px; /* Отступы по бокам */
+    min-width: fit-content; /* Чтобы контент не сжимался */
+}
+
+.previous-multiplier-item {
+    background-color: #5d2b8c;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    white-space: nowrap; /* Чтобы не переносилось */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.previous-multiplier-item.crashed {
+    background-color: #a020f0; /* Чуть другой оттенок для отличия */
+}
+
+.crash-game-display {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+}
+
+.game-object { /* Стили для эмодзи ракеты */
+    font-size: 5em; /* Размер эмодзи */
+    position: absolute; /* Позиционируем относительно контейнера */
+    bottom: 50%; /* Начинаем чуть ниже центра */
+    transform: translateY(50%); /* Центрируем по вертикали */
+    transition: transform 0.1s ease-out; /* Плавное перемещение */
+}
+
+.large-multiplier {
+    font-size: 5em; /* Очень крупный множитель */
+    font-weight: bold;
+    color: #fff;
+    position: relative;
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+.large-multiplier.crashed {
+    color: #ff0000;
+}
+.large-multiplier.cashed-out {
+    color: #00FFFF;
+}
+
+.game-status-message { /* Сообщение о статусе игры */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #e0e0e0;
+    background-color: rgba(0,0,0,0.7);
+    padding: 8px 15px;
+    border-radius: 10px;
+    z-index: 10;
+    display: none; /* Изначально скрыто */
+}
+.game-status-message.visible {
+    display: block;
+}
+
+.crash-game-controls-area {
+    background-color: #210d33;
+    border-top: 1px solid #3c195a;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auto-cashout-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #3c195a;
+    border-radius: 10px;
+    padding: 10px 15px;
+}
+
+#auto-cashout-checkbox {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    accent-color: #00c853; /* Цвет галочки */
+}
+
+.auto-cashout-controls label {
+    flex-grow: 1;
+    font-weight: 600;
+}
+
+.amount-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.control-btn {
+    background-color: #5d2b8c;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.control-btn:hover {
+    background-color: #7d4ba9;
+}
+
+.value-display, .bet-input {
+    background-color: #1a0a2c;
+    border: 1px solid #3c195a;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 1em;
+    width: 60px;
+}
+.bet-input {
+    flex-grow: 1;
+}
+
+.bet-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.amount-control.large-bet {
+    display: flex;
+    width: 100%;
+}
+.amount-control.large-bet .control-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+}
+.amount-control.large-bet .bet-input {
+    flex-grow: 1;
+    font-size: 1.2em;
+}
+
+.quick-bet-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.quick-bet-btn {
+    flex-grow: 1;
+    background-color: #3c195a;
+    color: white;
+    border: none;
+    padding: 10px 5px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.quick-bet-btn:hover {
+    background-color: #5d2b8c;
+}
+
+.main-action-button {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    background-color: #5d2b8c; /* Цвет кнопки "Поставить ставку" */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.main-action-button.betting {
+    background-color: #00c853; /* Зеленый для ставки */
+}
+.main-action-button.cashed-out {
+    background-color: #00bcd4; /* Голубой при выводе */
+}
+.main-action-button.crashed {
+    background-color: #ff0000; /* Красный при краше */
+}
+.main-action-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+.main-action-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* --- Секция Инвентаря (детальный список) --- */
+.inventory-screen {
+    padding-top: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.inventory-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+.inventory-item {
+    background-color: #210d33;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #3c195a;
+}
+
+.inventory-item img {
+    width: 60px;
+    height: 60px;
+    background-color: #3c195a;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.item-details {
+    flex-grow: 1;
+}
+
+.item-details h3 {
+    margin: 0;
+    color: #e0e0e0;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.item-details p {
+    margin: 5px 0 0;
+    color: #bbb;
+    font-size: 0.9em;
+}
+
+.sell-withdraw-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sell-button, .withdraw-button {
+    background-color: #ffa000;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.withdraw-button {
+    background-color: #00bcd4;
+}
+
+.sell-button:hover {
+    background-color: #ffb300;
+}
+
+.withdraw-button:hover {
+    background-color: #4dd0e1;
+}
+
+/* --- Секция Профиль (новый экран) --- */
+.profile-screen {
+    padding: 0;
+    background-color: #1a0a2c;
+}
+
+.profile-screen .profile-header {
+    background-color: #210d33;
+    border-bottom: 1px solid #3c195a;
+    padding: 10px 15px;
+}
+
+.profile-screen .profile-header .back-button {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.profile-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #3c195a;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.profile-dropdown:hover {
+    background-color: #5d2b8c;
+}
+.profile-dropdown .dropdown-arrow::after {
+    content: '▾';
+    margin-left: 5px;
+}
+
+.profile-main-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 20px;
+    background-color: #210d33; /* Фон, как на скриншоте */
+    border-bottom: 1px solid #3c195a;
+}
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #5d2b8c;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+.profile-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.profile-tag {
+    font-size: 1em;
+    color: #bbb;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.stat-card {
+    background-color: #3c195a;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.stat-card span:first-child {
+    font-size: 0.9em;
+    color: #bbb;
+}
+.stat-card .stat-value {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.replenish-balance-button {
+    background-color: #5d2b8c;
+    color: white;
+    border: none;
+    width: calc(100% - 40px); /* Учитываем паддинги по 20px */
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 20px 20px;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.replenish-balance-button:hover {
+    background-color: #7d4ba9;
+}
+
+.withdraw-status {
+    padding: 0 20px 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.withdraw-status p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.withdraw-status .info-icon {
+    background-color: #5d2b8c;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    color: white;
+    font-weight: bold;
+}
+
+.progress-bar-wrapper {
+    background-color: #3c195a;
+    border-radius: 8px;
+    height: 25px;
+    position: relative;
+    overflow: hidden;
+}
+.progress-bar {
+    height: 100%;
+    background-color: #4CAF50; /* Зеленый цвет прогресса */
+    width: 0%; /* Начальное состояние */
+    border-radius: 8px;
+    transition: width 0.5s ease-out;
+}
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
+}
+
+.inventory-overview {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.inventory-overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.inventory-overview-header h3 {
+    margin: 0;
+    font-weight: 600;
+    color: #d19fe0;
+    text-align: left;
+    flex-grow: 0; /* Не растягиваем */
+}
+.sell-all-button {
+    background-color: #ffa000;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.sell-all-button:hover {
+    background-color: #ffb300;
+}
+
+.inventory-preview {
+    display: flex;
+    gap: 10px;
+    background-color: #3c195a;
+    border-radius: 15px;
+    padding: 15px;
+    justify-content: flex-start; /* Выравнивание по левому краю */
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.gift-box-placeholder {
+    width: 70px;
+    height: 70px;
+    background-color: #5d2b8c;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    color: white;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+}
+.inventory-arrow {
+    margin-left: auto; /* Прижимает стрелку вправо */
+    font-size: 2em;
+    color: #bbb;
+    cursor: pointer;
+}
+
+/* --- Нижняя навигация --- */
+.bottom-nav {
+    display: flex;
+    justify-content: center; /* Центрируем кнопку */
+    align-items: center;
+    background-color: #210d33;
+    border-top: 1px solid #3c195a;
+    padding: 10px 0;
+    position: fixed; /* Фиксируем внизу */
+    bottom: 0;
+    width: 100%;
+    max-width: 420px; /* Сохраняем ширину контейнера */
+    z-index: 100;
+}
+
+.bottom-nav .nav-button {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 0.9em;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.bottom-nav .nav-button .button-icon {
+    font-size: 1.5em;
+}
+
+.bottom-nav .nav-button:hover {
+    color: #ffd700;
+}
+
+/* Скрываем скроллбар */
+.app-container::-webkit-scrollbar,
+.screen::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
