@@ -1,242 +1,158 @@
-```html
+html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts</title>
+    <title>TowiTo Mini App</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Подключи Telegram Web App API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Подключи Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Подключи шрифты (например, Google Fonts) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <!-- Верхняя панель: Балансы и пополнение -->
-        <header class="top-panel" id="main-top-panel">
-            <div class="balance-section">
-                <div class="balance-info">
-                    <span class="balance-item">TON: <span id="ton-balance">0.00</span> 💎</span>
-                    <span class="balance-item">Stars: <span id="stars-balance">0</span> ⭐</span>
-                </div>
-                <button class="replenish-button" data-target-screen="topup-screen">+</button>
+        <!-- Верхняя панель -->
+        <header class="top-bar">
+            <div class="user-info">
+                <div class="user-avatar"></div> <!-- TODO: Добавить аватарку Telegram, если доступна -->
+                <span id="userNickname" class="blurred-nickname">@Towi****</span>
             </div>
+            <div class="balance-info">
+                <span class="balance-item"><span id="tonBalance">0.00</span> TON</span>
+                <span class="balance-item"><span id="starsBalance">0</span> ⭐</span>
+                <button id="showTopUpScreenButton" class="plus-button">+</button>
+            </div>
+            <div class="menu-dots">...</div> <!-- TODO: Добавить функционал для меню -->
         </header>
 
-        <!-- Главный экран навигации -->
-        <div id="main-menu-screen" class="screen active">
-            <div class="main-navigation-cards">
-                <button class="nav-card cases-card" data-target-screen="cases-screen">
-                    <div class="card-content">
-                        <span class="card-title">Кейсы</span>
-                        <span class="card-description">Открывайте кейсы и получайте призы</span>
-                    </div>
-                </button>
-                <button class="nav-card rocket-card" data-target-screen="rocket-crash-screen">
-                    <div class="card-content">
-                        <span class="card-title">Ракета</span>
-                        <span class="card-description">Запускайте ракету и выигрывайте звёзды</span>
-                    </div>
-                </button>
-            </div>
-        </div>
-
-        <!-- Секция "Кейсы" -->
-        <div id="cases-screen" class="screen">
-            <header class="sub-screen-header">
-                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
-                <h2>🎁 Ваши Кейсы</h2>
-                <span class="header-placeholder"></span>
-            </header>
-            <div class="cases-grid" id="cases-grid">
-                <!-- Кейсы будут загружены сюда через JavaScript -->
-            </div>
-
-            <!-- Модальное окно/секция для анимации открытия кейса -->
-            <div id="case-opening-modal" class="case-opening-modal">
-                <div class="case-opening-content">
-                    <h3>Открытие кейса...</h3>
-                    <div class="case-spinner-container">
-                        <div class="case-spinner" id="case-spinner">
-                            <!-- Элементы для прокрутки будут добавлены JS -->
-                        </div>
-                        <div class="spinner-indicator"></div>
-                    </div>
-                    <div id="case-result" class="case-result">
-                        <!-- Результат открытия будет здесь -->
-                    </div>
-                    <button id="close-case-modal-button" class="action-button primary" style="display:none;">Закрыть</button>
+<!-- Основной контент (экраны) -->
+        <main class="main-content">
+            <section id="casesScreen" class="screen active">
+                <h2 class="screen-title">Кейсы</h2>
+                <div id="casesList" class="cards-grid">
+                    <!-- Кейсы будут загружаться здесь динамически -->
+                    <p class="loading-text">Загрузка кейсов...</p>
                 </div>
-            </div>
-        </div>
+            </section>
 
-<!-- Секция "Ракет Краш" -->
-        <div id="rocket-crash-screen" class="screen">
-            <header class="sub-screen-header">
-                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
-                <div class="user-profile-header">
-                    <img src="https://via.placeholder.com/40/FFF/000?text=👤" alt="User Avatar" class="user-avatar">
-                    <div class="user-info">
-                        <span class="user-name">TowiTo</span>
-                        <span class="user-tag">@TowiTov</span>
+            <section id="rocketScreen" class="screen hidden">
+                <h2 class="screen-title">Ракета (Crash Game)</h2>
+                <div class="game-area">
+                    <div class="multiplier-display">
+                        <span id="currentMultiplierDisplay">1.00x</span>
                     </div>
-                    <span class="balance-ton">0.00 💎</span> <!-- Баланс TON для конкретного экрана -->
-                    <button class="replenish-button small" data-target-screen="topup-screen">+</button>
-                </div>
-                <span class="menu-dots">⋮</span>
-            </header>
-
-            <div class="previous-multipliers-wrapper">
-                <div class="previous-multipliers" id="previous-multipliers">
-                    <!-- Предыдущие множители будут здесь -->
-                </div>
-            </div>
-
-            <div class="crash-game-display">
-                <span id="rocket-emoji" class="game-object">🚀</span> <!-- Эмодзи ракеты -->
-                <span id="multiplier-display" class="large-multiplier">x1.00</span>
-                <span id="game-status-message" class="game-status-message">Ожидание нового раунда...</span>
-            </div>
-
-            <div class="crash-game-controls-area">
-                <div class="auto-cashout-controls">
-                    <input type="checkbox" id="auto-cashout-checkbox">
-                    <label for="auto-cashout-checkbox">Автовывод</label>
-                    <div class="amount-control">
-                        <button class="control-btn minus-btn" data-target="auto-cashout" data-value="-0.1">-</button>
-                        <span class="value-display" id="auto-cashout-value">x2.00</span>
-                        <button class="control-btn plus-btn" data-target="auto-cashout" data-value="+0.1">+</button>
+                    <div class="game-status" id="gameStatus">Ожидание нового раунда...</div>
+                    <div class="bet-input-group">
+                        <input type="number" id="betAmountInput" placeholder="Ставка TON" value="1.00" step="0.01" min="0.01">
+                        <button id="placeBetButton" class="main-action-button">Сделать ставку</button>
+                    </div>
+                    <button id="cashOutButton" class="main-action-button disabled" disabled>Кэшаут!</button>
+                    <div class="player-bets">
+                        <h3>Ставки игроков:</h3>
+                        <ul id="activeBetsList">
+                            <!-- Активные ставки будут здесь -->
+                        </ul>
+                    </div>
+                    <div class="round-history">
+                        <h3>История раундов:</h3>
+                        <ul id="roundHistoryList">
+                            <!-- История множителей будет здесь -->
+                        </ul>
                     </div>
                 </div>
+            </section>
 
-                <div class="bet-controls">
-                    <div class="amount-control large-bet">
-                        <button class="control-btn minus-btn" data-target="bet-amount" data-value="-1">-</button>
-                        <input type="number" id="bet-input" placeholder="Ставка" value="1" min="1" class="bet-input">
-                        <button class="control-btn plus-btn" data-target="bet-amount" data-value="+1">+</button>
-                    </div>
-                    <div class="quick-bet-buttons">
-                        <button class="quick-bet-btn" data-value="+0.5">+0.5</button>
-                        <button class="quick-bet-btn" data-value="+1">+1</button>
-                        <button class="quick-bet-btn" data-value="+2">+2</button>
-                    </div>
+            <section id="inventoryScreen" class="screen hidden">
+                <h2 class="screen-title">Инвентарь</h2>
+                <div id="inventoryList" class="cards-grid">
+                    <!-- Предметы инвентаря будут загружаться здесь динамически -->
+                    <p class="loading-text">Инвентарь пуст или загружается...</p>
                 </div>
-                <button id="main-action-button" class="main-action-button primary">Поставить ставку</button>
-            </div>
-        </div>
+            </section>
+        </main>
 
-        <!-- Секция "Инвентарь" (детальный список) -->
-        <div id="inventory-screen" class="screen">
-            <header class="sub-screen-header">
-                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
-                <h2>🎒 Ваш Инвентарь</h2>
-                <span class="header-placeholder"></span>
-            </header>
-            <ul id="inventory-list" class="inventory-list">
-                <!-- Элементы инвентаря будут загружены сюда через JavaScript -->
-            </ul>
-        </div>
-
-<!-- Секция "Профиль" (новый экран) -->
-        <div id="profile-screen" class="screen profile-screen">
-            <header class="sub-screen-header profile-header">
-                <button class="back-button" data-target-screen="main-menu-screen">✕ Закрыть</button>
-                <div class="profile-dropdown">
-                    <span>Анима</span>
-                    <span class="dropdown-arrow"></span>
-                </div>
-                <span class="menu-dots">⋮</span>
-            </header>
-
-            <div class="profile-main-info">
-                <img src="https://via.placeholder.com/80/FFF/000?text=👤" alt="Profile Avatar" class="profile-avatar">
-                <span class="profile-name">TowiTow1..†</span>
-                <span class="profile-tag">@TowiTow1</span>
-            </div>
-
-            <div class="profile-stats">
-                <div class="stat-card">
-                    <span>Игры</span>
-                    <span class="stat-value">517 🎰</span>
-                </div>
-                <div class="stat-card">
-                    <span>Баланс</span>
-                    <span class="stat-value">0.00 💎</span>
-                </div>
-            </div>
-
-            <button class="replenish-balance-button" data-target-screen="topup-screen">Пополнить баланс</button>
-
-            <div class="withdraw-status">
-                <p>Доступно к выводу <span class="info-icon">ⓘ</span></p>
-                <div class="progress-bar-wrapper">
-                    <div class="progress-bar" style="width: 100%;"></div>
-                    <span class="progress-text">6.988/6.988 💎</span>
-                </div>
-            </div>
-
-            <div class="inventory-overview">
-                <div class="inventory-overview-header">
-                    <h3>Инвентарь (<span id="profile-inventory-count">0</span>)</h3>
-                    <button class="sell-all-button">Продать все</button>
-                </div>
-                <div class="inventory-preview">
-                    <div class="gift-box-placeholder">🎁</div>
-                    <div class="gift-box-placeholder">🎁</div>
-                    <div class="inventory-arrow">›</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Секция "Пополнение Баланса" (новый экран) -->
-        <div id="topup-screen" class="screen">
-            <header class="sub-screen-header">
-                <button class="back-button" data-target-screen="main-menu-screen">← Назад</button>
-                <h2>💰 Пополнение Баланса</h2>
-                <span class="header-placeholder"></span>
-            </header>
-            <div class="topup-content">
-                <p class="topup-description">Выберите способ пополнения и введите сумму.</p>
-                
-                <div class="topup-option">
-                    <h3>Пополнить TON</h3>
-                    <div class="amount-control large-bet">
-                        <button class="control-btn minus-btn" data-target="topup-ton" data-value="-1">-</button>
-                        <input type="number" id="topup-ton-input" placeholder="Сумма TON" value="1" min="0.01" step="0.01" class="bet-input">
-                        <button class="control-btn plus-btn" data-target="topup-ton" data-value="+1">+</button>
-                    </div>
-                    <div class="quick-bet-buttons">
-                        <button class="quick-bet-btn" data-target="topup-ton" data-value="0.1">+0.1</button>
-                        <button class="quick-bet-btn" data-target="topup-ton" data-value="0.5">+0.5</button>
-                        <button class="quick-bet-btn" data-target="topup-ton" data-value="1">+1</button>
-                    </div>
-                    <button id="topup-ton-button" class="action-button primary topup-action-button">Пополнить TON</button>
-                </div>
-
-<div class="topup-option">
-                    <h3>Пополнить Stars</h3>
-                    <div class="amount-control large-bet">
-                        <button class="control-btn minus-btn" data-target="topup-stars" data-value="-10">-</button>
-                        <input type="number" id="topup-stars-input" placeholder="Сумма Stars" value="100" min="1" class="bet-input">
-                        <button class="control-btn plus-btn" data-target="topup-stars" data-value="+10">+</button>
-                    </div>
-                    <div class="quick-bet-buttons">
-                        <button class="quick-bet-btn" data-target="topup-stars" data-value="50">+50</button>
-                        <button class="quick-bet-btn" data-target="topup-stars" data-value="100">+100</button>
-                        <button class="quick-bet-btn" data-target="topup-stars" data-value="500">+500</button>
-                    </div>
-                    <button id="topup-stars-button" class="action-button primary topup-action-button">Пополнить Stars</button>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Нижняя навигация (всегда видна) -->
-        <footer class="bottom-nav">
-            <button class="nav-button" data-target-screen="inventory-screen">
-                <span class="button-icon">🎒</span> Инвентарь
+        <!-- Нижняя навигационная панель -->
+        <nav class="bottom-nav">
+            <button id="navCases" class="nav-item active">
+                <span class="icon">🎁</span>
+                <span class="label">Кейсы</span>
             </button>
-        </footer>
+            <button id="navRocket" class="nav-item">
+                <span class="icon">🚀</span>
+                <span class="label">Ракета</span>
+            </button>
+            <button id="navProfile" class="nav-item">
+                <span class="icon">👤</span>
+                <span class="label">Профиль</span>
+            </button>
+        </nav>
     </div>
 
-    <script src="script.js"></script>
+    <!-- ЭКРАН ПОПОЛНЕНИЯ БАЛАНСА (Модальное окно или отдельный блок) -->
+    <div id="topUpScreen" class="screen hidden modal-screen">
+        <header class="modal-header">
+            <button class="close-button" onclick="hideTopUpScreen()">✖</button>
+            <h2 class="modal-title">Пополнить баланс</h2>
+        </header>
+
+        <div class="top-up-tabs">
+            <button class="tab-button active" data-tab="ton">TON <span class="badge">+15%</span></button>
+            <button class="tab-button" data-tab="stars">Звёзды</button>
+            <button class="tab-button" data-tab="gifts">Подарки</button>
+        </div>
+
+        <div id="tonContent" class="tab-content active">
+            <div class="input-group">
+                <span class="currency-symbol">💎</span>
+                <input type="number" id="tonAmountInput" value="1" min="0.01" step="0.01" placeholder="Введите сумму TON">
+            </div>
+            <div class="promo-code-input">
+                <input type="text" placeholder="Введите промокод">
+                <button class="promo-button">></button>
+            </div>
+            <button id="topUpTonButton" class="main-action-button">Пополнить</button>
+
+<div class="amount-options">
+                <button class="amount-button" data-amount="3">3 💎</button>
+                <button class="amount-button" data-amount="5">5 💎</button>
+                <button class="amount-button" data-amount="10">10 💎</button>
+                <button class="amount-button" data-amount="25">25 💎</button>
+                <button class="amount-button" data-amount="100">100 💎</button>
+            </div>
+        </div>
+
+        <div id="starsContent" class="tab-content hidden">
+            <div class="input-group">
+                <span class="currency-symbol">⭐</span>
+                <input type="number" id="starsAmountInput" value="100" min="1" step="1" placeholder="Введите сумму Звезд">
+            </div>
+            <p class="conversion-info" id="starsConversionInfo">100 звёзд = 1.087 TON</p>
+            <a href="#" class="buy-stars-link">Купить звёзды выгодно</a>
+
+            <div class="promo-code-input">
+                <input type="text" placeholder="Введите промокод">
+                <button class="promo-button">></button>
+            </div>
+            <button id="topUpStarsButton" class="main-action-button">Пополнить</button>
+
+            <div class="amount-options">
+                <button class="amount-button" data-amount="200">200 ⭐ <span class="ton-equivalent">(2.174 TON)</span></button>
+                <button class="amount-button" data-amount="500">500 ⭐ <span class="ton-equivalent">(5.435 TON)</span></button>
+                <button class="amount-button" data-amount="1000">1000 ⭐ <span class="ton-equivalent">(10.870 TON)</span></button>
+                <button class="amount-button" data-amount="2500">2500 ⭐ <span class="ton-equivalent">(27.174 TON)</span></button>
+            </div>
+        </div>
+
+        <div id="giftsContent" class="tab-content hidden">
+            <p>Здесь будет функционал пополнения с помощью подарков или активации гифт-кодов.</p>
+            <!-- TODO: Добавить форму для активации гифт-кодов -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
