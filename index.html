@@ -1,4 +1,4 @@
-html
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -15,30 +15,46 @@ html
 </head>
 <body>
     <div class="app-container">
-        <!-- Верхняя панель -->
+        <!-- Верхняя панель (фиксирована) -->
         <header class="top-bar">
             <div class="user-info">
-                <div class="user-avatar"></div> <!-- TODO: Добавить аватарку Telegram, если доступна -->
-                <span id="userNickname" class="blurred-nickname">@Towi****</span>
+                <!-- <div class="user-avatar"></div> -->
+                <span id="userNickname">@TowiTov</span> <!-- Никнейм по умолчанию -->
             </div>
             <div class="balance-info">
                 <span class="balance-item"><span id="tonBalance">0.00</span> TON</span>
                 <span class="balance-item"><span id="starsBalance">0</span> ⭐</span>
                 <button id="showTopUpScreenButton" class="plus-button">+</button>
             </div>
-            <div class="menu-dots">...</div> <!-- TODO: Добавить функционал для меню -->
+            <!-- <div class="menu-dots">...</div> -->
         </header>
 
-<!-- Основной контент (экраны) -->
+        <!-- Основной контент (переключаемые экраны) -->
         <main class="main-content">
-            <section id="casesScreen" class="screen active">
+            <!-- Начальный экран с двумя большими кнопками -->
+            <section id="homeScreen" class="screen active">
+                <h2 class="screen-title">Привет!</h2>
+                <div class="home-buttons-grid">
+                    <button class="home-button" data-target-screen="casesScreen">
+                        <span class="icon">🎁</span>
+                        <span class="label">Кейсы</span>
+                    </button>
+                    <button class="home-button" data-target-screen="rocketScreen">
+                        <span class="icon">🚀</span>
+                        <span class="label">Ракет Краш</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Экран Кейсов -->
+            <section id="casesScreen" class="screen hidden">
                 <h2 class="screen-title">Кейсы</h2>
                 <div id="casesList" class="cards-grid">
-                    <!-- Кейсы будут загружаться здесь динамически -->
                     <p class="loading-text">Загрузка кейсов...</p>
                 </div>
             </section>
 
+            <!-- Экран Ракеты (Crash Game) -->
             <section id="rocketScreen" class="screen hidden">
                 <h2 class="screen-title">Ракета (Crash Game)</h2>
                 <div class="game-area">
@@ -66,33 +82,33 @@ html
                 </div>
             </section>
 
+<!-- Экран Профиля (Инвентарь) -->
             <section id="inventoryScreen" class="screen hidden">
                 <h2 class="screen-title">Инвентарь</h2>
                 <div id="inventoryList" class="cards-grid">
-                    <!-- Предметы инвентаря будут загружаться здесь динамически -->
                     <p class="loading-text">Инвентарь пуст или загружается...</p>
                 </div>
             </section>
         </main>
 
-        <!-- Нижняя навигационная панель -->
+        <!-- Нижняя навигационная панель (фиксирована) -->
         <nav class="bottom-nav">
-            <button id="navCases" class="nav-item active">
+            <button id="navCases" class="nav-item" data-target-screen="casesScreen">
                 <span class="icon">🎁</span>
                 <span class="label">Кейсы</span>
             </button>
-            <button id="navRocket" class="nav-item">
+            <button id="navRocket" class="nav-item" data-target-screen="rocketScreen">
                 <span class="icon">🚀</span>
                 <span class="label">Ракета</span>
             </button>
-            <button id="navProfile" class="nav-item">
+            <button id="navProfile" class="nav-item" data-target-screen="inventoryScreen">
                 <span class="icon">👤</span>
                 <span class="label">Профиль</span>
             </button>
         </nav>
     </div>
 
-    <!-- ЭКРАН ПОПОЛНЕНИЯ БАЛАНСА (Модальное окно или отдельный блок) -->
+    <!-- ЭКРАН ПОПОЛНЕНИЯ БАЛАНСА (Модальное окно, всегда поверх других) -->
     <div id="topUpScreen" class="screen hidden modal-screen">
         <header class="modal-header">
             <button class="close-button" onclick="hideTopUpScreen()">✖</button>
@@ -116,7 +132,7 @@ html
             </div>
             <button id="topUpTonButton" class="main-action-button">Пополнить</button>
 
-<div class="amount-options">
+            <div class="amount-options">
                 <button class="amount-button" data-amount="3">3 💎</button>
                 <button class="amount-button" data-amount="5">5 💎</button>
                 <button class="amount-button" data-amount="10">10 💎</button>
@@ -147,9 +163,8 @@ html
             </div>
         </div>
 
-        <div id="giftsContent" class="tab-content hidden">
+<div id="giftsContent" class="tab-content hidden">
             <p>Здесь будет функционал пополнения с помощью подарков или активации гифт-кодов.</p>
-            <!-- TODO: Добавить форму для активации гифт-кодов -->
         </div>
     </div>
 
