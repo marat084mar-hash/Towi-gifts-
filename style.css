@@ -25,45 +25,19 @@ body {
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent; /* Убираем синюю подсветку при тапе на мобильных */
+    overflow: hidden; /* Чтобы не было прокрутки body */
 }
 
 .app-container {
     max-width: 450px; /* Ограничение для мини-приложения */
     margin: 0 auto;
-    min-height: 100vh;
+    height: 100vh; /* Полная высота для контейнера */
     display: flex;
     flex-direction: column;
     background-color: var(--bg-color-dark);
-    box-shadow: var(--shadow-medium); /* Добавляем небольшую тень для солидности */
+    box-shadow: var(--shadow-medium);
 }
 
-.screen {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column; /* Для размещения заголовка и контента */
-}
-
-.screen.hidden {
-    display: none;
-}
-
-.screen-title {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: var(--text-color-light);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.loading-text {
-    text-align: center;
-    color: var(--text-color-muted);
-    margin-top: 50px;
-}
-
-/* --- Верхняя панель --- */
 .top-bar {
     display: flex;
     align-items: center;
@@ -72,6 +46,7 @@ body {
     background-color: var(--bg-color-medium);
     border-bottom: 1px solid var(--bg-color-light);
     box-shadow: var(--shadow-light);
+    flex-shrink: 0; /* Не сжимать по высоте */
 }
 
 .user-info {
@@ -80,24 +55,11 @@ body {
     gap: 10px;
 }
 
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    background-color: var(--accent-orange-light); /* Placeholder */
-    border-radius: 50%;
-    /* TODO: Стилизация для аватарки */
-}
-
-.blurred-nickname {
+#userNickname {
     font-size: 1.1em;
     font-weight: 600;
     color: var(--text-color-light);
-    filter: blur(2px); /* Эффект блюра */
-    transition: filter 0.3s ease;
-}
-
-.blurred-nickname:hover {
-    filter: none; /* Убрать блюр при наведении (опционально) */
+    /* Блюр применяется динамически через JS */
 }
 
 .balance-info {
@@ -132,13 +94,102 @@ body {
     background-color: var(--accent-orange-light);
 }
 
-.menu-dots {
-    color: var(--text-color-muted);
-    font-size: 1.5em;
-    cursor: pointer;
+.main-content {
+    flex-grow: 1; /* Занимает все доступное пространство между хедером и навигацией */
+    position: relative; /* Для позиционирования экранов внутри */
+    overflow: hidden; /* Обрезает контент, который выходит за границы */
 }
 
-/* --- Главные кнопки навигации --- */
+.screen {
+    position: absolute; /* Позиционируем экраны абсолютно друг над другом */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color-dark);
+    overflow-y: auto; /* Включаем прокрутку для каждого экрана отдельно */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex; /* Для выравнивания контента */
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.screen.hidden {
+    transform: translateX(100%); /* Сдвигаем скрытые экраны вправо */
+    opacity: 0;
+    pointer-events: none; /* Чтобы не реагировали на клики */
+}
+
+.screen.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.screen-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--text-color-light);
+    margin-bottom: 20px;
+    text-align: center;
+    flex-shrink: 0; /* Не сжимать заголовок */
+}
+
+.loading-text {
+    text-align: center;
+    color: var(--text-color-muted);
+    margin-top: 50px;
+}
+
+/* --- Начальный экран --- */
+#homeScreen {
+    justify-content: center; /* Центрируем кнопки по вертикали */
+    align-items: center;
+}
+
+.home-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Одна колонка для мобильных */
+    gap: 20px;
+    width: 80%; /* Или другая удобная ширина */
+    max-width: 300px;
+    margin-top: 20px;
+}
+
+.home-button {
+    background-color: var(--accent-orange);
+    color: var(--text-color-light);
+    border: none;
+    border-radius: var(--border-radius-main);
+    padding: 25px 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: var(--shadow-medium);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-button:hover {
+    background-color: var(--accent-orange-light);
+    transform: translateY(-3px);
+}
+
+.home-button .icon {
+    font-size: 2.5em;
+    line-height: 1;
+}
+
+.home-button .label {
+    margin-top: 5px;
+}
+
+
+/* --- Нижняя навигационная панель --- */
 .bottom-nav {
     display: flex;
     justify-content: space-around;
@@ -146,10 +197,8 @@ body {
     background-color: var(--bg-color-medium);
     border-top: 1px solid var(--bg-color-light);
     box-shadow: var(--shadow-light);
-    z-index: 50; /* Чтобы быть поверх другого контента */
-    width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
+    flex-shrink: 0; /* Не сжимать по высоте */
+    z-index: 50;
 }
 
 .nav-item {
@@ -164,6 +213,7 @@ body {
     cursor: pointer;
     padding: 5px 10px;
     transition: color 0.2s ease;
+    flex: 1; /* Равномерное распределение */
 }
 
 .nav-item .icon {
@@ -178,9 +228,9 @@ body {
 /* --- Общие стили для карточек (кейсы, инвентарь) --- */
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Две колонки для телефонов */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
-    padding-bottom: 20px; /* Отступ снизу */
+    padding-bottom: 20px;
 }
 
 .card {
@@ -205,7 +255,7 @@ body {
 .card-image {
     width: 80px;
     height: 80px;
-    background-color: var(--bg-color-light); /* Placeholder */
+    background-color: var(--bg-color-light);
     border-radius: var(--border-radius-small);
     margin-bottom: 10px;
     display: flex;
@@ -257,16 +307,22 @@ body {
 
 /* --- Стили для модального экрана пополнения --- */
 .modal-screen {
-    position: fixed;
+    position: fixed; /* Фиксирован поверх всего */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: var(--bg-color-dark);
-    z-index: 1000;
+    z-index: 2000; /* Высокий z-index */
     overflow-y: auto;
     padding-bottom: 20px;
     box-sizing: border-box;
+    transform: translateY(100%); /* Изначально скрыт внизу */
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal-screen.active {
+    transform: translateY(0);
 }
 
 .modal-header {
@@ -274,11 +330,11 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
-    background-color: var(--bg-color-medium); /* Темный фон для хедера модалки */
+    background-color: var(--bg-color-medium);
     border-bottom: 1px solid var(--bg-color-light);
     position: sticky;
     top: 0;
-    z-index: 1001; /* Поверх остального контента модалки */
+    z-index: 2001;
 }
 
 .modal-title {
@@ -287,7 +343,7 @@ body {
     color: var(--text-color-light);
     flex-grow: 1;
     text-align: center;
-    transform: translateX(-15px); /* Компенсация кнопки закрытия */
+    transform: translateX(-15px);
 }
 
 .close-button {
@@ -369,7 +425,7 @@ body {
     font-size: 1.1em;
     padding: 5px 0;
     outline: none;
-    width: 100%; /* Для Safari */
+    width: 100%;
 }
 
 .promo-code-input {
@@ -474,6 +530,7 @@ body {
     flex-direction: column;
     gap: 15px;
     align-items: center;
+    flex-grow: 1; /* Занимает все доступное пространство на экране */
 }
 
 .multiplier-display {
