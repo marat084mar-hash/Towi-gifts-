@@ -1,173 +1,25 @@
-```html
+html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TowiTo Mini App</title>
+    <title>TON Lootbox Mini App</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Подключи Telegram Web App API -->
+    <!-- Подключаем Telegram Web Apps SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Подключи Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Подключи шрифты (например, Google Fonts) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
-        <!-- Верхняя панель (фиксирована) -->
-        <header class="top-bar">
-            <div class="user-info">
-                <!-- <div class="user-avatar"></div> -->
-                <span id="userNickname">@TowiTov</span> <!-- Никнейм по умолчанию -->
-            </div>
-            <div class="balance-info">
-                <span class="balance-item"><span id="tonBalance">0.00</span> TON</span>
-                <span class="balance-item"><span id="starsBalance">0</span> ⭐</span>
-                <button id="showTopUpScreenButton" class="plus-button">+</button>
-            </div>
-            <!-- <div class="menu-dots">...</div> -->
-        </header>
-
-        <!-- Основной контент (переключаемые экраны) -->
-        <main class="main-content">
-            <!-- Начальный экран с двумя большими кнопками -->
-            <section id="homeScreen" class="screen active">
-                <h2 class="screen-title">Привет!</h2>
-                <div class="home-buttons-grid">
-                    <button class="home-button" data-target-screen="casesScreen">
-                        <span class="icon">🎁</span>
-                        <span class="label">Кейсы</span>
-                    </button>
-                    <button class="home-button" data-target-screen="rocketScreen">
-                        <span class="icon">🚀</span>
-                        <span class="label">Ракет Краш</span>
-                    </button>
-                </div>
-            </section>
-
-            <!-- Экран Кейсов -->
-            <section id="casesScreen" class="screen hidden">
-                <h2 class="screen-title">Кейсы</h2>
-                <div id="casesList" class="cards-grid">
-                    <p class="loading-text">Загрузка кейсов...</p>
-                </div>
-            </section>
-
-            <!-- Экран Ракеты (Crash Game) -->
-            <section id="rocketScreen" class="screen hidden">
-                <h2 class="screen-title">Ракета (Crash Game)</h2>
-                <div class="game-area">
-                    <div class="multiplier-display">
-                        <span id="currentMultiplierDisplay">1.00x</span>
-                    </div>
-                    <div class="game-status" id="gameStatus">Ожидание нового раунда...</div>
-                    <div class="bet-input-group">
-                        <input type="number" id="betAmountInput" placeholder="Ставка TON" value="1.00" step="0.01" min="0.01">
-                        <button id="placeBetButton" class="main-action-button">Сделать ставку</button>
-                    </div>
-                    <button id="cashOutButton" class="main-action-button disabled" disabled>Кэшаут!</button>
-                    <div class="player-bets">
-                        <h3>Ставки игроков:</h3>
-                        <ul id="activeBetsList">
-                            <!-- Активные ставки будут здесь -->
-                        </ul>
-                    </div>
-                    <div class="round-history">
-                        <h3>История раундов:</h3>
-                        <ul id="roundHistoryList">
-                            <!-- История множителей будет здесь -->
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-<!-- Экран Профиля (Инвентарь) -->
-            <section id="inventoryScreen" class="screen hidden">
-                <h2 class="screen-title">Инвентарь</h2>
-                <div id="inventoryList" class="cards-grid">
-                    <p class="loading-text">Инвентарь пуст или загружается...</p>
-                </div>
-            </section>
-        </main>
-
-        <!-- Нижняя навигационная панель (фиксирована) -->
-        <nav class="bottom-nav">
-            <button id="navCases" class="nav-item" data-target-screen="casesScreen">
-                <span class="icon">🎁</span>
-                <span class="label">Кейсы</span>
-            </button>
-            <button id="navRocket" class="nav-item" data-target-screen="rocketScreen">
-                <span class="icon">🚀</span>
-                <span class="label">Ракета</span>
-            </button>
-            <button id="navProfile" class="nav-item" data-target-screen="inventoryScreen">
-                <span class="icon">👤</span>
-                <span class="label">Профиль</span>
-            </button>
-        </nav>
+        <h1>Towi Gifts</h1>
+        <p>Ваш баланс: <span id="ton-balance">0 TON</span></p>
+        <button id="open-case-btn" class="primary-btn">Открыть Кейс</button>
+        <button id="inventory-btn" class="secondary-btn">Инвентарь</button>
+        <button id="crash-btn" class="secondary-btn">Игра "Ракета"</button>
+        <button id="upgrade-btn" class="secondary-btn">Апгрейд</button>
+        <p class="status-message" id="status-message"></p>
     </div>
 
-    <!-- ЭКРАН ПОПОЛНЕНИЯ БАЛАНСА (Модальное окно, всегда поверх других) -->
-    <div id="topUpScreen" class="screen hidden modal-screen">
-        <header class="modal-header">
-            <button class="close-button" onclick="hideTopUpScreen()">✖</button>
-            <h2 class="modal-title">Пополнить баланс</h2>
-        </header>
-
-        <div class="top-up-tabs">
-            <button class="tab-button active" data-tab="ton">TON <span class="badge">+15%</span></button>
-            <button class="tab-button" data-tab="stars">Звёзды</button>
-            <button class="tab-button" data-tab="gifts">Подарки</button>
-        </div>
-
-        <div id="tonContent" class="tab-content active">
-            <div class="input-group">
-                <span class="currency-symbol">💎</span>
-                <input type="number" id="tonAmountInput" value="1" min="0.01" step="0.01" placeholder="Введите сумму TON">
-            </div>
-            <div class="promo-code-input">
-                <input type="text" placeholder="Введите промокод">
-                <button class="promo-button">></button>
-            </div>
-            <button id="topUpTonButton" class="main-action-button">Пополнить</button>
-
-            <div class="amount-options">
-                <button class="amount-button" data-amount="3">3 💎</button>
-                <button class="amount-button" data-amount="5">5 💎</button>
-                <button class="amount-button" data-amount="10">10 💎</button>
-                <button class="amount-button" data-amount="25">25 💎</button>
-                <button class="amount-button" data-amount="100">100 💎</button>
-            </div>
-        </div>
-
-        <div id="starsContent" class="tab-content hidden">
-            <div class="input-group">
-                <span class="currency-symbol">⭐</span>
-                <input type="number" id="starsAmountInput" value="100" min="1" step="1" placeholder="Введите сумму Звезд">
-            </div>
-            <p class="conversion-info" id="starsConversionInfo">100 звёзд = 1.087 TON</p>
-            <a href="#" class="buy-stars-link">Купить звёзды выгодно</a>
-
-            <div class="promo-code-input">
-                <input type="text" placeholder="Введите промокод">
-                <button class="promo-button">></button>
-            </div>
-            <button id="topUpStarsButton" class="main-action-button">Пополнить</button>
-
-            <div class="amount-options">
-                <button class="amount-button" data-amount="200">200 ⭐ <span class="ton-equivalent">(2.174 TON)</span></button>
-                <button class="amount-button" data-amount="500">500 ⭐ <span class="ton-equivalent">(5.435 TON)</span></button>
-                <button class="amount-button" data-amount="1000">1000 ⭐ <span class="ton-equivalent">(10.870 TON)</span></button>
-                <button class="amount-button" data-amount="2500">2500 ⭐ <span class="ton-equivalent">(27.174 TON)</span></button>
-            </div>
-        </div>
-
-<div id="giftsContent" class="tab-content hidden">
-            <p>Здесь будет функционал пополнения с помощью подарков или активации гифт-кодов.</p>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
