@@ -1,517 +1,145 @@
+```css
+:root {
+    --primary-orange: #FF8C00; /* Яркий оранжевый */
+    --secondary-black: #1A1A1A; /* Глубокий черный */
+    --text-light: #FFFFFF; /* Белый текст */
+    --text-dark: #000000; /* Черный текст */
+    --border-color: #333333; /* Темно-серый для границ */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--secondary-black);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.app-container {
+    background-color: #282828; /* Немного светлее черного для контейнера */
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 {
+    color: var(--primary-orange);
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primary-btn {
+    background-color: var(--primary-orange);
+    color: var(--text-dark);
+}
+
+.primary-btn:hover {
+    background-color: #FF7F00; /* Чуть темнее оранжевый */
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    background-color: #444444; /* Темно-серый */
+    color: var(--text-light);
+}
+
+.secondary-btn:hover {
+    background-color: #555555; /* Чуть светлее серый */
+    transform: translateY(-2px);
+}
+
+.status-message {
+    color: var(--primary-orange);
+    font-size: 0.9em;
+    min-height: 20px; /* Чтобы избежать сдвига элементов */
+    margin-top: 20px;
+}
+
+
+
+#### `script.js` (Базовый JavaScript и интеграция с Telegram Web Apps)
+
+Здесь мы добавим проверку инициализации `Telegram.WebApp` и обработчики событий для кнопок.
+
+
 javascript
-// --- КОНФИГУРАЦИЯ SUPABASE (ОБЯЗАТЕЛЬНО ИЗМЕНИ) ---
-const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_REF.supabase.co'; // Замени на URL твоего проекта Supabase
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Замени на твой anon key
+document.addEventListener('DOMContentLoaded', () => {
+    const tonBalanceSpan = document.getElementById('ton-balance');
+    const openCaseBtn = document.getElementById('open-case-btn');
+    const inventoryBtn = document.getElementById('inventory-btn');
+    const crashBtn = document.getElementById('crash-btn');
+    const upgradeBtn = document.getElementById('upgrade-btn');
+    const statusMessage = document.getElementById('status-message');
 
-const { createClient } = supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Проверяем, что Telegram Web Apps SDK загружен
+    if (window.Telegram && window.Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        statusMessage.textContent = 'Telegram Web App готов!';
+        console.log('Telegram Web App готов.');
+        console.log('Инициализационные данные Telegram:', Telegram.WebApp.initDataUnsafe);
 
-// --- КОНСТАНТЫ И ПЕРЕМЕННЫЕ ---
-const TON_TO_STARS_RATE = 100; // 1 TON = 100 звезд (для внутренних операций)
-const STARS_TO_TON_RATE = 1.087 / 100; // 100 звезд = 1.087 TON (для отображения и конвертации Звезд в TON)
-const WITHDRAWAL_FEE_STARS = 25; // Комиссия за вывод в Звездах
-let currentUserId = null;
-let currentUsername = "Гость"; // Для отображения неблюренного имени
-let activeScreen = 'homeScreen'; // Отслеживаем активный экран
+        // Установка фонового цвета Telegram Mini App
+        // Telegram.WebApp.setBackgroundColor('#1A1A1A'); // Задаем черный фон
+        // Telegram.WebApp.setHeaderColor('#FF8C00'); // Задаем оранжевый заголовок
 
-// --- DOM ЭЛЕМЕНТЫ ---
-const userNicknameSpan = document.getElementById('userNickname');
-const tonBalanceSpan = document.getElementById('tonBalance');
-const starsBalanceSpan = document.getElementById('starsBalance');
-const casesListDiv = document.getElementById('casesList');
-const inventoryListDiv = document.getElementById('inventoryList');
-
-const topUpScreen = document.getElementById('topUpScreen');
-const tonAmountInput = document.getElementById('tonAmountInput');
-const starsAmountInput = document.getElementById('starsAmountInput');
-const starsConversionInfo = document.getElementById('starsConversionInfo');
-
-// Элементы Crash Game
-const gameStatusDiv = document.getElementById('gameStatus');
-const currentMultiplierDisplay = document.getElementById('currentMultiplierDisplay');
-const betAmountInput = document.getElementById('betAmountInput');
-const placeBetButton = document.getElementById('placeBetButton');
-const cashOutButton = document.getElementById('cashOutButton');
-const activeBetsList = document.getElementById('activeBetsList');
-const roundHistoryList = document.getElementById('roundHistoryList');
-
-// --- ФУНКЦИИ ИНИЦИАЛИЗАЦИИ И ПОМОЩНИКИ ---
-
-// Получение ID пользователя Telegram
-function getUserId() {
-    if (typeof Telegram !== 'undefined' && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-        return Telegram.WebApp.initDataUnsafe.user.id;
-    }
-    console.error("Telegram user ID not available.");
-    Telegram.WebApp.showAlert("Ошибка: ID пользователя Telegram недоступен.");
-    return null;
-}
-
-// Заблюривание никнейма
-function blurUsername(username) {
-    if (!username || username.length < 5) return username;
-    const atIndex = username.indexOf('@');
-    if (atIndex !== -1) {
-        const handle = username.substring(atIndex + 1);
-        if (handle.length <= 4) return username;
-        const visiblePart = handle.substring(0, 4);
-        const blurredPart = '*'.repeat(Math.max(0, handle.length - 4));
-        return @${visiblePart}${blurredPart};
-    }
-    const start = Math.floor(username.length / 4);
-    const end = Math.ceil(username.length * 3 / 4);
-    return username.substring(0, start) + '*'.repeat(end - start) + username.substring(end);
-}
-
-// Регистрация пользователя, если его нет
-async function registerUserIfNeeded() {
-    const userId = getUserId();
-    if (!userId) return;
-    currentUserId = userId; // Устанавливаем глобальный ID пользователя
-
-    const tgUsername = Telegram.WebApp.initDataUnsafe.user.username;
-    const displayUsername = tgUsername ? @${tgUsername} : user_${userId};
-
-    // Проверяем, существует ли пользователь
-    const { data, error } = await supabase
-        .from('users')
-        .select('id, username')
-        .eq('id', userId)
-        .single();
-
-    if (error && error.code === 'PGRST116') { // Пользователь не найден, создаем
-        const { error: insertError } = await supabase
-            .from('users')
-            .insert([{ id: userId, username: displayUsername }]);
-        if (insertError) {
-            console.error('Ошибка при регистрации пользователя:', insertError);
-            Telegram.WebApp.showAlert(Ошибка регистрации: ${insertError.message});
-        } else {
-            console.log('Пользователь зарегистрирован:', userId);
-            currentUsername = displayUsername;
-            updateTopBar();
-        }
-    } else if (error) {
-        console.error('Ошибка при проверке пользователя:', error);
-        Telegram.WebApp.showAlert(Ошибка при загрузке пользователя: ${error.message});
     } else {
-        console.log('Пользователь уже зарегистрирован:', userId);
-        currentUsername = data.username;
-        updateTopBar();
-    }
-}
-
-// Обновление балансов на UI
-async function updateBalancesUI() {
-    if (!currentUserId) return;
-
-    const { data, error } = await supabase
-        .from('users')
-        .select('ton_balance, stars_balance')
-        .eq('id', currentUserId)
-        .single();
-
-    if (error) {
-        console.error('Ошибка загрузки баланса:', error);
-        return;
+        statusMessage.textContent = 'Запустите приложение внутри Telegram.';
+        console.warn('Telegram Web App SDK не загружен. Возможно, приложение запущено вне Telegram.');
     }
 
-    tonBalanceSpan.textContent = parseFloat(data.ton_balance).toFixed(2);
-    starsBalanceSpan.textContent = data.stars_balance;
-}
-
-// Обновление верхней панели (никнейм и блюр)
-function updateTopBar() {
-    if (activeScreen === 'rocketScreen') {
-        userNicknameSpan.textContent = blurUsername(currentUsername);
-        userNicknameSpan.classList.add('blurred-nickname');
-    } else {
-        userNicknameSpan.textContent = currentUsername;
-        userNicknameSpan.classList.remove('blurred-nickname');
-    }
-}
-
-// --- УПРАВЛЕНИЕ ЭКРАНАМИ ---
-function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
+    // Пример обработчиков кнопок (пока просто вывод в консоль)
+    openCaseBtn.addEventListener('click', () => {
+        statusMessage.textContent = 'Открываем кейс... (функция пока не реализована)';
+        console.log('Кнопка "Открыть Кейс" нажата');
+        // Здесь будет вызов Edge Function для открытия кейса
     });
-    document.getElementById(screenId).classList.add('active');
-    activeScreen = screenId; // Обновляем активный экран
 
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
+    inventoryBtn.addEventListener('click', () => {
+        statusMessage.textContent = 'Переходим в инвентарь... (функция пока не реализована)';
+        console.log('Кнопка "Инвентарь" нажата');
+        // Здесь будет отображение инвентаря
     });
-    // Активируем кнопку в нижней навигации, если она есть
-    const navItem = document.querySelector(.nav-item[data-target-screen="${screenId}"]);
-    if (navItem) {
-        navItem.classList.add('active');
-    }
 
-// Обновляем верхнюю панель при смене экрана (для блюра)
-    updateTopBar();
-
-    // Загружаем данные для активного экрана
-    if (screenId === 'casesScreen') {
-        loadCases();
-    } else if (screenId === 'inventoryScreen') {
-        loadUserInventory();
-    } else if (screenId === 'rocketScreen') {
-        // Инициализация Crash Game, если необходимо
-        // Например, запустить Realtime подписки или имитацию
-        startCrashGameListeners();
-    }
-}
-
-// --- ЭКРАН ПОПОЛНЕНИЯ БАЛАНСА (МОДАЛЬНОЕ ОКНО) ---
-function showTopUpScreen() {
-    topUpScreen.classList.add('active'); // Показываем модальное окно
-    updateBalancesUI();
-    updateStarsConversionInfo();
-}
-
-function hideTopUpScreen() {
-    topUpScreen.classList.remove('active'); // Скрываем модальное окно
-}
-
-// Обработка переключения вкладок в модальном окне пополнения
-document.querySelectorAll('.top-up-tabs .tab-button').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.top-up-tabs .tab-button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active')); // Скрываем все
-        document.getElementById(button.dataset.tab + 'Content').classList.add('active'); // Показываем нужный
-
-        if (button.dataset.tab === 'stars') {
-            updateStarsConversionInfo();
-        }
+    crashBtn.addEventListener('click', () => {
+        statusMessage.textContent = 'Запускаем игру "Ракета"... (функция пока не реализована)';
+        console.log('Кнопка "Игра Ракета" нажата');
+        // Здесь будет переход к игре Crash
     });
+
+    upgradeBtn.addEventListener('click', () => {
+        statusMessage.textContent = 'Переходим в апгрейд... (функция пока не реализована)';
+        console.log('Кнопка "Апгрейд" нажата');
+        // Здесь будет переход к системе апгрейда
+    });
+
+    // Можете добавить здесь начальную загрузку данных, например, баланса
+    // fetch('/api/user-balance').then(...)
 });
-
-// Обновление информации о конвертации Звезд
-function updateStarsConversionInfo() {
-    const amountStars = parseFloat(starsAmountInput.value);
-    if (!isNaN(amountStars) && amountStars > 0) {
-        const equivalentTon = (amountStars * STARS_TO_TON_RATE).toFixed(3);
-        starsConversionInfo.textContent = ${amountStars} звёзд = ${equivalentTon} TON;
-    } else {
-        starsConversionInfo.textContent = Введите количество Звезд;
-    }
-}
-starsAmountInput.addEventListener('input', updateStarsConversionInfo);
-
-// Клик по кнопкам предопределенных сумм TON
-document.querySelectorAll('#tonContent .amount-button').forEach(button => {
-    button.addEventListener('click', () => {
-        tonAmountInput.value = button.dataset.amount;
-    });
-});
-
-// Клик по кнопкам предопределенных сумм Звезд
-document.querySelectorAll('#starsContent .amount-button').forEach(button => {
-    button.addEventListener('click', () => {
-        starsAmountInput.value = button.dataset.amount;
-        updateStarsConversionInfo();
-    });
-});
-
-// Логика кнопки "Пополнить" для TON
-document.getElementById('topUpTonButton').addEventListener('click', async () => {
-    if (!currentUserId) return;
-
-    const amountTon = parseFloat(tonAmountInput.value);
-
-    if (isNaN(amountTon) || amountTon <= 0) {
-        Telegram.WebApp.showAlert('Пожалуйста, введите корректную сумму TON.');
-        return;
-    }
-
-    Telegram.WebApp.showProgress();
-
-    // TODO: Здесь должна быть реальная интеграция с TON Connect или другим TON-платежным шлюзом.
-    // После успешной внешней оплаты, ваш бэкенд или Edge Function должен вызвать Supabase RPC 'add_ton_balance'.
-    // Для демонстрации, мы напрямую вызываем RPC, имитируя успешную внешнюю оплату.
-    try {
-        const { data, error } = await supabase
-            .rpc('add_ton_balance', { user_id_param: currentUserId, amount_param: amountTon });
-
-        Telegram.WebApp.hideProgress();
-
-        if (error) {
-            console.error('Ошибка пополнения TON:', error);
-            Telegram.WebApp.showAlert(Ошибка пополнения TON: ${error.message});
-        } else {
-            Telegram.WebApp.showAlert(Баланс TON успешно пополнен на ${amountTon} TON!);
-            await updateBalancesUI();
-            hideTopUpScreen();
-        }
-    } catch (e) {
-        Telegram.WebApp.hideProgress();
-        console.error('Ошибка RPC вызова add_ton_balance:', e);
-        Telegram.WebApp.showAlert(Произошла ошибка при пополнении TON.);
-    }
-});
-
-// Логика кнопки "Пополнить" для Звезд
-document.getElementById('topUpStarsButton').addEventListener('click', async () => {
-    if (!currentUserId) return;
-
-const amountStars = parseInt(starsAmountInput.value);
-    if (isNaN(amountStars) || amountStars <= 0) {
-        Telegram.WebApp.showAlert('Пожалуйста, введите корректное количество Звезд.');
-        return;
-    }
-
-    if (typeof Telegram !== 'undefined' && Telegram.WebApp.isVersionAtLeast('6.6')) {
-        Telegram.WebApp.showProgress();
-        try {
-            Telegram.WebApp.openStarsPayment(amountStars, {
-                onSuccess: async function() {
-                    console.log(Успешно получено ${amountStars} Звезд.);
-                    const { data, error } = await supabase
-                        .rpc('add_stars_balance', { user_id_param: currentUserId, amount_param: amountStars });
-
-                    Telegram.WebApp.hideProgress();
-                    if (error) {
-                        console.error('Ошибка обновления баланса Звезд:', error);
-                        Telegram.WebApp.showAlert(Ошибка пополнения Звезд: ${error.message});
-                    } else {
-                        Telegram.WebApp.showAlert(Баланс успешно пополнен на ${amountStars} Звезд!);
-                        await updateBalancesUI();
-                        hideTopUpScreen();
-                    }
-                },
-                onFailure: function(errorCode) {
-                    Telegram.WebApp.hideProgress();
-                    console.error(Оплата Звезд не удалась с кодом: ${errorCode});
-                    Telegram.WebApp.showAlert(Ошибка пополнения Звезд: ${errorCode});
-                }
-            });
-        } catch (error) {
-            Telegram.WebApp.hideProgress();
-            console.error("Ошибка при открытии окна пополнения Звезд:", error);
-            Telegram.WebApp.showAlert("Не удалось открыть окно пополнения Звезд.");
-        }
-    } else {
-        Telegram.WebApp.showAlert('Telegram Web App API для Звезд не доступен или слишком стар. Обновите Telegram.');
-    }
-});
-
-
-// --- ЭКРАН "КЕЙСЫ" ---
-async function loadCases() {
-    casesListDiv.innerHTML = '<p class="loading-text">Загрузка кейсов...</p>';
-    const { data: cases, error } = await supabase
-        .from('cases')
-        .select('*')
-        .order('cost_ton', { ascending: true });
-
-    if (error) {
-        console.error('Ошибка загрузки кейсов:', error);
-        casesListDiv.innerHTML = <p class="loading-text" style="color:var(--red-alert);">Ошибка загрузки кейсов: ${error.message}</p>;
-        return;
-    }
-
-    casesListDiv.innerHTML = '';
-    if (cases.length === 0) {
-        casesListDiv.innerHTML = '<p class="loading-text">Кейсы пока не добавлены.</p>';
-        return;
-    }
-
-    cases.forEach(caseItem => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = 
-            <div class="card-image">📦</div>
-            <div class="card-title">${caseItem.name}</div>
-            <div class="card-cost">${parseFloat(caseItem.cost_ton).toFixed(2)} TON</div>
-            <button class="card-button" data-case-id="${caseItem.id}">Открыть</button>
-        ;
-        card.querySelector('button').addEventListener('click', () => openCase(caseItem.id));
-        casesListDiv.appendChild(card);
-    });
-}
-
-async function openCase(caseId) {
-    if (!currentUserId) return;
-
-    Telegram.WebApp.showProgress();
-
-    const { data, error } = await supabase
-        .rpc('open_case', { user_id_param: currentUserId, case_id_param: caseId });
-
-    Telegram.WebApp.hideProgress();
-    ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️:
-if (error) {
-        console.error('Ошибка при открытии кейса:', error);
-        Telegram.WebApp.showAlert(Ошибка: ${error.message});
-    } else {
-        const result = data[0]; // Результат функции open_case
-        if (result.success) {
-            Telegram.WebApp.showAlert(Поздравляем! Вы выиграли: ${result.won_item_name}. Стоимость: ${parseFloat(result.won_item_value).toFixed(2)} TON);
-            await updateBalancesUI(); // Обновить баланс
-            if (activeScreen === 'inventoryScreen') { // Если инвентарь открыт, обновить его
-                 await loadUserInventory();
-            }
-        } else {
-            Telegram.WebApp.showAlert(Ошибка: ${result.message});
-        }
-    }
-}
-
-// --- ЭКРАН "ИНВЕНТАРЬ" (ПРОФИЛЬ) ---
-async function loadUserInventory() {
-    inventoryListDiv.innerHTML = '<p class="loading-text">Загрузка инвентаря...</p>';
-    if (!currentUserId) return;
-
-    const { data: inventoryItems, error } = await supabase
-        .from('inventory')
-        .select('*')
-        .eq('user_id', currentUserId)
-        .order('acquired_at', { ascending: false });
-
-    if (error) {
-        console.error('Ошибка загрузки инвентаря:', error);
-        inventoryListDiv.innerHTML = <p class="loading-text" style="color:var(--red-alert);">Ошибка загрузки инвентаря: ${error.message}</p>;
-        return;
-    }
-
-    inventoryListDiv.innerHTML = '';
-    if (inventoryItems.length === 0) {
-        inventoryListDiv.innerHTML = '<p class="loading-text">Ваш инвентарь пуст.</p>';
-        return;
-    }
-
-    inventoryItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        let buttonHtml = '';
-        if (item.status === 'available') {
-            buttonHtml = 
-                <button class="card-button" data-item-id="${item.id}" onclick="requestWithdrawal('${item.id}', '${item.item_name}')">Вывести (${WITHDRAWAL_FEE_STARS}⭐)</button>
-                <button class="card-button sell" data-item-id="${item.id}" onclick="sellItem('${item.id}', '${item.item_name}', ${item.item_value})">Продать (${parseFloat(item.item_value).toFixed(2)} TON)</button>
-            ;
-        } else if (item.status === 'pending_withdrawal') {
-            buttonHtml = <button class="card-button disabled" disabled>Ожидает вывода...</button>;
-        } else if (item.status === 'withdrawn') {
-            buttonHtml = <button class="card-button disabled" disabled>Выведено</button>;
-        } else if (item.status === 'sold') {
-            buttonHtml = <button class="card-button disabled" disabled>Продано</button>;
-        }
-
-
-        card.innerHTML = 
-            <div class="card-image">${item.item_type === 'NFT' ? '🖼️' : (item.item_type === 'Telegram Gift' ? '🎁' : '💰')}</div>
-            <div class="card-title">${item.item_name}</div>
-            <div class="card-value">Стоимость: ${parseFloat(item.item_value).toFixed(2)} TON</div>
-            ${buttonHtml}
-        ;
-        inventoryListDiv.appendChild(card);
-    });
-}
-
-async function requestWithdrawal(itemId, itemName) {
-    if (!currentUserId) return;
-
-    const confirmWithdrawal = await Telegram.WebApp.showConfirm(Вы действительно хотите вывести "${itemName}"? Это будет стоить ${WITHDRAWAL_FEE_STARS} Звезд.);
-
-    if (!confirmWithdrawal) return;
-
-    Telegram.WebApp.showProgress();
-
-    const { data, error } = await supabase
-        .rpc('withdraw_item', { user_id_param: currentUserId, item_id_param: itemId });
-
-    Telegram.WebApp.hideProgress();
-
-    if (error) {
-        console.error('Ошибка вывода предмета:', error);
-        Telegram.WebApp.showAlert(Ошибка: ${error.message});
-    } else {
-        const result = data[0];
-        Telegram.WebApp.showAlert(result.message);
-        if (result.success) {
-            await updateBalancesUI();
-            await loadUserInventory(); // Перезагрузить инвентарь для обновления статуса
-        }
-    }
-}
-
-async function sellItem(itemId, itemName, itemValue) {
-    if (!currentUserId) return;
-
-const confirmSell = await Telegram.WebApp.showConfirm(Вы действительно хотите продать "${itemName}" за ${parseFloat(itemValue).toFixed(2)} TON?);
-
-    if (!confirmSell) return;
-
-    Telegram.WebApp.showProgress();
-
-    try {
-        const { data, error } = await supabase
-            .rpc('sell_item', { user_id_param: currentUserId, item_id_param: itemId, sell_amount_param: itemValue });
-
-        Telegram.WebApp.hideProgress();
-
-        if (error) {
-            console.error('Ошибка продажи предмета:', error);
-            Telegram.WebApp.showAlert(Ошибка продажи: ${error.message});
-        } else {
-            const result = data[0];
-            Telegram.WebApp.showAlert(result.message);
-            if (result.success) {
-                await updateBalancesUI();
-                await loadUserInventory();
-            }
-        }
-    } catch (e) {
-        Telegram.WebApp.hideProgress();
-        console.error('Ошибка при продаже предмета:', e);
-        Telegram.WebApp.showAlert('Произошла ошибка при продаже предмета.');
-    }
-}
-
-
-// --- ЭКРАН "РАКЕТА" (CRASH GAME) ---
-// TODO: Более сложная логика Crash Game
-// Эта часть требует значительно более сложной серверной логики для управления раундами,
-// генерации множителя, обработки ставок в реальном времени, выигрышей и проигрышей.
-// Supabase Realtime может быть использован для синхронизации, но управляющая логика
-// должна быть на бэкенде (например, в Edge Function, Cloud Function или отдельном сервере).
-
-let gameInterval = null;
-let currentCrashMultiplier = 1.00; // Для имитации, реальный должен быть с сервера
-let isGameInProgress = false;
-let gameChannel = null; // Для Supabase Realtime
-
-function startCrashGameListeners() {
-    // Если уже есть подписка, не создаем новую
-    if (gameChannel && gameChannel.topic.endsWith('game_updates')) {
-        return;
-    }
-
-    gameChannel = supabase.channel('game_updates');
-
-    gameChannel.on('postgres_changes', { event: '*', schema: 'public', table: 'game_rounds' }, payload => {
-        console.log('Изменение в раунде:', payload);
-        if (payload.eventType === 'INSERT' && payload.new.status === 'waiting_for_bets') {
-            gameStatusDiv.textContent = 'Ожидание ставок...';
-            currentMultiplierDisplay.textContent = '1.00x';
-            placeBetButton.disabled = false;
-            placeBetButton.classList.remove('disabled');
-            cashOutButton.disabled = true;
-            cashOutButton.classList.add('disabled');
-            isGameInProgress = false; // Нет активной игры
-        } else if (payload.eventType === 'UPDATE' && payload.new.status === 'in_progress') {
-            isGameInProgress = true;
-            currentCrashMultiplier = payload.new.current_multiplier; // Обновляем множитель
-            gameStatusDiv.textContent = 'Игра идет!';
-            currentMultiplierDisplay.textContent = currentCrashMultiplier.toFixed(2) + 'x';
-            placeBetButton.disabled = true;
-            placeBetButton.classList.add('disabled');
-            cashOutButton.disabled = false;
-            cashOutButton.classList.remove('disabled');
-            // Здесь можно запустить анимацию роста множителя, если она не управляется Realtime пошагово
-        } else if (payload.eventType === 'UPDATE' && payload.new.status === 'crashed') {
-            isGameInProgress = false;
-            gameStatusDiv.textContent =
