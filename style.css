@@ -1,84 +1,48 @@
-```css
-:root {
-    --primary-orange: #FF8C00; /* Яркий оранжевый */
-    --secondary-black: #1A1A1A; /* Глубокий черный */
-    --text-light: #FFFFFF; /* Белый текст */
-    --text-dark: #000000; /* Черный текст */
-    --border-color: #333333; /* Темно-серый для границ */
-}
-
+css
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--secondary-black);
-    color: var(--text-light);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
+    padding: 0;
+    background-color: #1a1a1a; /* Темно-серый/черный фон */
+    color: #f0f0f0; /* Светлый текст */
 }
 
-.app-container {
-    background-color: #282828; /* Немного светлее черного для контейнера */
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+header {
+    background-color: #333333; /* Более темный серый для шапки */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ff8c00; /* Оранжевая полоса */
+}
+
+.user-info span {
+    margin-right: 15px;
+    font-weight: bold;
+    color: #ff8c00; /* Оранжевый для пользовательской информации */
+}
+
+nav button {
+    background-color: #ff8c00; /* Оранжевые кнопки */
+    color: #1a1a1a; /* Темный текст на кнопках */
+    border: none;
+    padding: 8px 15px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #e67e00; /* Чуть темнее оранжевый при наведении */
+}
+
+main {
+    padding: 20px;
     text-align: center;
-    max-width: 400px;
-    width: 100%;
 }
 
 h1 {
-    color: var(--primary-orange);
-    margin-bottom: 25px;
-    font-size: 1.8em;
-}
-
-p {
-    margin-bottom: 15px;
-    font-size: 1.1em;
-    line-height: 1.6;
-}
-
-button {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.primary-btn {
-    background-color: var(--primary-orange);
-    color: var(--text-dark);
-}
-
-.primary-btn:hover {
-    background-color: #FF7F00; /* Чуть темнее оранжевый */
-    transform: translateY(-2px);
-}
-
-.secondary-btn {
-    background-color: #444444; /* Темно-серый */
-    color: var(--text-light);
-}
-
-.secondary-btn:hover {
-    background-color: #555555; /* Чуть светлее серый */
-    transform: translateY(-2px);
-}
-
-.status-message {
-    color: var(--primary-orange);
-    font-size: 0.9em;
-    min-height: 20px; /* Чтобы избежать сдвига элементов */
-    margin-top: 20px;
+    color: #ff8c00;
 }
