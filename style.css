@@ -1,608 +1,84 @@
-css
-/* Переменные для цветовой палитры */
+```css
 :root {
-    --bg-color-dark: #1a1a1a;
-    --bg-color-medium: #2c2c2c;
-    --bg-color-light: #3a3a3a;
-    --accent-orange: #FF8C00; /* Глубокий оранжевый */
-    --accent-orange-light: #FFA500; /* Яркий оранжевый */
-    --text-color-light: #FFFFFF;
-    --text-color-muted: #CCCCCC;
-    --text-color-dark: #4a4a4a;
-    --border-radius-main: 12px;
-    --border-radius-small: 8px;
-    --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.2);
-    --shadow-medium: 0 6px 12px rgba(0, 0, 0, 0.3);
-    --green-badge: #28a745;
-    --red-alert: #dc3545;
+    --primary-orange: #FF8C00; /* Яркий оранжевый */
+    --secondary-black: #1A1A1A; /* Глубокий черный */
+    --text-light: #FFFFFF; /* Белый текст */
+    --text-dark: #000000; /* Черный текст */
+    --border-color: #333333; /* Темно-серый для границ */
 }
 
-/* Общие стили */
 body {
-    font-family: 'Inter', sans-serif; /* Стильный современный шрифт */
-    background-color: var(--bg-color-dark);
-    color: var(--text-color-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--secondary-black);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent; /* Убираем синюю подсветку при тапе на мобильных */
-    overflow: hidden; /* Чтобы не было прокрутки body */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .app-container {
-    max-width: 450px; /* Ограничение для мини-приложения */
-    margin: 0 auto;
-    height: 100vh; /* Полная высота для контейнера */
-    display: flex;
-    flex-direction: column;
-    background-color: var(--bg-color-dark);
-    box-shadow: var(--shadow-medium);
-}
-
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background-color: var(--bg-color-medium);
-    border-bottom: 1px solid var(--bg-color-light);
-    box-shadow: var(--shadow-light);
-    flex-shrink: 0; /* Не сжимать по высоте */
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#userNickname {
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-color-light);
-    /* Блюр применяется динамически через JS */
-}
-
-.balance-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.balance-item {
-    font-size: 0.9em;
-    color: var(--text-color-light);
-    font-weight: 600;
-}
-
-.plus-button {
-    background-color: var(--accent-orange);
-    color: var(--text-color-light);
-    border: none;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    font-size: 1.2em;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.plus-button:hover {
-    background-color: var(--accent-orange-light);
-}
-
-.main-content {
-    flex-grow: 1; /* Занимает все доступное пространство между хедером и навигацией */
-    position: relative; /* Для позиционирования экранов внутри */
-    overflow: hidden; /* Обрезает контент, который выходит за границы */
-}
-
-.screen {
-    position: absolute; /* Позиционируем экраны абсолютно друг над другом */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-color-dark);
-    overflow-y: auto; /* Включаем прокрутку для каждого экрана отдельно */
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex; /* Для выравнивания контента */
-    flex-direction: column;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-.screen.hidden {
-    transform: translateX(100%); /* Сдвигаем скрытые экраны вправо */
-    opacity: 0;
-    pointer-events: none; /* Чтобы не реагировали на клики */
-}
-
-.screen.active {
-    transform: translateX(0);
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.screen-title {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: var(--text-color-light);
-    margin-bottom: 20px;
+    background-color: #282828; /* Немного светлее черного для контейнера */
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     text-align: center;
-    flex-shrink: 0; /* Не сжимать заголовок */
-}
-
-.loading-text {
-    text-align: center;
-    color: var(--text-color-muted);
-    margin-top: 50px;
-}
-
-/* --- Начальный экран --- */
-#homeScreen {
-    justify-content: center; /* Центрируем кнопки по вертикали */
-    align-items: center;
-}
-
-.home-buttons-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Одна колонка для мобильных */
-    gap: 20px;
-    width: 80%; /* Или другая удобная ширина */
-    max-width: 300px;
-    margin-top: 20px;
-}
-
-.home-button {
-    background-color: var(--accent-orange);
-    color: var(--text-color-light);
-    border: none;
-    border-radius: var(--border-radius-main);
-    padding: 25px 20px;
-    font-size: 1.3em;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: var(--shadow-medium);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.home-button:hover {
-    background-color: var(--accent-orange-light);
-    transform: translateY(-3px);
-}
-
-.home-button .icon {
-    font-size: 2.5em;
-    line-height: 1;
-}
-
-.home-button .label {
-    margin-top: 5px;
-}
-
-
-/* --- Нижняя навигационная панель --- */
-.bottom-nav {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    background-color: var(--bg-color-medium);
-    border-top: 1px solid var(--bg-color-light);
-    box-shadow: var(--shadow-light);
-    flex-shrink: 0; /* Не сжимать по высоте */
-    z-index: 50;
-}
-
-.nav-item {
-    background: none;
-    border: none;
-    color: var(--text-color-muted);
-    font-size: 0.8em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: color 0.2s ease;
-    flex: 1; /* Равномерное распределение */
-}
-
-.nav-item .icon {
-    font-size: 1.5em;
-}
-
-.nav-item.active {
-    color: var(--accent-orange);
-    font-weight: bold;
-}
-
-/* --- Общие стили для карточек (кейсы, инвентарь) --- */
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    padding-bottom: 20px;
-}
-
-.card {
-    background-color: var(--bg-color-medium);
-    border-radius: var(--border-radius-main);
-    padding: 15px;
-    box-shadow: var(--shadow-light);
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
-}
-
-.card-image {
-    width: 80px;
-    height: 80px;
-    background-color: var(--bg-color-light);
-    border-radius: var(--border-radius-small);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2em;
-    color: var(--accent-orange-light);
-}
-
-.card-title {
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-color-light);
-    margin-bottom: 5px;
-}
-
-.card-cost, .card-value {
-    font-size: 0.9em;
-    color: var(--text-color-muted);
-    font-weight: 400;
-    margin-bottom: 10px;
-}
-
-.card-button {
-    background-color: var(--accent-orange);
-    color: var(--text-color-light);
-    border: none;
-    padding: 8px 15px;
-    border-radius: var(--border-radius-small);
-    font-size: 0.9em;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    max-width: 400px;
     width: 100%;
 }
 
-.card-button:hover {
-    background-color: var(--accent-orange-light);
+h1 {
+    color: var(--primary-orange);
+    margin-bottom: 25px;
+    font-size: 1.8em;
 }
 
-.card-button.sell {
-    background-color: var(--bg-color-light);
-    color: var(--text-color-light);
-    margin-top: 5px;
-}
-
-.card-button.sell:hover {
-    background-color: var(--text-color-dark);
-}
-
-/* --- Стили для модального экрана пополнения --- */
-.modal-screen {
-    position: fixed; /* Фиксирован поверх всего */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-color-dark);
-    z-index: 2000; /* Высокий z-index */
-    overflow-y: auto;
-    padding-bottom: 20px;
-    box-sizing: border-box;
-    transform: translateY(100%); /* Изначально скрыт внизу */
-    transition: transform 0.3s ease-in-out;
-}
-
-.modal-screen.active {
-    transform: translateY(0);
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    background-color: var(--bg-color-medium);
-    border-bottom: 1px solid var(--bg-color-light);
-    position: sticky;
-    top: 0;
-    z-index: 2001;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 1.3em;
-    color: var(--text-color-light);
-    flex-grow: 1;
-    text-align: center;
-    transform: translateX(-15px);
-}
-
-.close-button {
-    background: none;
-    border: none;
-    color: var(--text-color-muted);
-    font-size: 1.5em;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-}
-
-.top-up-tabs {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 15px;
-    background-color: var(--bg-color-dark);
-    border-bottom: 1px solid var(--bg-color-light);
-}
-
-.tab-button {
-    flex: 1;
-    background-color: var(--bg-color-medium);
-    color: var(--text-color-muted);
-    border: none;
-    padding: 12px 10px;
-    border-radius: var(--border-radius-main);
-    margin: 0 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    position: relative;
-    font-weight: 600;
-}
-
-.tab-button.active {
-    background-color: var(--accent-orange);
-    color: var(--text-color-light);
-    font-weight: bold;
-}
-
-.tab-button .badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: var(--green-badge);
-    color: white;
-    font-size: 0.7em;
-    padding: 3px 6px;
-    border-radius: 8px;
-    white-space: nowrap;
-}
-
-.tab-content {
-    padding: 20px;
-}
-
-.input-group {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-color-medium);
-    border-radius: var(--border-radius-main);
-    padding: 10px 15px;
+p {
     margin-bottom: 15px;
-}
-
-.input-group .currency-symbol {
-    font-size: 1.2em;
-    margin-right: 10px;
-    color: var(--accent-orange-light);
-}
-
-.input-group input[type="number"],
-.promo-code-input input[type="text"] {
-    flex-grow: 1;
-    background: none;
-    border: none;
-    color: var(--text-color-light);
     font-size: 1.1em;
-    padding: 5px 0;
-    outline: none;
-    width: 100%;
+    line-height: 1.6;
 }
 
-.promo-code-input {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-color-medium);
-    border-radius: var(--border-radius-main);
-    padding: 10px 15px;
-    margin-bottom: 20px;
-}
-
-.promo-code-input .promo-button {
-    background: none;
-    border: none;
-    color: var(--text-color-muted);
-    font-size: 1.2em;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.main-action-button {
-    background-color: var(--accent-orange);
-    color: var(--text-color-light);
-    padding: 15px 25px;
-    border-radius: var(--border-radius-main);
-    border: none;
-    width: 100%;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: var(--shadow-light);
-    transition: background-color 0.3s ease;
-    margin-bottom: 20px;
-}
-
-.main-action-button:hover {
-    background-color: var(--accent-orange-light);
-}
-
-.main-action-button.disabled {
-    background-color: var(--bg-color-light);
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-.amount-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
-}
-
-.amount-button {
-    background-color: var(--bg-color-medium);
-    color: var(--text-color-light);
-    border: 1px solid var(--bg-color-medium);
-    padding: 12px 15px;
-    border-radius: var(--border-radius-main);
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
-
-.amount-button:hover {
-    background-color: var(--accent-orange-light);
-    border-color: var(--accent-orange);
-}
-
-.amount-button .ton-equivalent {
-    font-size: 0.8em;
-    color: var(--text-color-muted);
-    margin-left: 5px;
-}
-
-.conversion-info {
-    color: var(--text-color-muted);
-    font-size: 0.9em;
-    margin-top: -10px;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.buy-stars-link {
-    color: var(--accent-orange-light);
-    text-decoration: none;
-    font-size: 0.9em;
-    margin-bottom: 15px;
+button {
     display: block;
-    text-align: center;
-}
-
-/* --- Стили для Crash Game --- */
-.game-area {
-    background-color: var(--bg-color-medium);
-    border-radius: var(--border-radius-main);
-    padding: 20px;
-    box-shadow: var(--shadow-light);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-    flex-grow: 1; /* Занимает все доступное пространство на экране */
-}
-
-.multiplier-display {
-    font-size: 3em;
-    font-weight: bold;
-    color: var(--accent-orange);
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
-}
-
-.game-status {
-    font-size: 1.1em;
-    color: var(--text-color-muted);
+    width: 100%;
+    padding: 15px;
     margin-bottom: 15px;
-}
-
-.bet-input-group {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-.bet-input-group input {
-    flex-grow: 1;
-    background-color: var(--bg-color-light);
     border: none;
-    border-radius: var(--border-radius-small);
-    padding: 10px 15px;
-    color: var(--text-color-light);
-    font-size: 1em;
-    outline: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.player-bets, .round-history {
-    width: 100%;
-    margin-top: 15px;
+.primary-btn {
+    background-color: var(--primary-orange);
+    color: var(--text-dark);
 }
 
-.player-bets h3, .round-history h3 {
-    font-size: 1.2em;
-    color: var(--text-color-light);
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--bg-color-light);
-    padding-bottom: 5px;
+.primary-btn:hover {
+    background-color: #FF7F00; /* Чуть темнее оранжевый */
+    transform: translateY(-2px);
 }
 
-.player-bets ul, .round-history ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 150px;
-    overflow-y: auto;
-    background-color: var(--bg-color-light);
-    border-radius: var(--border-radius-small);
-    padding: 10px;
+.secondary-btn {
+    background-color: #444444; /* Темно-серый */
+    color: var(--text-light);
 }
 
-.player-bets li, .round-history li {
-    padding: 8px 0;
-    border-bottom: 1px dashed var(--text-color-dark);
-    color: var(--text-color-muted);
+.secondary-btn:hover {
+    background-color: #555555; /* Чуть светлее серый */
+    transform: translateY(-2px);
+}
+
+.status-message {
+    color: var(--primary-orange);
     font-size: 0.9em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.player-bets li:last-child, .round-history li:last-child {
-    border-bottom: none;
-}
-
-.round-history li span {
-    color: var(--accent-orange-light);
-    font-weight: 600;
+    min-height: 20px; /* Чтобы избежать сдвига элементов */
+    margin-top: 20px;
 }
