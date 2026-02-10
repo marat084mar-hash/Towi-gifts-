@@ -1,24 +1,29 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TON Lootbox Mini App</title>
+    <!-- <title>TON Mini App</title> - УДАЛЕНО по запросу -->
     <link rel="stylesheet" href="style.css">
-    <!-- Подключаем Telegram Web Apps SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <h1>Towi Gifts</h1>
-        <p>Ваш баланс: <span id="ton-balance">0 TON</span></p>
-        <button id="open-case-btn" class="primary-btn">Открыть Кейс</button>
-        <button id="inventory-btn" class="secondary-btn">Инвентарь</button>
-        <button id="crash-btn" class="secondary-btn">Игра "Ракета"</button>
-        <button id="upgrade-btn" class="secondary-btn">Апгрейд</button>
-        <p class="status-message" id="status-message"></p>
-    </div>
+    <header>
+        <div class="user-info">
+            <span id="username-display">@Загрузка...</span>
+            <span id="ton-balance-display">Баланс: 0.00 TON</span>
+        </div>
+        <nav>
+            <button id="cases-btn">Кейсы</button>
+            <button id="inventory-btn">Инвентарь</button>
+            <button id="crash-btn">Ракета</button>
+            <button id="upgrade-btn">Апгрейд</button>
+        </nav>
+    </header>
+
+    <main id="app-content">
+        <!-- <h1>Добро пожаловать в TON Mini App!</h1> - УДАЛЕНО по запросу -->
+        <p>Загрузка данных пользователя...</p>
+    </main>
 
     <script src="script.js"></script>
 </body>
