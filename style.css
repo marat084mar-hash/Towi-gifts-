@@ -1,110 +1,84 @@
-css
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #1a1a1a; /* Темно-серый/черный фон */
-    color: #f0f0f0; /* Светлый текст */
-}
+javascript
+document.addEventListener('DOMContentLoaded', () => {
 
-header {
-    background-color: #333333; /* Более темный серый для шапки */
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #ff8c00; /* Оранжевая полоса */
-}
+    // --- ИНИЦИАЛИЗАЦИЯ SUPABASE ---
+    // ВАЖНО: Замени 'https://kkgjkqiwrppaszvkeqbe.supabase.co' и 'sb_publishable_DvZIWrBWQ30LyV7FueztDg_TlVTALrs' на свои значения
+    // В реальном приложении их нужно хранить в переменных окружения!
+    const supabaseUrl = 'https://kkgjkqiwrppaszvkeqbe.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZ2prcWl3cnBwYXN6dmhlcWJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY0NTE5MTYsImV4cCI6MjAzMjAyNzkxNn0.DvZIWrBWQ30LyV7FueztDg_TlVTALrs4qc9t5VTXg3s';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-.user-info span {
-    margin-right: 15px;
-    font-weight: bold;
-    color: #ff8c00; /* Оранжевый для пользовательской информации */
-}
+    console.log('Supabase клиент инициализирован:', supabase);
 
-nav button {
-    background-color: #ff8c00; /* Оранжевые кнопки */
-    color: #1a1a1a; /* Темный текст на кнопках */
-    border: none;
-    padding: 8px 15px;
-    margin-left: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
+    // --- ЛОГИКА НАВИГАЦИИ ---
+    const screens = document.querySelectorAll('.screen');
+    const navButtons = document.querySelectorAll('.nav-button, .back-button');
 
-nav button:hover {
-    background-color: #e67e00; /* Чуть темнее оранжевый при наведении */
-}
+    function showScreen(screenId) {
+        screens.forEach(screen => {
+            screen.classList.remove('active');
+        });
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+        }
+    }
 
-main {
-    padding: 20px;
-    text-align: center;
-}
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetScreenId = button.getAttribute('data-target');
+            showScreen(targetScreenId);
+        });
+    });
 
-h1 {
-    color: #ff8c00;
-}
-/* Стили для сетки кейсов */
-.cases-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Адаптивная сетка */
-    gap: 20px;
-    padding: 20px;
-    justify-content: center;
-}
+    // --- ЛОГИКА МОДАЛЬНОГО ОКНА ---
+    const modal = document.getElementById('wallet-modal');
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
 
-.case-item {
-    background-color: #2a2a2a; /* Темный фон для элемента кейса */
-    border: 1px solid #ff8c00; /* Оранжевая рамка */
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease-in-out;
-}
+    openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
+    closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+    // Закрытие по клику вне окна
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 
-.case-item:hover {
-    transform: translateY(-5px); /* Небольшой эффект при наведении */
-}
+    // --- ЛОГИКА ВКЛАДОК (TABS) В МОДАЛЬНОМ ОКНЕ ---
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-.case-item img {
-    max-width: 100px;
-    height: auto;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.getAttribute('data-tab');
 
-.case-item h3 {
-    color: #ff8c00;
-    margin-top: 0;
-    font-size: 1.2em;
-}
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active')
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === tab-${tabId}) {
+                    content.classList.add('active');
+                }
+            });
+        });
+    });
+    
+    // --- СТАРТОВАЯ ТОЧКА ---
+    // Показываем главный экран при загрузке
+    showScreen('main-screen');
 
-.case-item p {
-    font-size: 0.9em;
-    color: #cccccc;
-}
+    // --- ЗДЕСЬ БУДЕТ ТВОЯ ОСНОВНАЯ ЛОГИКА ---
+    // Например, функция для загрузки кейсов
+    async function loadCases() {
+        // const { data, error } = await supabase.from('cases').select('*');
+        // if (error) {
+        //     console.error('Ошибка загрузки кейсов:', error);
+        // } else {
+        //     // Здесь код для отображения кейсов на экране #cases-screen
+        //     console.log('Кейсы загружены:', data);
+        // }
+    }
 
-.case-price {
-    font-weight: bold;
-    color: #00ff00; /* Зеленый для цены, чтобы выделялась */
-}
-
-.case-item button {
-    background-color: #008000; /* Зеленая кнопка "Открыть" */
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.case-item button:hover {
-    background-color: #006400; /* Темнее зеленый при наведении */
-}
+});
 ``
