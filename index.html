@@ -1,30 +1,130 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <title>TON Mini App</title> - УДАЛЕНО по запросу -->
+    <title>Towi Gifts</title>
+    <!-- Ссылка на файл со стилями -->
     <link rel="stylesheet" href="style.css">
+    <!-- Ссылка на библиотеку Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <header>
-        <div class="user-info">
-            <span id="username-display">@Загрузка...</span>
-            <span id="ton-balance-display">Баланс: 0.00 TON</span>
+
+    <div class="app-container">
+
+        <!-- ======== ЭКРАН 1: ГЛАВНЫЙ ======== -->
+        <div id="main-screen" class="screen active">
+            <div class="user-profile">
+                <div class="balance">1234 TON</div>
+                <div class="username">@username</div>
+            </div>
+            
+            <button id="open-modal-btn" class="top-up-button">+</button>
+
+            <div class="nav-buttons">
+                <button class="nav-button" data-target="cases-screen">Кейсы</button>
+                <button class="nav-button" data-target="upgrade-screen">Апгрейды</button>
+                <button class="nav-button" data-target="crash-screen">Ракетка</button>
+                <button class="nav-button" data-target="inventory-screen">Инвентарь</button>
+            </div>
         </div>
-        <nav>
-            <button id="cases-btn">Кейсы</button>
-            <button id="inventory-btn">Инвентарь</button>
-            <button id="crash-btn">Ракета</button>
-            <button id="upgrade-btn">Апгрейд</button>
-        </nav>
-    </header>
+        
+        <!-- ======== ЭКРАН 2: КЕЙСЫ (пустой, как ты просил) ======== -->
+        <div id="cases-screen" class="screen">
+            <div class="header">
+                 <button class="back-button" data-target="main-screen">‹</button>
+                 <h2>Кейсы</h2>
+            </div>
+            <p>Загрузка кейсов...</p>
+        </div>
 
-    <main id="app-content">
-        <!-- <h1>Добро пожаловать в TON Mini App!</h1> - УДАЛЕНО по запросу -->
-        <p>Загрузка данных пользователя...</p>
-    </main>
+        <!-- ======== ЭКРАН 3: АПГРЕЙДЫ ======== -->
+        <div id="upgrade-screen" class="screen">
+            <div class="header">
+                 <button class="back-button" data-target="main-screen">‹</button>
+                 <h2>Апгрейды</h2>
+            </div>
+            <div class="upgrade-slots">
+                <div class="upgrade-slot">Добавить предмет</div>
+                <div class="upgrade-slot">Выбрать предмет</div>
+            </div>
+            <div class="chance-display">Шанс успеха: 50%</div>
+            <div class="upgrade-wheel">
+                SUCCESS
+            </div>
+            <button class="action-button">Апгрейд!</button>
+        </div>
 
+        <!-- ======== ЭКРАН 4: РАКЕТКА (CRASH) ======== -->
+        <div id="crash-screen" class="screen">
+            <div class="header">
+                 <button class="back-button" data-target="main-screen">‹</button>
+                 <h2>Ракетка</h2>
+            </div>
+            <div class="crash-game-area">
+                 🚀 x1.00
+            </div>
+            <div class="crash-controls">
+                <input type="number" placeholder="Ваша ставка в TON" class="input-field">
+                <button class="action-button">Сделать ставку</button>
+            </div>
+        </div>
+
+        <!-- ======== ЭКРАН 5: ИНВЕНТАРЬ (пустой) ======== -->
+        <div id="inventory-screen" class="screen">
+            <div class="header">
+                 <button class="back-button" data-target="main-screen">‹</button>
+                 <h2>Инвентарь</h2>
+            </div>
+             <p>Инвентарь пуст.</p>
+        </div>
+
+<!-- ======== МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ ======== -->
+        <div id="wallet-modal" class="screen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Пополнение баланса</h3>
+                    <button id="close-modal-btn" class="close-modal">×</button>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="ton">TON</button>
+                    <button class="tab" data-tab="stars">Звёзды</button>
+                </div>
+
+                <div id="tab-ton" class="tab-content active">
+                    <input type="number" placeholder="Сумма в TON" class="input-field">
+                    <button class="action-button">Подключить Кошелек</button>
+                    <div class="predefined-amounts">
+                        <button class="amount-button">5</button>
+                        <button class="amount-button">10</button>
+                        <button class="amount-button">20</button>
+                        <button class="amount-button">50</button>
+                    </div>
+                </div>
+                
+                <div id="tab-stars" class="tab-content">
+                    <input type="number" placeholder="Сумма в Звёздах" class="input-field">
+                    <button class="action-button">Пополнить через Telegram</button>
+                    <div class="predefined-amounts">
+                        <button class="amount-button">100</button>
+                        <button class="amount-button">500</button>
+                        <button class="amount-button">1000</button>
+                        <button class="amount-button">2500</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Ссылка на файл с логикой -->
     <script src="script.js"></script>
+
 </body>
 </html>
+
+
+    
