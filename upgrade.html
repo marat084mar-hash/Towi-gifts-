@@ -1,1 +1,51 @@
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Апгрейд - TON Cases</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>TON Cases</h1>
+        <nav>
+            <a href="cases.html">Кейсы</a>
+            <a href="inventory.html">Инвентарь</a>
+            <a href="upgrade.html" class="active">Апгрейд</a>
+            <a href="wallet.html">Кошелек</a>
+        </nav>
+        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
+    </header>
 
+    <main>
+        <h2>Апгрейд предмета</h2>
+        <div class="upgrade-container">
+            <div class="upgrade-item" id="current-item-view">
+                <p>Предмет для улучшения:</p>
+                <span id="current-item-name">Нет предмета</span>
+                <p>Стоимость: <span id="current-item-price">0</span> TON</p>
+            </div>
+            <div class="upgrade-chance">
+                <p>Шанс успеха: <span id="chance-display">50%</span></p>
+                <input type="range" id="chance-slider" min="1" max="95" value="50">
+                <div class="upgrade-wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div id="upgrade-wheel"></div>
+                </div>
+            </div>
+            <div class="upgrade-item" id="target-item-view">
+                <p>Возможный выигрыш:</p>
+                <span id="target-item-name">--</span>
+                <p>Стоимость: <span id="target-item-price">0</span> TON</p>
+            </div>
+        </div>
+        <button id="upgrade-button" disabled>Улучшить</button>
+        <div id="upgrade-result" class="result-message"></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="upgrade.js"></script>
+</body>
+</html>
