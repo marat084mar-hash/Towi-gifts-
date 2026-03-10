@@ -40,7 +40,7 @@ button:disabled { background-color: #333; cursor: not-allowed; }
 .roulette-item img { height: 60px; object-fit: contain; }
 .roulette-item-name { font-size: 0.9em; font-weight: bold; margin-top: 5px; }
 .roulette-item-price { font-size: 0.8em; color: #e94560; }
-[11.03.2026 1:32] ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️: document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
     getUserProfile();
     renderCases();
     const modal = document.getElementById('result-modal');
@@ -144,7 +144,7 @@ function showResult(wonItems) {
     rouletteWrapper.appendChild(rouletteTrack);
     winItemContainer.appendChild(rouletteWrapper);
     modal.style.display = 'flex';
-[11.03.2026 1:32] ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️: /* --- Стили для анимации колеса апгрейда --- */
+ /* --- Стили для анимации колеса апгрейда --- */
 .upgrade-wheel-container { position: relative; width: 250px; height: 250px; margin: 20px auto; }
 .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid #e94560; z-index: 2; }
 #upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #533483; position: relative; overflow: hidden; transition: transform 6s cubic-bezier(0.2, 0.8, 0.2, 1); }
