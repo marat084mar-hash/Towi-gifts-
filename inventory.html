@@ -1,0 +1,48 @@
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инвентарь - TON Cases</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>TON Cases</h1>
+        <nav>
+            <a href="cases.html">Кейсы</a>
+            <a href="inventory.html" class="active">Инвентарь</a>
+            <a href="upgrade.html">Апгрейд</a>
+            <a href="wallet.html">Кошелек</a>
+        </nav>
+        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
+    </header>
+
+    <main>
+        <h2>Ваш инвентарь</h2>
+        <div id="inventory-container" class="inventory-grid">
+            <p id="loading-message">Загрузка предметов...</p>
+        </div>
+    </main>
+
+    <div id="withdraw-modal" class="modal">
+        <div class="withdraw-modal-content">
+            <span class="close-button">&times;</span>
+            <h3>Инструкция по выводу NFT</h3>
+            <p>Для получения вашего приза, пожалуйста, напишите в Telegram нашему администратору:</p>
+            <p><strong>@YourTelegramAdminUsername</strong></p>
+            <p>В сообщении ОБЯЗАТЕЛЬНО отправьте одним сообщением:</p>
+            <ol>
+                <li>Ваш уникальный ID пользователя: <br> <strong id="user-id-display"></strong></li>
+                <li>Уникальную ссылку на ваш приз: <br> <strong id="item-to-withdraw-link"></strong></li>
+            </ol>
+            <p>Название предмета: <i id="item-to-withdraw-name"></i></p>
+            <p>После проверки администратор отправит вам ваш подарок.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="inventory.js"></script>
+</body>
+</html>
