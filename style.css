@@ -1,205 +1,251 @@
 ```css
-/* Основные стили */
+/* --- УНИКАЛЬНЫЙ ДИЗАЙН "NEON-TECH" --- */
+
+/* 1. Наша собственная дизайн-система (переменные) */
+:root {
+    /* Цвета */
+    --bg-deep-space: #0D0F1B; /* Очень темный, почти черный фон */
+    --bg-surface: #1A1C2A;    /* Фон для карточек, шапки и контейнеров */
+    --accent-electric-blue: #00BFFF; /* Яркий синий, наш основной акцент */
+    --accent-vivid-violet: #8A2BE2; /* Фиолетовый для градиентов и акцентов */
+    --text-primary: #EAEAEA;      /* Основной, почти белый текст */
+    --text-secondary: #8B90A3;    /* Второстепенный, серый текст */
+    --border-color: #34374C;      /* Цвет для рамок и разделителей */
+    --success-color: #00E33A;     /* Цвет для успешных действий */
+    --failure-color: #FF4D4D;      /* Цвет для провальных действий */
+
+    /* Шрифты */
+    --font-body: 'Roboto', sans-serif;
+    --font-headings: 'Exo 2', sans-serif;
+
+    /* Другое */
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+}
+
+/* 2. Базовые стили и типографика */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: #1a1a2e;
-    color: #e0e0e0;
+    font-family: var(--font-body);
+    background-color: var(--bg-deep-space);
+    color: var(--text-primary);
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
 main {
-    flex-grow: 1;
     padding: 20px;
     max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
+    margin: 20px auto;
 }
 
-/* Шапка */
+h1, h2, h3 {
+    font-family: var(--font-headings);
+    text-transform: uppercase;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2.2em;
+    font-weight: 800;
+    margin-bottom: 30px;
+    color: var(--accent-electric-blue);
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+}
+
+/* 3. Шапка сайта (Header) */
 header {
-    background-color: #16213e;
-    padding: 10px 20px;
+    background-color: var(--bg-surface);
+    padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #533483;
+    border-bottom: 2px solid var(--border-color);
 }
 
-header h1 { color: #e94560; margin: 0; }
-nav a { color: #e0e0e0; text-decoration: none; margin: 0 15px; font-size: 1.1em; padding: 5px 10px; border-radius: 5px; transition: background-color 0.3s; }
-nav a.active, nav a:hover { background-color: #533483; }
-.balance { font-size: 1.2em; font-weight: bold; }
-#balance-display { color: #e94560; }
-
-/* Сетка кейсов */
-.cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-.case-item { background-color: #16213e; border: 1px solid #533483; border-radius: 10px; padding: 15px; text-align: center; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
-.case-item:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3); }
-.case-item img { max-width: 80%; height: auto; margin-bottom: 10px; }
-.case-item h3 { margin: 10px 0; color: #e94560; }
-.case-price { font-weight: bold; font-size: 1.1em; }
-.multi-open { margin-top: 10px; display: flex; gap: 5px; justify-content: center; }
-.multi-open button { background: #533483; border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-.multi-open button:hover { background: #e94560; }
- /* Модальное окно */
-.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
-.modal-content { background-color: #16213e; padding: 20px; border: 1px solid #533483; border-radius: 10px; width: 90%; max-width: 500px; text-align: center; position: relative; }
-.close-button { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
-#win-item { padding: 20px; margin: 15px 0; background-color: #1a1a2e; border-radius: 5px; }
-#win-item-name { font-weight: bold; font-size: 1.4em; color: #e94560; }
-#win-item-price { font-size: 1.1em; }
-
-/* Страница апгрейда */
-.upgrade-container { display: flex; justify-content: space-around; align-items: center; background-color: #16213e; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-.upgrade-item { text-align: center; padding: 20px; width: 200px; }
-#upgrade-button { display: block; width: 200px; margin: 20px auto; padding: 15px; font-size: 1.2em; }
-.result-message { text-align: center; margin-top: 20px; font-size: 1.5em; font-weight: bold; }
-.result-message.success { color: #4caf50; }
-.result-message.failure { color: #e94560; }
-
-/* Страница кошелька */
-.wallet-container { display: grid; grid-template-columns: 1fr; gap: 30px; }
-.deposit-option { background: #16213e; padding: 20px; border-radius: 10px; border: 1px solid #533483; }
-input[type="number"], button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #533483; background-color: #1a1a2e; color: #e0e0e0; font-size: 1em; box-sizing: border-box; }
-button { background-color: #533483; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
-button:hover:not(:disabled) { background-color: #e94560; }
-button:disabled { background-color: #333; cursor: not-allowed; }
-.deposit-info { margin-top: 15px; padding: 10px; background-color: #1a1a2e; border-left: 3px solid #e94560; word-wrap: break-word; }
-
-/* Стили для инвентаря */
-.inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-.inventory-item { background-color: #16213e; border: 1px solid #533483; border-radius: 10px; padding: 15px; text-align: center; position: relative; overflow: hidden; }
-.inventory-item .item-name { font-weight: bold; font-size: 1.2em; color: #e0e0e0; margin-bottom: 10px; }
-.inventory-item .item-price { color: #e94560; margin-bottom: 15px; }
-.item-actions button { width: 48%; padding: 8px; margin-top: 5px; }
-.cooldown-tag { position: absolute; top: 0; right: -50px; background-color: #e94560; color: white; padding: 5px 50px; transform: rotate(45deg); transform-origin: top left; font-size: 0.8em; font-weight: bold; }
-.inventory-item.on-cooldown { opacity: 0.7; }
-
-/* --- Стили для анимации рулетки кейса --- */
-.roulette-wrapper { width: 100%; height: 120px; background-color: #1a1a2e; border: 2px solid #533483; border-radius: 10px; overflow: hidden; position: relative; margin-bottom: 20px; }
-.roulette-wrapper::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background-color: #e94560; z-index: 3; box-shadow: 0 0 10px #e94560; }
-.roulette-track { display: flex; height: 100%; position: absolute; left: 0; transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); }
-.roulette-item { width: 120px; height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; border-right: 1px solid #2c2c54; text-align: center; padding: 5px; background-color: #16213e; }
-.roulette-item img { height: 60px; object-fit: contain; }
-.roulette-item-name { font-size: 0.9em; font-weight: bold; margin-top: 5px; }
-.roulette-item-price { font-size: 0.8em; color: #e94560; }
- document.addEventListener('DOMContentLoaded', () => {
-    getUserProfile();
-    renderCases();
-    const modal = document.getElementById('result-modal');
-    const closeButton = modal.querySelector('.close-button');
-    closeButton.onclick = () => modal.style.display = 'none';
-    window.onclick = (event) => { if (event.target == modal) { modal.style.display = 'none'; } };
-});
-
-function renderCases() {
-    const container = document.getElementById('cases-container');
-    container.innerHTML = casesData.map(caseInfo => 
-        <div class="case-item">
-            <img src="${caseInfo.image}" alt="${caseInfo.name}">
-            <h3>${caseInfo.name}</h3>
-            <p class="case-price">${caseInfo.price} TON</p>
-            <div class="multi-open">
-                ${[1, 2, 3, 4, 5].map(count => <button data-case-id="${caseInfo.id}" data-count="${count}">x${count}</button>).join('')}
-            </div>
-        </div>
-    ).join('');
-    
-    container.querySelectorAll('.multi-open button').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const caseId = parseInt(e.target.dataset.caseId);
-            const count = parseInt(e.target.dataset.count);
-            openCase(caseId, count);
-        });
-    });
+header h1 {
+    font-size: 1.6em;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
 }
 
-async function openCase(caseId, count) {
-    const caseInfo = casesData.find(c => c.id === caseId);
-    if (!caseInfo) return;
-
-    const totalCost = caseInfo.price * count;
-    if (currentUserBalance < totalCost) { alert('Недостаточно средств!'); return; }
-
-    const newBalance = currentUserBalance - totalCost;
-    if (!(await updateUserBalance(newBalance))) { alert('Ошибка при списании средств.'); return; }
-
-    const getRandomItem = (items) => {
-        const rand = Math.random() * 100;
-        let cumulativeChance = 0;
-        for (const item of items) {
-            cumulativeChance += item.chance;
-            if (rand < cumulativeChance) return item;
-        }
-        return items[items.length - 1];
-    };
-    
-    let itemsToAdd = [];
-    for (let i = 0; i < count; i++) {
-        const wonItem = getRandomItem(caseInfo.items);
-        itemsToAdd.push({
-            user_id: userId,
-            name: wonItem.name,
-            price: wonItem.price,
-            image_url: wonItem.image,
-            is_nft: !!wonItem.is_nft,
-            nft_link: wonItem.nft_link || null,
-        });
-    }
-
-    const { data: newItems, error } = await supabase.from('inventory_items').insert(itemsToAdd).select();
-    if (error) {
-        console.error('Ошибка добавления предметов:', error);
-        alert('Произошла ошибка! Средства будут возвращены.');
-        await updateUserBalance(currentUserBalance);
-        return;
-    }
-    showResult(newItems);
+nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all var(--transition-speed) ease;
 }
 
-function showResult(wonItems) {
-    const modal = document.getElementById('result-modal');
-    const winItemContainer = document.getElementById('win-item');
-    const modalContent = modal.querySelector('.modal-content');
-    winItemContainer.innerHTML = '';
-    
-    const rouletteWrapper = document.createElement('div');
-    rouletteWrapper.className = 'roulette-wrapper';
-    const rouletteTrack = document.createElement('div');
-    rouletteTrack.className = 'roulette-track';
-    
-    const prize = wonItems[0];
-    let rouletteItems = [];
-    for (let i = 0; i < 50; i++) {
-        const randomCase = casesData[Math.floor(Math.random() * casesData.length)];
-        rouletteItems.push(randomCase.items[Math.floor(Math.random() * randomCase.items.length)]);
-    }
-    const prizeIndex = Math.floor(Math.random() * 20) + 25;
-    rouletteItems[prizeIndex] = prize;
+nav a.active, nav a:hover {
+    background-color: rgba(0, 191, 255, 0.1);
+    color: var(--accent-electric-blue);
+}
 
-    rouletteItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'roulette-item';
-        div.innerHTML = <img src="${item.image || 'case.png'}" alt="${item.name}"><span class="roulette-item-name">${item.name}</span><span class="roulette-item-price">${item.price} TON</span>;
-        rouletteTrack.appendChild(div);
-    });
+.balance {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-weight: 700;
+    font-size: 1.1em;
+}
 
-    rouletteWrapper.appendChild(rouletteTrack);
-    winItemContainer.appendChild(rouletteWrapper);
-    modal.style.display = 'flex';
- /* --- Стили для анимации колеса апгрейда --- */
-.upgrade-wheel-container { position: relative; width: 250px; height: 250px; margin: 20px auto; }
-.wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid #e94560; z-index: 2; }
-#upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #533483; position: relative; overflow: hidden; transition: transform 6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+#balance-display {
+    color: var(--accent-electric-blue);
+}
+[11.03.2026 2:27] ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️: /* 4. Карточки кейсов и инвентаря */
+.cases-grid, .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
 
-/* --- Стили для модального окна вывода --- */
-.withdraw-modal-content { background-color: #16213e; padding: 30px; border: 1px solid #533483; border-radius: 10px; width: 90%; max-width: 500px; text-align: center; position: relative; }
-.withdraw-modal-content h3 { color: #e94560; margin-top: 0; }
-.withdraw-modal-content p { line-height: 1.6; }
-.withdraw-modal-content ol { text-align: left; display: inline-block; }
-.withdraw-modal-content strong { color: #e0e0e0; background-color: #2c2c54; padding: 3px 6px; border-radius: 4px; word-break: break-all; }
+.case-item, .inventory-item {
+    background: linear-gradient(145deg, #202333, #161824);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    transition: all var(--transition-speed) ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.case-item:hover, .inventory-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 191, 255, 0.1);
+    border-color: var(--accent-electric-blue);
+}
+
+.case-item h3, .inventory-item .item-name {
+    margin: 10px 0;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.case-price, .inventory-item .item-price {
+    font-family: var(--font-headings);
+    font-weight: 800;
+    font-size: 1.4em;
+    color: var(--accent-electric-blue);
+    margin-bottom: 15px;
+}
+
+/* 5. Кнопки (наш фирменный стиль) */
+button {
+    font-family: var(--font-headings);
+    background: linear-gradient(90deg, var(--accent-electric-blue), var(--accent-vivid-violet));
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.3);
+}
+
+button:disabled {
+    background: #4A4E62;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.multi-open button {
+    background: var(--bg-deep-space);
+    padding: 6px 12px;
+    font-size: 0.9em;
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+}
+
+.multi-open button:hover {
+    background-color: var(--accent-electric-blue);
+    color: var(--bg-deep-space);
+    border-color: var(--accent-electric-blue);
+}
+
+/* 6. Модальное окно и рулетка */
+.modal { background-color: rgba(13, 15, 27, 0.85); backdrop-filter: blur(5px); }
+.modal-content {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+.roulette-wrapper {
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-deep-space);
+}
+.roulette-wrapper::before { background-color: var(--accent-electric-blue); box-shadow: 0 0 10px var(--accent-electric-blue); }
+.roulette-item { background-color: var(--bg-surface); border-right: 1px solid var(--border-color); }
+
+/* 7. Страница апгрейда с нашим колесом */
+.upgrade-container {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+}
+#upgrade-wheel {
+    border-color: var(--border-color);
+    /* Наш уникальный фиолетово-синий градиент */
+    background: conic-gradient(var(--accent-vivid-violet) 0% 50%, var(--bg-deep-space) 50% 100%);
+}
+.wheel-pointer { border-top-color: var(--accent-electric-blue); }
+.result-message.success { color: var(--success-color); }
+.result-message.failure { color: var(--failure-color); }
+
+/* 8. Уникальные элементы инвентаря */
+.item-actions button { width: 48%; padding: 10px; font-size: 0.9em; }
+.withdraw-btn {
+    background: transparent;
+    border: 2px solid var(--accent-vivid-violet);
+    box-shadow: none;
+}
+.withdraw-btn:hover {
+    background: var(--accent-vivid-violet);
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+}
+.cooldown-tag { background-color: var(--failure-color); }
+[11.03.2026 2:27] ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️: /* 9. Страница кошелька */
+.wallet-container { gap: 20px; }
+.deposit-option {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    padding: 25px;
+}
+input[type="number"] {
+    background-color: var(--bg-deep-space);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    padding: 12px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color var(--transition-speed) ease;
+}
+input[type="number"]:focus {
+    border-color: var(--accent-electric-blue);
+    outline: none;
+}
+.deposit-info {
+    border-left-color: var(--accent-electric-blue);
+    background-color: var(--bg-deep-space);
+}
