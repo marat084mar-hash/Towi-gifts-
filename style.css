@@ -46,3 +46,160 @@ nav a.active, nav a:hover { background-color: #533483; }
 .multi-open { margin-top: 10px; display: flex; gap: 5px; justify-content: center; }
 .multi-open button { background: #533483; border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
 .multi-open button:hover { background: #e94560; }
+ /* Модальное окно */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+.modal-content { background-color: #16213e; padding: 20px; border: 1px solid #533483; border-radius: 10px; width: 90%; max-width: 500px; text-align: center; position: relative; }
+.close-button { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+#win-item { padding: 20px; margin: 15px 0; background-color: #1a1a2e; border-radius: 5px; }
+#win-item-name { font-weight: bold; font-size: 1.4em; color: #e94560; }
+#win-item-price { font-size: 1.1em; }
+
+/* Страница апгрейда */
+.upgrade-container { display: flex; justify-content: space-around; align-items: center; background-color: #16213e; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+.upgrade-item { text-align: center; padding: 20px; width: 200px; }
+#upgrade-button { display: block; width: 200px; margin: 20px auto; padding: 15px; font-size: 1.2em; }
+.result-message { text-align: center; margin-top: 20px; font-size: 1.5em; font-weight: bold; }
+.result-message.success { color: #4caf50; }
+.result-message.failure { color: #e94560; }
+
+/* Страница кошелька */
+.wallet-container { display: grid; grid-template-columns: 1fr; gap: 30px; }
+.deposit-option { background: #16213e; padding: 20px; border-radius: 10px; border: 1px solid #533483; }
+input[type="number"], button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 5px; border: 1px solid #533483; background-color: #1a1a2e; color: #e0e0e0; font-size: 1em; box-sizing: border-box; }
+button { background-color: #533483; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
+button:hover:not(:disabled) { background-color: #e94560; }
+button:disabled { background-color: #333; cursor: not-allowed; }
+.deposit-info { margin-top: 15px; padding: 10px; background-color: #1a1a2e; border-left: 3px solid #e94560; word-wrap: break-word; }
+
+/* Стили для инвентаря */
+.inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.inventory-item { background-color: #16213e; border: 1px solid #533483; border-radius: 10px; padding: 15px; text-align: center; position: relative; overflow: hidden; }
+.inventory-item .item-name { font-weight: bold; font-size: 1.2em; color: #e0e0e0; margin-bottom: 10px; }
+.inventory-item .item-price { color: #e94560; margin-bottom: 15px; }
+.item-actions button { width: 48%; padding: 8px; margin-top: 5px; }
+.cooldown-tag { position: absolute; top: 0; right: -50px; background-color: #e94560; color: white; padding: 5px 50px; transform: rotate(45deg); transform-origin: top left; font-size: 0.8em; font-weight: bold; }
+.inventory-item.on-cooldown { opacity: 0.7; }
+
+/* --- Стили для анимации рулетки кейса --- */
+.roulette-wrapper { width: 100%; height: 120px; background-color: #1a1a2e; border: 2px solid #533483; border-radius: 10px; overflow: hidden; position: relative; margin-bottom: 20px; }
+.roulette-wrapper::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background-color: #e94560; z-index: 3; box-shadow: 0 0 10px #e94560; }
+.roulette-track { display: flex; height: 100%; position: absolute; left: 0; transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); }
+.roulette-item { width: 120px; height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; border-right: 1px solid #2c2c54; text-align: center; padding: 5px; background-color: #16213e; }
+.roulette-item img { height: 60px; object-fit: contain; }
+.roulette-item-name { font-size: 0.9em; font-weight: bold; margin-top: 5px; }
+.roulette-item-price { font-size: 0.8em; color: #e94560; }
+ document.addEventListener('DOMContentLoaded', () => {
+    getUserProfile();
+    renderCases();
+    const modal = document.getElementById('result-modal');
+    const closeButton = modal.querySelector('.close-button');
+    closeButton.onclick = () => modal.style.display = 'none';
+    window.onclick = (event) => { if (event.target == modal) { modal.style.display = 'none'; } };
+});
+
+function renderCases() {
+    const container = document.getElementById('cases-container');
+    container.innerHTML = casesData.map(caseInfo => 
+        <div class="case-item">
+            <img src="${caseInfo.image}" alt="${caseInfo.name}">
+            <h3>${caseInfo.name}</h3>
+            <p class="case-price">${caseInfo.price} TON</p>
+            <div class="multi-open">
+                ${[1, 2, 3, 4, 5].map(count => <button data-case-id="${caseInfo.id}" data-count="${count}">x${count}</button>).join('')}
+            </div>
+        </div>
+    ).join('');
+    
+    container.querySelectorAll('.multi-open button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const caseId = parseInt(e.target.dataset.caseId);
+            const count = parseInt(e.target.dataset.count);
+            openCase(caseId, count);
+        });
+    });
+}
+
+async function openCase(caseId, count) {
+    const caseInfo = casesData.find(c => c.id === caseId);
+    if (!caseInfo) return;
+
+    const totalCost = caseInfo.price * count;
+    if (currentUserBalance < totalCost) { alert('Недостаточно средств!'); return; }
+
+    const newBalance = currentUserBalance - totalCost;
+    if (!(await updateUserBalance(newBalance))) { alert('Ошибка при списании средств.'); return; }
+
+    const getRandomItem = (items) => {
+        const rand = Math.random() * 100;
+        let cumulativeChance = 0;
+        for (const item of items) {
+            cumulativeChance += item.chance;
+            if (rand < cumulativeChance) return item;
+        }
+        return items[items.length - 1];
+    };
+    
+    let itemsToAdd = [];
+    for (let i = 0; i < count; i++) {
+        const wonItem = getRandomItem(caseInfo.items);
+        itemsToAdd.push({
+            user_id: userId,
+            name: wonItem.name,
+            price: wonItem.price,
+            image_url: wonItem.image,
+            is_nft: !!wonItem.is_nft,
+            nft_link: wonItem.nft_link || null,
+        });
+    }
+
+    const { data: newItems, error } = await supabase.from('inventory_items').insert(itemsToAdd).select();
+    if (error) {
+        console.error('Ошибка добавления предметов:', error);
+        alert('Произошла ошибка! Средства будут возвращены.');
+        await updateUserBalance(currentUserBalance);
+        return;
+    }
+    showResult(newItems);
+}
+
+function showResult(wonItems) {
+    const modal = document.getElementById('result-modal');
+    const winItemContainer = document.getElementById('win-item');
+    const modalContent = modal.querySelector('.modal-content');
+    winItemContainer.innerHTML = '';
+    
+    const rouletteWrapper = document.createElement('div');
+    rouletteWrapper.className = 'roulette-wrapper';
+    const rouletteTrack = document.createElement('div');
+    rouletteTrack.className = 'roulette-track';
+    
+    const prize = wonItems[0];
+    let rouletteItems = [];
+    for (let i = 0; i < 50; i++) {
+        const randomCase = casesData[Math.floor(Math.random() * casesData.length)];
+        rouletteItems.push(randomCase.items[Math.floor(Math.random() * randomCase.items.length)]);
+    }
+    const prizeIndex = Math.floor(Math.random() * 20) + 25;
+    rouletteItems[prizeIndex] = prize;
+
+    rouletteItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'roulette-item';
+        div.innerHTML = <img src="${item.image || 'case.png'}" alt="${item.name}"><span class="roulette-item-name">${item.name}</span><span class="roulette-item-price">${item.price} TON</span>;
+        rouletteTrack.appendChild(div);
+    });
+
+    rouletteWrapper.appendChild(rouletteTrack);
+    winItemContainer.appendChild(rouletteWrapper);
+    modal.style.display = 'flex';
+ /* --- Стили для анимации колеса апгрейда --- */
+.upgrade-wheel-container { position: relative; width: 250px; height: 250px; margin: 20px auto; }
+.wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid #e94560; z-index: 2; }
+#upgrade-wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #533483; position: relative; overflow: hidden; transition: transform 6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* --- Стили для модального окна вывода --- */
+.withdraw-modal-content { background-color: #16213e; padding: 30px; border: 1px solid #533483; border-radius: 10px; width: 90%; max-width: 500px; text-align: center; position: relative; }
+.withdraw-modal-content h3 { color: #e94560; margin-top: 0; }
+.withdraw-modal-content p { line-height: 1.6; }
+.withdraw-modal-content ol { text-align: left; display: inline-block; }
+.withdraw-modal-content strong { color: #e0e0e0; background-color: #2c2c54; padding: 3px 6px; border-radius: 4px; word-break: break-all; }
