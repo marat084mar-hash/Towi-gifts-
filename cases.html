@@ -43,3 +43,53 @@ html
     <script src="cases.js"></script>
 </body>
 </html>
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошелек - TON Cases</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>TON Cases</h1>
+        <nav>
+            <a href="cases.html">Кейсы</a>
+            <a href="inventory.html">Инвентарь</a>
+            <a href="upgrade.html">Апгрейд</a>
+            <a href="wallet.html" class="active">Кошелек</a>
+        </nav>
+        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
+    </header>
+
+    <main>
+        <h2>Пополнить баланс</h2>
+        <div class="wallet-container">
+            <div class="deposit-option">
+                <h3>Пополнение через TON (+10% бонус)</h3>
+                <input type="number" id="ton-amount" placeholder="Сумма в TON" min="1">
+                <button id="deposit-ton-btn">Получить адрес для пополнения</button>
+                <p class="deposit-info" id="ton-deposit-info"></p>
+            </div>
+            <div class="deposit-option">
+                <h3>Пополнение через СБП (RUB)</h3>
+                <p>Курс: 105 RUB = 1 TON</p>
+                <input type="number" id="rub-amount" placeholder="Сумма в RUB" min="105">
+                <button id="deposit-rub-btn">Получить QR-код для оплаты</button>
+                 <div class="deposit-info" id="rub-deposit-info"></div>
+            </div>
+            <div class="deposit-option">
+                <h3>Пополнение через Telegram Stars</h3>
+                <p>Курс: 100 Stars = 1 TON</p>
+                <input type="number" id="stars-amount" placeholder="Кол-во Stars" min="100">
+                <button id="deposit-stars-btn">Оплатить через Telegram</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="wallet.js"></script>
+</body>
+</html>
