@@ -1,1 +1,45 @@
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кейсы - TON Cases</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>TON Cases</h1>
+        <nav>
+            <a href="cases.html" class="active">Кейсы</a>
+            <a href="inventory.html">Инвентарь</a>
+            <a href="upgrade.html">Апгрейд</a>
+            <a href="wallet.html">Кошелек</a>
+        </nav>
+        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
+    </header>
 
+    <main>
+        <h2>Выберите кейс для открытия</h2>
+        <div id="cases-container" class="cases-grid">
+            <!-- Кейсы будут добавлены сюда с помощью JS -->
+        </div>
+
+        <div id="result-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h3>Ваш выигрыш!</h3>
+                <div id="win-item">
+                    <!-- Анимация рулетки будет здесь -->
+                </div>
+                <p style="display: none;">Ваш выигрыш добавлен в инвентарь!</p>
+                <button id="sell-item-btn" style="display: none;">Продать</button>
+                <button id="upgrade-item-btn" style="display: none;">Улучшить</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cases.js"></script>
+</body>
+</html>
