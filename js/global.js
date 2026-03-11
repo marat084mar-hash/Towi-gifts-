@@ -23,27 +23,26 @@ let user = {
 // Загружает данные пользователя из Supabase
 async function loadUserData() {
     console.log("Загрузка данных пользователя...");
-    // Получаем текущего аутентифицированного пользователя
-    const { data: { user: authUser } } = await supabaseClient.auth.getUser();
 
+    // ИСПРАВЛЕНО: Упрощенный синтаксис для получения пользователя, избегая деструктуризации в объявлении
+    const authResponse = await supabaseClient.auth.getUser();
+    const authUser = authResponse.data ? authResponse.data.user : null;
+    
     if (authUser) {
         user.authId = authUser.id;
         console.log('Аутентифицированный пользователь Supabase:', authUser);
 
-        // Попытка найти или создать запись пользователя в нашей таблице public.users
         let { data: userData, error } = await supabaseClient
             .from('users')
             .select('*')
             .eq('auth_id', user.authId)
             .single();
-
-        // PGRST116 означает "строка не найдена" для .single() запроса
-        if (error && error.code === 'PGRST116') { 
+        if (error && error.code === 'PGRST116') { // Нет такой записи, но запрос корректен
             console.log('Запись пользователя не найдена, создаем новую...');
             const newUser = {
                 auth_id: user.authId,
-                telegram_user_id: Math.floor(Math.random() * 10000000000), // Временно, нужно будет брать из Telegram
-                username: user_${authUser.id.substring(0, 8)}`, // Исправлено: обернуто в обратные кавычки
+                telegram_user_id: Math.floor(Math.random() * 10000000000), // Временно
+                username: user_${authUser.id.substring(0, 8)},
                 balance_ton: 0,
                 balance_stars: 0
             };
@@ -52,7 +51,8 @@ async function loadUserData() {
                 .insert([newUser])
                 .select()
                 .single();
-                if (insertError) {
+
+            if (insertError) {
                 console.error('Ошибка при создании записи пользователя:', insertError);
             } else {
                 userData = createdUser;
@@ -106,7 +106,6 @@ function hideTopUpModal() {
 
 // Функция для пополнения баланса (реальная логика будет на бэкенде через Supabase)
 async function topUp(currency) {
-    // Если пользователь еще не аутентифицирован, пытаемся войти анонимно
     if (!user.authId) {
         console.warn('Пользователь не аутентифицирован при попытке пополнения. Выполняем анонимный вход...');
         await supabaseClient.auth.signInAnonymously();
@@ -117,15 +116,13 @@ async function topUp(currency) {
         }
     }
 
-    // Исправлено: обернуто в обратные кавычки
     console.log(Попытка пополнения через ${currency} для пользователя ${user.username} (ID: ${user.id}));
     hideTopUpModal();
 
     let amountToAddTon = 0; // TON
     let starsToAdd = 0;
     let rubAmount = 0; // Только для информации
-
-    switch (currency) {
+switch (currency) {
         case 'ton':
             amountToAddTon = 10; // Пример: +10 TON
             amountToAddTon = amountToAddTon * 1.1; // Бонус 10%
@@ -133,7 +130,6 @@ async function topUp(currency) {
         case 'stars':
             starsToAdd = 1000; // Пример: +1000 звезд
             amountToAddTon = starsToAdd / 100; // 100 звезд = 1 TON
-            // Устанавливаем время окончания кулдауна
             user.nftCooldownEndTime = new Date(Date.now() + 5 * 60 * 1000).toISOString(); // 5 минут КД
             alert(После пополнения звездами активирован КД на вывод NFT на 5 минут.);
             break;
@@ -142,6 +138,7 @@ async function topUp(currency) {
             amountToAddTon = rubAmount / 105; // 105 руб = 1 TON
             break;
     }
+
     // Обновляем баланс в базе данных
     const { data, error } = await supabaseClient
         .from('users')
@@ -150,7 +147,7 @@ async function topUp(currency) {
             balance_stars: user.balanceStars + starsToAdd,
             nft_cooldown_end_time: user.nftCooldownEndTime // Обновляем КД, если был
         })
-        .eq('id', user.id) // Убедитесь, что user.id корректно
+        .eq('id', user.id)
         .select()
         .single();
 
@@ -158,7 +155,6 @@ async function topUp(currency) {
         console.error('Ошибка при пополнении баланса:', error);
         alert('Ошибка при пополнении баланса. Попробуйте еще раз. Проверьте консоль для деталей.');
     } else {
-        // Обновляем локальные данные пользователя
         user.balanceTon = data.balance_ton;
         user.balanceStars = data.balance_stars;
         user.nftCooldownEndTime = data.nft_cooldown_end_time;
@@ -173,7 +169,7 @@ async function topUp(currency) {
             currency: 'TON',
             details: {
                 original_currency: currency,
-                original_amount: (currency === 'stars' ? starsToAdd : rubAmount) || amountToAddTon // Учитываем оригинальную сумму
+                original_amount: (currency === 'stars' ? starsToAdd : rubAmount) || amountToAddTon
             }
         });
         if (transactionError) {
@@ -196,7 +192,6 @@ function updateUI() {
     if (usernameElement) {
         usernameElement.innerText = @${user.username};
     }
-    // Здесь можно добавить обновление других элементов UI
 }
 
 // --- ИНИЦИАЛИЗАЦИЯ ---
