@@ -6,7 +6,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Требуется CDN для supabase-js. Добавьте в <head> HTML-файлов:
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // Переменные для хранения информации о пользователе
 let user = {
     id: null, // ID пользователя из таблицы public.users
@@ -26,7 +25,7 @@ async function loadUserData() {
 
     // ИСПРАВЛЕНО: Упрощенный синтаксис для получения пользователя, избегая деструктуризации в объявлении
     const authResponse = await supabaseClient.auth.getUser();
-    const authUser = authResponse.data ? authResponse.data.user : null;
+    const authUser = authResponse.data && authResponse.data.user ? authResponse.data.user : null;
     
     if (authUser) {
         user.authId = authUser.id;
@@ -37,12 +36,13 @@ async function loadUserData() {
             .select('*')
             .eq('auth_id', user.authId)
             .single();
+
         if (error && error.code === 'PGRST116') { // Нет такой записи, но запрос корректен
             console.log('Запись пользователя не найдена, создаем новую...');
             const newUser = {
                 auth_id: user.authId,
                 telegram_user_id: Math.floor(Math.random() * 10000000000), // Временно
-                username: user_${authUser.id.substring(0, 8)},
+                username: user_${authUser.id.substring(0, 8)}, // Обновлено в прошлый раз
                 balance_ton: 0,
                 balance_stars: 0
             };
@@ -103,7 +103,6 @@ function hideTopUpModal() {
         console.log('Модальное окно пополнения: КЛАСС ACTIVE УДАЛЕН.');
     }
 }
-
 // Функция для пополнения баланса (реальная логика будет на бэкенде через Supabase)
 async function topUp(currency) {
     if (!user.authId) {
@@ -122,7 +121,8 @@ async function topUp(currency) {
     let amountToAddTon = 0; // TON
     let starsToAdd = 0;
     let rubAmount = 0; // Только для информации
-switch (currency) {
+
+    switch (currency) {
         case 'ton':
             amountToAddTon = 10; // Пример: +10 TON
             amountToAddTon = amountToAddTon * 1.1; // Бонус 10%
