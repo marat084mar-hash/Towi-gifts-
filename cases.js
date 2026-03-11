@@ -1,15 +1,17 @@
 // Данные о кейсах (пока на фронтенде, но лучше хранить в Supabase)
 const casesData = [
-    { id: 'case-1', name: 'Обычный Кейс', icon: '🚬', price: 5.00, gifts: ['Подарок A', 'Подарок B', 'Подарок C'], successChance: 0.7 },
-    { id: 'case-2', name: 'Редкий Кейс', icon: '🐱', price: 10.00, gifts: ['Подарок D', 'Подарок E', 'Подарок F'], successChance: 0.5 },
-    { id: 'case-3', name: 'Элитный Кейс', icon: '💎', price: 15.00, gifts: ['Подарок G', 'Подарок H', 'Подарок I'], successChance: 0.3 },
-    { id: 'case-4', name: 'Легендарный Кейс', icon: '🐻', price: 20.00, gifts: ['Подарок J', 'Подарок K', 'Подарок L'], successChance: 0.1 },
+    { id: 'case-1', name: 'lucky', icon: '🚬', price: 0.5, gifts: ['Подарок A', 'Подарок B', 'Подарок C'], successChance: 0.7 },
+    { id: 'case-2', name: 'farm', icon: '🐱', price: 0.5, gifts: ['Подарок D', 'Подарок E', 'Подарок F'], successChance: 0.5 },
+    { id: 'case-3', name: 'unluck', icon: '💎', price: 1.25, gifts: ['Подарок G', 'Подарок H', 'Подарок I'], successChance: 0.3 },
+    { id: 'case-4', name: 'unluck', icon: '💎', price: 1.25, gifts: ['Подарок G', 'Подарок H', 'Подарок I'], successChance: 0.3 },
+    { id: 'case-5', name: 'TowiCase', icon: '🐻', price: 4.00, gifts: ['Подарок J', 'Подарок K', 'Подарок L'], successChance: 0.1 },
     // Добавь еще 5 кейсов до 25 TON
-    { id: 'case-5', name: 'Кейс Удачного Игрока', icon: '🍀', price: 0.50, gifts: ['Малый бонус TON', 'Случайный стикер'], successChance: 0.9 },
-    { id: 'case-6', name: 'Загадочный Кейс', icon: '❓', price: 2.00, gifts: ['Секретный подарок', 'Необычная НФТ'], successChance: 0.8 },
-    { id: 'case-7', name: 'Премиум Кейс', icon: '🌟', price: 7.50, gifts: ['Эксклюзивный скин', 'Большой бонус TON'], successChance: 0.6 },
-    { id: 'case-8', name: 'Богатый Кейс', icon: '💰', price: 12.00, gifts: ['Золотая монета', 'Редкое животное'], successChance: 0.4 },
-    { id: 'case-9', name: 'Кейс Миллионера', icon: '👑', price: 25.00, gifts: ['Уникальная НФТ', 'Огромный бонус TON'], successChance: 0.05 },
+    { id: 'case-6', name: 'all golden', icon: '🍀', price: 5.00, gifts: ['Малый бонус TON', 'Случайный стикер'], successChance: 0.9 },
+    { id: 'case-7', name: 'Snoop Dogg', icon: '❓', price: 5.00, gifts: ['Секретный подарок', 'Необычная НФТ'], successChance: 0.8 },
+    { id: 'case-8', name: 'GoodCase', icon: '🌟', price: 7,77 gifts: ['Эксклюзивный скин', 'Большой бонус TON'], successChance: 0.6 },
+    { id: 'case-9', name: 'MonoCase', icon: '💰', price: 10.00, gifts: ['Золотая монета', 'Редкое животное'], successChance: 0.4 },
+    { id: 'case-10', name: 'RichCase', icon: '👑', price: 27.00, gifts: ['Уникальная НФТ', 'Огромный бонус TON'], successChance: 0.05 },
+    { id: 'case-11', name: 'OnyxCase', icon: '👑', price: 40.00, gifts: ['Уникальная НФТ', 'Огромный бонус TON'], successChance: 0.05 },
 ];
 
 
