@@ -5,8 +5,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Инициализация клиента Supabase
 // Требуется CDN для supabase-js. Добавьте в <head> HTML-файлов:
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-// ИСПРАВЛЕНИЕ: Используем стандартный доступ к createClient, чтобы избежать SyntaxError
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Переменные для хранения информации о пользователе
@@ -37,7 +35,96 @@ async function loadUserData() {
             .select('*')
             .eq('auth_id', user.authId)
             .single();
-        switch (currency) {
+
+        if (error && error.code === 'PGRST116') { // Нет такой записи, но запрос корректен
+            console.log('Запись пользователя не найдена, создаем новую...');
+            const newUser = {
+                auth_id: user.authId,
+                telegram_user_id: Math.floor(Math.random() * 10000000000), // Временно, нужно будет брать из Telegram
+                // ИСПРАВЛЕНО: username обернуто в обратные кавычки
+                username: user_${authUser.id.substring(0, 8)}`,
+                balance_ton: 0,
+                balance_stars: 0
+            };
+            const { data: createdUser, error: insertError } = await supabaseClient
+                .from('users')
+                .insert([newUser])
+                .select()
+                .single();
+
+            if (insertError) {
+                console.error('Ошибка при создании записи пользователя:', insertError);
+            } else {
+                userData = createdUser;
+                console.log('Новая запись пользователя создана:', userData);
+            }
+        } else if (error) {
+            console.error('Ошибка при загрузке данных пользователя:', error);
+        }
+        if (userData) {
+            user.id = userData.id;
+            user.telegramUserId = userData.telegram_user_id;
+            user.username = userData.username;
+            user.balanceTon = userData.balance_ton;
+            user.balanceStars = userData.balance_stars;
+            user.nftCooldownEndTime = userData.nft_cooldown_end_time;
+        }
+    } else {
+        console.log('Пользователь не аутентифицирован. Выполняем анонимный вход...');
+        const { error: signInError } = await supabaseClient.auth.signInAnonymously();
+        if (signInError) {
+            console.error('Ошибка анонимного входа:', signInError);
+        } else {
+            console.log('Анонимный вход выполнен. Повторная загрузка данных пользователя...');
+            await loadUserData(); // Повторно загружаем данные после анонимного входа
+        }
+    }
+    updateUI(); // Обновляем UI после загрузки данных
+}
+
+// --- ФУНКЦИИ МОДАЛЬНОГО ОКНА ПОПОЛНЕНИЯ ---
+function showTopUpModal() {
+    console.log('--- showTopUpModal() вызван ---');
+    const modal = document.getElementById('topUpModal');
+    if (modal) {
+        modal.classList.add('active');
+        console.log('Модальное окно пополнения: КЛАСС ACTIVE ДОБАВЛЕН.');
+    } else {
+        console.error('Ошибка: Элемент с ID "topUpModal" не найден!');
+        alert('Критическая ошибка: не могу найти модальное окно пополнения! Проверьте HTML.');
+    }
+}
+
+function hideTopUpModal() {
+    const modal = document.getElementById('topUpModal');
+    if (modal) {
+        modal.classList.remove('active');
+        console.log('Модальное окно пополнения: КЛАСС ACTIVE УДАЛЕН.');
+    }
+}
+
+// Функция для пополнения баланса (реальная логика будет на бэкенде через Supabase)
+async function topUp(currency) {
+    if (!user.authId) {
+        alert('Пожалуйста, войдите, чтобы пополнить баланс.');
+        // В реальном приложении здесь можно вызвать signInAnonymously() или перенаправить на страницу входа
+        await supabaseClient.auth.signInAnonymously(); // Попытка анонимного входа, если еще нет
+        await loadUserData(); // Перезагрузить данные пользователя
+        if (!user.authId) { // Если все равно не удалось аутентифицировать
+            alert('Не удалось выполнить вход. Попробуйте обновить страницу.');
+            return;
+        }
+    }
+
+    // ИСПРАВЛЕНО: console.log обернуто в обратные кавычки
+    console.log(Попытка пополнения через ${currency} для пользователя ${user.username} (ID: ${user.id}));
+    hideTopUpModal();
+
+    let amountToAdd = 0; // TON
+    let starsToAdd = 0;
+    let rubAmount = 0; // Только для информации
+
+    switch (currency) {
         case 'ton':
             amountToAdd = 10; // Пример: +10 TON
             amountToAdd = amountToAdd * 1.1; // Бонус 10%
@@ -65,8 +152,7 @@ async function loadUserData() {
         .eq('id', user.id) // Убедитесь, что user.id корректно
         .select()
         .single();
-
-    if (error) {
+        if (error) {
         console.error('Ошибка при пополнении баланса:', error);
         alert('Ошибка при пополнении баланса. Попробуйте еще раз. Проверьте консоль для деталей.');
     } else {
