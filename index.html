@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -9,16 +9,17 @@
     <!-- Font Awesome 6 (ОБНОВЛЕННАЯ ССЫЛКА - без integrity!) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style.css">
+    <!-- ГЛОБАЛЬНЫЙ JAVASCRIPT ДЛЯ МОДАЛЬНОГО ОКНА И UI -->
+    <script src="js/global.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- Блок баланса и пополнения -->
+        <!-- Блок баланса и пополнения (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
         <div class="balance-info">
             <div>
                 <span class="balance-text" id="userBalance">Balance: 0.00 TON</span><br>
                 <span class="username-text" id="username">@guest</span>
             </div>
-            <!-- КНОПКА ПОПОЛНЕНИЯ: onclick вызывает showTopUpModal() -->
             <button class="add-balance-btn" onclick="showTopUpModal()">
                 <i class="fas fa-plus"></i>
             </button>
@@ -37,3 +38,24 @@
             </a>
         </div>
     </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ БАЛАНСА (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
+    <div id="topUpModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="hideTopUpModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="modal-title">Top-Up Balance</h2>
+            <button class="btn" onclick="topUp('ton')">
+                <i class="fas fa-coins"></i> TON (Bonus +10%)
+            </button>
+            <button class="btn" onclick="topUp('stars')">
+                <i class="fas fa-star"></i> Звёзды (100 звезд = 1 TON)
+            </button>
+            <button class="btn" onclick="topUp('rub')">
+                <i class="fas fa-ruble-sign"></i> СБП (105 руб = 1 TON)
+            </button>
+        </div>
+    </div>
+</body>
+</html>
