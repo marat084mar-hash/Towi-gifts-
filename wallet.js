@@ -1,86 +1,133 @@
-javascript
-// --- ОБЩИЙ КОД ---
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // <-- ВАШ URL
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // <-- ВАШ ANON KEY
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-let userId = localStorage.getItem('ton_cases_user_id');
-if (!userId) { window.location.href = 'cases.html'; }
-
-let currentUserBalance = 0;
-let userProfile = null;
-function updateBalanceDisplay(balance) {
-    document.querySelectorAll('#balance-display').forEach(el => {
-        el.textContent = parseFloat(balance).toFixed(2);
-    });
-}
-
-async function getUserProfile() {
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
-    if (error && error.code !== 'PGRST116') { console.error('Ошибка получения профиля:', error); return null; }
-    if (data) {
-        userProfile = data;
-        currentUserBalance = data.balance;
-        updateBalanceDisplay(currentUserBalance);
-    }
-    return data;
-}
-
-// --- КОД СПЕЦИФИЧНЫЙ ДЛЯ wallet.js ---
 document.addEventListener('DOMContentLoaded', () => {
-    getUserProfile();
-    document.getElementById('deposit-ton-btn').addEventListener('click', handleTonDeposit);
-    document.getElementById('deposit-rub-btn').addEventListener('click', handleRubDeposit);
-    document.getElementById('deposit-stars-btn').addEventListener('click', handleStarsDeposit);
+    if (document.getElementById('wallet-html-loaded')) { // Проверка, что скрипт загружен на нужной странице
+        // Обновляем баланс при загрузке страницы кошелька
+        updateBalanceDisplay();
+
+        // Обработчики событий для полей ввода и кнопок
+        document.getElementById('ton-amount').addEventListener('input', updateTonConversion);
+        document.getElementById('stars-amount').addEventListener('input', updateStarsConversion);
+        document.getElementById('rub-amount').addEventListener('input', updateRubConversion);
+
+        document.getElementById('top-up-ton-button').addEventListener('click', () => topUp('ton'));
+        document.getElementById('top-up-stars-button').addEventListener('click', () => topUp('stars'));
+        document.getElementById('top-up-sbp-button').addEventListener('click', () => topUp('sbp'));
+    }
 });
 
-// ВАЖНО: Это ЗАГЛУШКИ. Реальная интеграция с платежами требует бэкенда.
-function handleTonDeposit() {
+function updateTonConversion() {
     const amount = parseFloat(document.getElementById('ton-amount').value);
-    if (isNaN(amount) || amount <= 0) { alert('Введите корректную сумму'); return; }
-    const bonusAmount = amount * 1.10;
-    const infoDiv = document.getElementById('ton-deposit-info');
-    infoDiv.innerHTML = <p>Для пополнения на ${amount} TON (с бонусом ${bonusAmount.toFixed(2)} TON), отправьте TON на адрес: <strong>EQ...XYZ</strong></p><p><strong>Это демонстрация.</strong></p><button onclick="addFunds(${bonusAmount})">Симулировать пополнение</button>;
+    if (!isNaN(amount) && amount > 0) {
+        document.getElementById('ton-get-amount').textContent = (amount * 1.10).toFixed(2); // +10%
+    } else {
+        document.getElementById('ton-get-amount').textContent = '0.00';
+    }
 }
 
-function handleRubDeposit() {
+function updateStarsConversion() {
+    const amount = parseFloat(document.getElementById('stars-amount').value);
+    if (!isNaN(amount) && amount >= 100) {
+        document.getElementById('stars-get-ton-amount').textContent = (amount / 100).toFixed(2); // 100 звезд = 1 TON
+    } else {
+        document.getElementById('stars-get-ton-amount').textContent = '0.00';
+    }
+}
+
+function updateRubConversion() {
     const amount = parseFloat(document.getElementById('rub-amount').value);
-    const tonRate = 105;
-    if (isNaN(amount) || amount < tonRate) { alert(Минимальная сумма ${tonRate} RUB); return; }
-    const tonAmount = amount / tonRate;
-    const infoDiv = document.getElementById('rub-deposit-info');
-    infoDiv.innerHTML = <p>Для пополнения на ${amount} RUB (${tonAmount.toFixed(2)} TON), отсканируйте QR-код.</p><p><em>[Здесь должен быть QR-код]</em></p><p><strong>Это демонстрация.</strong></p><button onclick="addFunds(${tonAmount})">Симулировать пополнение</button>;
-}
-
-async function handleStarsDeposit() {
-    const amount = parseInt(document.getElementById('stars-amount').value);
-    const starRate = 100;
-    if (isNaN(amount) || amount < starRate) { alert(Минимум ${starRate} звезд); return; }
-    const tonAmount = amount / starRate;
-    const cooldownDays = 21;
-    const cooldownEndDate = new Date();
-    cooldownEndDate.setDate(cooldownEndDate.getDate() + cooldownDays);
-    alert(Симуляция: вы тратите ${amount} звезд для получения ${tonAmount.toFixed(2)} TON. Будет установлен кулдаун на ${cooldownDays} дней.);
-    await addFunds(tonAmount, cooldownEndDate.toISOString());
-}
-
-async function addFunds(amount, cooldownDate = null) {
-    const newBalance = currentUserBalance + amount;
-    let updateData = { balance: newBalance };
-    const currentCooldown = userProfile?.withdrawal_cooldown_until ? new Date(userProfile.withdrawal_cooldown_until) : null;
-    if (cooldownDate && (!currentCooldown || new Date(cooldownDate) > currentCooldown)) {
-        updateData.withdrawal_cooldown_until = cooldownDate;
-    }
-
-    const { data: updatedProfile, error } = await supabase.from('profiles').update(updateData).eq('id', userId).select().single();
-    if (error) { alert('Ошибка при пополнении.'); return; }
-
-    userProfile = updatedProfile;
-    currentUserBalance = updatedProfile.balance;
-    updateBalanceDisplay(currentUserBalance);
-    alert(Баланс пополнен на ${amount.toFixed(2)} TON!);
-    if (updateData.withdrawal_cooldown_until) {
-        alert(На аккаунт установлено ограничение на вывод до ${new Date(updateData.withdrawal_cooldown_until).toLocaleDateString()}.);
+    if (!isNaN(amount) && amount >= 105) {
+        document.getElementById('rub-get-ton-amount').textContent = (amount / 105).toFixed(2); // 105 руб = 1 TON
+    } else {
+        document.getElementById('rub-get-ton-amount').textContent = '0.00';
     }
 }
-```
+
+async function topUp(method) {
+    let amountToReceiveTon = 0;
+    let paymentAmount = 0; // Сумма, которую платит пользователь в своей валюте
+    let paymentCurrency = '';
+    switch (method) {
+        case 'ton':
+            paymentAmount = parseFloat(document.getElementById('ton-amount').value);
+            if (isNaN(paymentAmount) || paymentAmount <= 0) {
+                alert('Введите корректную сумму TON для пополнения.');
+                return;
+            }
+            amountToReceiveTon = paymentAmount * 1.10;
+            paymentCurrency = 'TON';
+            break;
+        case 'stars':
+            paymentAmount = parseFloat(document.getElementById('stars-amount').value);
+            if (isNaN(paymentAmount) || paymentAmount < 100) {
+                alert('Введите корректное количество Звезд (минимум 100).');
+                return;
+            }
+            amountToReceiveTon = paymentAmount / 100;
+            paymentCurrency = 'Telegram Stars';
+            break;
+        case 'sbp':
+            paymentAmount = parseFloat(document.getElementById('rub-amount').value);
+            if (isNaN(paymentAmount) || paymentAmount < 105) {
+                alert('Введите корректную сумму в RUB (минимум 105).');
+                return;
+            }
+            amountToReceiveTon = paymentAmount / 105;
+            paymentCurrency = 'RUB (СБП)';
+            break;
+        default:
+            alert('Неизвестный метод пополнения.');
+            return;
+    }
+
+    if (!confirm(Вы хотите пополнить баланс на ${amountToReceiveTon.toFixed(2)} TON, оплатив ${paymentAmount.toFixed(2)} ${paymentCurrency}?)) {
+        return;
+    }
+
+    // --- Важный момент: Интеграция платежных систем ---
+    // Здесь должна быть логика вызова внешних API платежных систем.
+    // Это НЕ ДОЛЖНО делаться напрямую из фронтенда из соображений безопасности.
+    // Нужно использовать бэкенд (например, Supabase Edge Functions или другой сервер).
+    // Бэкенд будет:
+    // 1. Генерировать платежную ссылку/инвойс через API TON Wallet, Telegram Stars API, или API банка для СБП.
+    // 2. Отслеживать статус платежа (webhook).
+    // 3. После успешного платежа, обновлять баланс пользователя в базе данных Supabase.
+
+    alert(Инициирован платеж на ${paymentAmount.toFixed(2)} ${paymentCurrency}. Ожидайте пополнения ${amountToReceiveTon.toFixed(2)} TON. В реальном приложении здесь будет открыто окно платежной системы.);
+
+    // Для демонстрации, просто обновляем баланс на фронтенде и в Supabase
+    // В РЕАЛЬНОМ ПРИЛОЖЕНИИ ЭТОГО ДЕЛАТЬ НАПРЯМУЮ НЕЛЬЗЯ!
+    try {
+        const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('balance')
+            .eq('id', currentUser.id)
+            .single();
+
+        if (userError) {
+            console.error('Ошибка при загрузке баланса для пополнения:', userError.message);
+            alert('Ошибка пополнения. Попробуйте снова.');
+            return;
+        }
+
+        const newBalance = userData.balance + amountToReceiveTon;
+
+        const { error: updateError } = await supabase
+            .from('users')
+            .update({ balance: newBalance })
+            .eq('id', currentUser.id);
+
+        if (updateError) {
+            console.error('Ошибка при обновлении баланса:', updateError.message);
+            alert('Ошибка пополнения. Попробуйте снова.');
+            return;
+        }
+
+        currentUser.balance = newBalance; // Обновляем локальный баланс
+        await updateBalanceDisplay(); // Обновляем отображение на странице
+        alert(Баланс успешно пополнен на ${amountToReceiveTon.toFixed(2)} TON!);
+
+    } catch (error) {
+        console.error('Неожиданная ошибка при пополнении:', error.message);
+        alert('Произошла непредвиденная ошибка. Попробуйте позже.');
+    }
+}
+``
