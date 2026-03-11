@@ -1,47 +1,46 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Exo+2:wght@600;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Towi Gifts - Инвентарь</title>
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0jG30b+Z8lGj+d/2hXfV5Rz5k1mXw/YvQ7D9A4Pz+Z5E5w3M9J5A9M5x5A5Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>TON Cases</h1>
-        <nav>
-            <a href="cases.html">Кейсы</a>
-            <a href="inventory.html" class="active">Инвентарь</a>
-            <a href="upgrade.html">Апгрейд</a>
-            <a href="wallet.html">Кошелек</a>
-        </nav>
-        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
-    </header>
+    <div class="container">
+        <header class="app-header">
+            <button class="back-button" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+            <h1>Inventory</h1>
+        </header>
 
-    <main>
-        <h2>Ваш инвентарь</h2>
-        <div id="inventory-container" class="inventory-grid">
-            <p id="loading-message">Загрузка предметов...</p>
-        </div>
-    </main>
-
-    <div id="withdraw-modal" class="modal">
-        <div class="withdraw-modal-content">
-            <span class="close-button">&times;</span>
-            <h3>Инструкция по выводу NFT</h3>
-            <p>Для получения вашего приза, пожалуйста, напишите в Telegram нашему администратору:</p>
-            <p><strong>@YourTelegramAdminUsername</strong></p>
-            <p>В сообщении ОБЯЗАТЕЛЬНО отправьте одним сообщением:</p>
-            <ol>
-                <li>Ваш уникальный ID пользователя: <br> <strong id="user-id-display"></strong></li>
-                <li>Уникальную ссылку на ваш приз: <br> <strong id="item-to-withdraw-link"></strong></li>
-            </ol>
-            <p>Название предмета: <i id="item-to-withdraw-name"></i></p>
-            <p>После проверки администратор отправит вам ваш подарок.</p>
+        <p id="cooldownMessage" style="color: var(--text-muted); text-align: center; margin: 20px 0; display: none;">
+            <i class="fas fa-hourglass-half"></i> NFT withdrawal cooldown active. Ends in: <span id="cooldownTime"></span>
+        </p>
+        <div id="inventory-items-grid" class="card-grid">
+            <!-- Элементы инвентаря будут загружаться сюда через JavaScript -->
+            <!-- Пример элемента инвентаря: -->
+            <!--
+            <div class="card inventory-item">
+                <i class="icon fas fa-gift"></i>
+                <p class="text-label">Telegram NFT Gift #123</p>
+                <div class="inventory-item-actions">
+                    <button class="btn btn-secondary btn-small" onclick="sellItem('nft123')">
+                        <i class="fas fa-tag"></i> Продать
+                    </button>
+                    <button class="btn btn-small" onclick="withdrawItem('nft123')">
+                        <i class="fas fa-arrow-right-from-bracket"></i> Вывести
+                    </button>
+                </div>
+            </div>
+            -->
+            <p style="text-align: center; color: var(--text-muted);" id="emptyInventoryMessage">Your inventory is empty.</p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="inventory.js"></script>
+    <script src="js/inventory.js"></script>
 </body>
 </html>
