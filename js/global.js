@@ -4,7 +4,6 @@ let user = {
     username: 'guest',
     nftCooldownEndTime: null // Timestamp, когда закончится КД (для звезд)
 };
-
 // --- ФУНКЦИИ МОДАЛЬНОГО ОКНА ПОПОЛНЕНИЯ ---
 function showTopUpModal() {
     console.log('--- showTopUpModal() вызван ---');
@@ -33,7 +32,8 @@ function hideTopUpModal() {
 
 // Функция для пополнения баланса (реальная логика будет на бэкенде через Supabase)
 function topUp(currency) {
-    alert(Вы выбрали пополнение через ${currency}. Это будет реализовано через Supabase!);
+    // ИЗМЕНЕННАЯ СТРОКА: Убрана шаблонная строка
+    alert('Вы выбрали пополнение через ' + currency + '. Это будет реализовано через Supabase!');
     hideTopUpModal();
 
     // Пример временной логики для КД:
@@ -41,34 +41,29 @@ function topUp(currency) {
         const now = new Date();
         const cooldownDurationMinutes = 5; // 5 минут КД для примера
         user.nftCooldownEndTime = new Date(now.getTime() + cooldownDurationMinutes * 60 * 1000);
-        alert(После пополнения звездами активирован КД на вывод NFT на ${cooldownDurationMinutes} минут.`);
+        alert('После пополнения звездами активирован КД на вывод NFT на ' + cooldownDurationMinutes + ' минут.');
     }
+
     // Имитация обновления баланса:
     user.balanceTon += 5; // Увеличиваем баланс на 5 TON для примера
     updateUI(); // Обновляем отображение баланса на странице
-    console.log(Баланс обновлен: ${user.balanceTon} TON. Cooldown: ${user.nftCooldownEndTime});
+    console.log('Баланс обновлен: ' + user.balanceTon + ' TON. Cooldown: ' + user.nftCooldownEndTime);
 }
 
 // --- ФУНКЦИИ ОБНОВЛЕНИЯ UI ---
 function updateUI() {
     const userBalanceElement = document.getElementById('userBalance');
     if (userBalanceElement) {
-        userBalanceElement.innerText = Balance: ${user.balanceTon.toFixed(2)} TON;
+        userBalanceElement.innerText = 'Balance: ' + user.balanceTon.toFixed(2) + ' TON';
     }
 
     const usernameElement = document.getElementById('username');
     if (usernameElement) {
-        usernameElement.innerText = @${user.username};
+        usernameElement.innerText = '@' + user.username;
     }
-    // Здесь можно добавить обновление других элементов UI
     console.log('UI обновлен.');
 }
 
 // Инициализация UI при загрузке страницы
 document.addEventListener('DOMContentLoaded', updateUI);
-
-// --- ИНТЕГРАЦИЯ С SUPABASE (будет добавлено позже) ---
-// import { createClient } from '@supabase/supabase-js'
-// const supabaseUrl = 'YOUR_SUPABASE_URL'
-// const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY'
-// export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+``
