@@ -72,7 +72,8 @@ body {
     padding: 0 10px;
     transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
- .app-header .back-button:hover {
+
+.app-header .back-button:hover {
     color: var(--primary-purple);
     transform: translateX(-3px); /* Небольшая анимация при наведении */
 }
@@ -80,7 +81,6 @@ body {
 .app-header .back-button:active {
     transform: translateX(0);
 }
-
 .app-header h1 {
     flex-grow: 1;
     text-align: center;
@@ -198,13 +198,13 @@ body {
     margin-bottom: 5px;
     word-break: break-word; /* Перенос длинных слов */
 }
- .card .price { /* Можно использовать для отображения цены продажи/выкупа */
+
+.card .price { /* Можно использовать для отображения цены продажи/выкупа */
     font-size: 19px;
     font-weight: 600;
     color: var(--text-light);
     margin-top: 10px;
 }
-
 /* Стили для действий с инвентарем */
 .inventory-item-actions {
     display: flex;
@@ -357,12 +357,12 @@ body {
     text-align: center;
     margin-top: 30px;
 }
- .upgrade-chance {
+
+.upgrade-chance {
     font-size: 18px;
     color: var(--text-muted);
     margin-bottom: 20px;
 }
-
 .upgrade-wheel-container {
     position: relative;
     width: 280px; /* Размер колеса */
@@ -383,7 +383,7 @@ body {
     height: 100%;
     border-radius: 50%;
     transition: transform 4s cubic-bezier(0.17, 0.67, 0.35, 1.25); /* Эффект вращения с замедлением */
-    /* Сектора будут создаваться динамически JS или SVG */
+    /* Секторы будут создаваться динамически JS или SVG */
     /* Пример для двух секторов (успех/провал). Будет меняться JS */
     background: conic-gradient(
         var(--primary-purple) 0% 75%, /* Фиолетовая зона успеха (75%) */
