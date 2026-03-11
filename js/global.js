@@ -1,13 +1,13 @@
 // --- КОНФИГУРАЦИЯ SUPABASE ---
-// Вставьте ваш Project URL и Anon Public Key сюда!
 const SUPABASE_URL = 'https://kkgjkqiwrppaszvkeqbe.supabase.com';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZ2prcWl3cnBwYXN6dmtlcWJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDI5MDksImV4cCI6MjA4NjMxODkwOX0.euUijEzkXldhHFbIuZuzePn2ppwON78Ub-MPLKm5a9Y';
 
 // Инициализация клиента Supabase
 // Требуется CDN для supabase-js. Добавьте в <head> HTML-файлов:
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-const { createClient } = supabase; // supabase глобально доступен через CDN
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ИСПРАВЛЕНИЕ: Используем стандартный доступ к createClient, чтобы избежать SyntaxError
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Переменные для хранения информации о пользователе
 let user = {
@@ -24,6 +24,7 @@ let user = {
 
 // Загружает данные пользователя из Supabase
 async function loadUserData() {
+    console.log("Загрузка данных пользователя...");
     const { data: { user: authUser } } = await supabaseClient.auth.getUser();
 
     if (authUser) {
@@ -36,90 +37,10 @@ async function loadUserData() {
             .select('*')
             .eq('auth_id', user.authId)
             .single();
-
-        if (error && error.code === 'PGRST116') { // Нет такой записи, но запрос корректен
-            console.log('Запись пользователя не найдена, создаем новую...');
-            // В реальном приложении здесь можно запросить telegram_user_id и username
-            // Для теста просто создадим с дефолтными значениями
-            const newUser = {
-                auth_id: user.authId,
-                telegram_user_id: Math.floor(Math.random() * 10000000000), // Временно, нужно будет брать из Telegram
-                username: user_${authUser.id.substring(0, 8)}`,
-                balance_ton: 0,
-                balance_stars: 0
-            };
-            const { data: createdUser, error: insertError } = await supabaseClient
-                .from('users')
-                .insert([newUser])
-                .select()
-                .single();
-
-            if (insertError) {
-                console.error('Ошибка при создании записи пользователя:', insertError);
-            } else {
-                userData = createdUser;
-                console.log('Новая запись пользователя создана:', userData);
-            }
-        } else if (error) {
-            console.error('Ошибка при загрузке данных пользователя:', error);
-        }
-        if (userData) {
-            user.id = userData.id;
-            user.telegramUserId = userData.telegram_user_id;
-            user.username = userData.username;
-            user.balanceTon = userData.balance_ton;
-            user.balanceStars = userData.balance_stars;
-            user.nftCooldownEndTime = userData.nft_cooldown_end_time;
-        }
-    } else {
-        console.log('Пользователь не аутентифицирован.');
-        // Для простоты, пока что, если пользователь не аутентифицирован,
-        // мы все равно инициализируем его как 'guest'
-    }
-    updateUI(); // Обновляем UI после загрузки данных
-}
-
-// --- ФУНКЦИИ МОДАЛЬНОГО ОКНА ПОПОЛНЕНИЯ ---
-function showTopUpModal() {
-    console.log('--- showTopUpModal() вызван ---');
-    const modal = document.getElementById('topUpModal');
-    if (modal) {
-        modal.classList.add('active');
-        console.log('Модальное окно пополнения: КЛАСС ACTIVE ДОБАВЛЕН.');
-    } else {
-        console.error('Ошибка: Элемент с ID "topUpModal" не найден!');
-        alert('Критическая ошибка: не могу найти модальное окно пополнения! Проверьте HTML.');
-    }
-}
-
-function hideTopUpModal() {
-    const modal = document.getElementById('topUpModal');
-    if (modal) {
-        modal.classList.remove('active');
-        console.log('Модальное окно пополнения: КЛАСС ACTIVE УДАЛЕН.');
-    }
-}
-
-// Функция для пополнения баланса (реальная логика будет на бэкенде через Supabase)
-async function topUp(currency) {
-    if (!user.authId) {
-        alert('Пожалуйста, войдите, чтобы пополнить баланс.');
-        // Здесь можно вызвать функцию входа/регистрации
-        return;
-    }
-
-    console.log(Попытка пополнения через ${currency} для пользователя ${user.username});
-    hideTopUpModal();
-
-    let amountToAdd = 0; // TON
-    let starsToAdd = 0;
-    let rubAmount = 0; // Только для информации
-
-    switch (currency) {
+        switch (currency) {
         case 'ton':
             amountToAdd = 10; // Пример: +10 TON
-            // Бонус 10%
-            amountToAdd = amountToAdd * 1.1;
+            amountToAdd = amountToAdd * 1.1; // Бонус 10%
             break;
         case 'stars':
             starsToAdd = 1000; // Пример: +1000 звезд
@@ -141,20 +62,20 @@ async function topUp(currency) {
             balance_stars: user.balanceStars + starsToAdd,
             nft_cooldown_end_time: user.nftCooldownEndTime // Обновляем КД, если был
         })
-        .eq('id', user.id)
+        .eq('id', user.id) // Убедитесь, что user.id корректно
         .select()
         .single();
 
     if (error) {
         console.error('Ошибка при пополнении баланса:', error);
-        alert('Ошибка при пополнении баланса. Попробуйте еще раз.');
+        alert('Ошибка при пополнении баланса. Попробуйте еще раз. Проверьте консоль для деталей.');
     } else {
         user.balanceTon = data.balance_ton;
         user.balanceStars = data.balance_stars;
         user.nftCooldownEndTime = data.nft_cooldown_end_time;
         alert(Баланс успешно пополнен! Теперь у вас ${user.balanceTon.toFixed(2)} TON.);
         // Запись транзакции
-        await supabaseClient.from('transactions').insert({
+        const { error: transactionError } = await supabaseClient.from('transactions').insert({
             user_id: user.id,
             type: deposit_${currency},
             amount: amountToAdd,
@@ -164,6 +85,9 @@ async function topUp(currency) {
                 original_amount: (currency === 'stars' ? starsToAdd : rubAmount) || amountToAdd
             }
         });
+        if (transactionError) {
+            console.error('Ошибка при записи транзакции:', transactionError);
+        }
     }
 
     updateUI(); // Обновляем UI после пополнения
@@ -176,6 +100,7 @@ function updateUI() {
     if (userBalanceElement) {
         userBalanceElement.innerText = Balance: ${user.balanceTon.toFixed(2)} TON;
     }
+
     const usernameElement = document.getElementById('username');
     if (usernameElement) {
         usernameElement.innerText = @${user.username};
@@ -185,14 +110,5 @@ function updateUI() {
 
 // --- ИНИЦИАЛИЗАЦИЯ ---
 document.addEventListener('DOMContentLoaded', async () => {
-    // В реальном приложении, здесь будет логика регистрации/входа.
-    // Пока что, мы просто пытаемся аутентифицировать анонимного пользователя
-    // или получить текущего пользователя.
-    
-    // ВАЖНО: Для RLS политики "based on their ID" пользователь должен быть аутентифицирован.
-    // Supabase позволяет использовать анонимный вход для простоты:
-    await supabaseClient.auth.signInAnonymously();
-    
-    // После попытки аутентификации, загружаем данные пользователя
-    await loadUserData();
+    await loadUserData(); // Запускаем загрузку данных пользователя при старте
 });
