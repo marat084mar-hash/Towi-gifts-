@@ -1,113 +1,141 @@
-javascript
-// --- ОБЩИЙ КОД ---
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // <-- ВАШ URL
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // <-- ВАШ ANON KEY
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let selectedGiftForUpgrade = null;
 
-let userId = localStorage.getItem('ton_cases_user_id');
-if (!userId) { window.location.href = 'cases.html'; }
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('upgrade-html-loaded')) { // Проверка, что скрипт загружен на нужной странице
+        loadUserGifts();
+        document.getElementById('perform-upgrade-button').addEventListener('click', performUpgrade);
+    }
+});
 
-let currentUserBalance = 0;
+// Функция для загрузки подарков пользователя из Supabase
+async function loadUserGifts() {
+    const userGiftsList = document.getElementById('user-gifts-list');
+    userGiftsList.innerHTML = '';
 
-function updateBalanceDisplay(balance) {
-    document.querySelectorAll('#balance-display').forEach(el => {
-        el.textContent = parseFloat(balance).toFixed(2);
+    if (!currentUser.id) {
+        userGiftsList.innerHTML = '<p>Пожалуйста, войдите, чтобы увидеть свои подарки.</p>';
+        return;
+    }
+    const { data: gifts, error } = await supabase
+        .from('user_gifts')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('acquired_at', { ascending: false });
+
+    if (error) {
+        console.error('Ошибка при загрузке подарков пользователя:', error.message);
+        userGiftsList.innerHTML = '<p>Ошибка при загрузке подарков.</p>';
+        return;
+    }
+
+    if (gifts.length === 0) {
+        userGiftsList.innerHTML = '<p>У вас пока нет подарков для апгрейда.</p>';
+        return;
+    }
+
+    gifts.forEach(gift => {
+        const giftItem = document.createElement('div');
+        giftItem.className = 'gift-item';
+        giftItem.innerHTML = 
+            <span>${gift.gift_name} (ID: ${gift.id.substring(0, 4)})</span>
+            <button class="button select-gift-for-upgrade" data-gift-id="${gift.id}" data-gift-name="${gift.gift_name}">Выбрать</button>
+        ;
+        userGiftsList.appendChild(giftItem);
+    });
+
+    document.querySelectorAll('.select-gift-for-upgrade').forEach(button => {
+        button.addEventListener('click', (event) => {
+            selectedGiftForUpgrade = {
+                id: event.target.dataset.giftId,
+                name: event.target.dataset.giftName
+            };
+            updateSelectedGiftDisplay();
+        });
     });
 }
 
-async function getUserProfile() {
-    const { data, error } = await supabase.from('profiles').select('balance').eq('id', userId).single();
-    if (error) { console.error('Ошибка получения профиля:', error); return null; }
-    currentUserBalance = data.balance;
-    updateBalanceDisplay(currentUserBalance);
-    return data;
-}
- // --- КОД СПЕЦИФИЧНЫЙ ДЛЯ upgrade.js ---
-let currentItem = null;
+function updateSelectedGiftDisplay() {
+    const selectedGiftInfo = document.getElementById('selected-gift-info');
+    const performUpgradeButton = document.getElementById('perform-upgrade-button');
+    const successChanceDisplay = document.getElementById('success-chance');
 
-document.addEventListener('DOMContentLoaded', () => {
-    getUserProfile();
-    loadItemForUpgrade();
-    document.getElementById('chance-slider').addEventListener('input', calculateTargetPrice);
-    document.getElementById('upgrade-button').addEventListener('click', performUpgrade);
-});
-
-function loadItemForUpgrade() {
-    const itemJson = localStorage.getItem('item_for_upgrade');
-    if (!itemJson) {
-        document.getElementById('upgrade-button').disabled = true;
-        drawWheel(50);
-        return;
+    if (selectedGiftForUpgrade) {
+        selectedGiftInfo.innerHTML = <p>Выбран: <strong>${selectedGiftForUpgrade.name}</strong></p>;
+        // Шанс успеха может зависеть от редкости подарка или других факторов
+        const baseChance = 75; // Пример
+        successChanceDisplay.textContent = ${baseChance}%;
+        performUpgradeButton.disabled = false;
+    } else {
+        selectedGiftInfo.innerHTML = '<p>Пока не выбрано.</p>';
+        successChanceDisplay.textContent = '0%';
+        performUpgradeButton.disabled = true;
     }
-    currentItem = JSON.parse(itemJson);
-    document.getElementById('current-item-name').textContent = currentItem.name;
-    document.getElementById('current-item-price').textContent = currentItem.price;
-    document.getElementById('upgrade-button').disabled = false;
-    calculateTargetPrice();
-}
-
-function calculateTargetPrice() {
-    if (!currentItem) return;
-    const chance = parseInt(document.getElementById('chance-slider').value);
-    document.getElementById('chance-display').textContent = ${chance}%;
-    const targetPrice = (currentItem.price * 100) / chance * 0.9;
-    document.getElementById('target-item-name').textContent = Предмет x${(targetPrice / currentItem.price).toFixed(1)};
-    document.getElementById('target-item-price').textContent = targetPrice.toFixed(2);
-    drawWheel(chance);
-}
-
-function drawWheel(chance) {
-    const wheel = document.getElementById('upgrade-wheel');
-    wheel.style.background = conic-gradient(#533483 0% ${chance}%, #1a1a2e ${chance}% 100%);
 }
 
 async function performUpgrade() {
-    if (!currentItem) return;
-    const upgradeButton = document.getElementById('upgrade-button');
-    const slider = document.getElementById('chance-slider');
-    upgradeButton.disabled = true;
-    slider.disabled = true;
+    if (!selectedGiftForUpgrade) {
+        alert('Пожалуйста, выберите подарок для апгрейда.');
+        return;
+    }
 
-    const chance = parseInt(slider.value);
-    const resultDiv = document.getElementById('upgrade-result');
-    const wheel = document.getElementById('upgrade-wheel');
-    resultDiv.textContent = '';
-    resultDiv.className = 'result-message';
-    wheel.style.transition = 'none';
-    wheel.style.transform = 'rotate(0deg)';
+    if (!confirm(Вы уверены, что хотите апгрейдить "${selectedGiftForUpgrade.name}"? Есть шанс потерять его!)) {
+        return;
+    }
 
-    const isSuccess = (Math.random() * 100) < chance;
-    const fullRotations = 5 * 360;
-    let targetAngle = isSuccess ?
-        5 + Math.random() * (chance * 3.6 - 10) :
-        (chance * 3.6 + 5) + Math.random() * (350 - chance * 3.6);
-    const finalRotation = fullRotations + targetAngle;
+    // Логика апгрейда: взаимодействие с Supabase
+    // В реальном приложении:
+    // 1. Запрос на бэкенд (Supabase Edge Function) для безопасного выполнения апгрейда.
+    // 2. Бэкенд определяет результат (успех/неудача, новый подарок, потеря) на основе шансов.
+    // 3. Бэкенд обновляет инвентарь пользователя (удаляет старый, добавляет новый или ничего).
+    // 4. Бэкенд возвращает результат.
 
-    setTimeout(() => {
-        wheel.style.transition = 'transform 6s cubic-bezier(0.2, 0.8, 0.2, 1)';
-        wheel.style.transform = rotate(${finalRotation}deg);
-    }, 100);
+    const baseChance = 75; // Используем базовый шанс из функции updateSelectedGiftDisplay
+    const isSuccess = Math.random() * 100 < baseChance;
 
-    setTimeout(() => {
-        if (isSuccess) {
-            const targetPrice = parseFloat(document.getElementById('target-item-price').textContent);
-            const newItem = {
-                ...currentItem,
-                name: Улучшенный (${currentItem.name}),
-                price: targetPrice
-            };
-            localStorage.setItem('item_for_upgrade', JSON.stringify(newItem));
-            resultDiv.textContent = УСПЕХ! Вы получили ${newItem.name}!;
-            resultDiv.classList.add('success');
-            loadItemForUpgrade();
-        } else {
-            localStorage.removeItem('item_for_upgrade');
-            resultDiv.textContent = 'ПРОВАЛ! Вы потеряли предмет.';
-            resultDiv.classList.add('failure');
-            document.getElementById('current-item-name').textContent = 'Нет предмета';
-            document.getElementById('current-item-price').textContent = '0';
+    if (isSuccess) {
+        // Успешный апгрейд
+        const upgradedGiftName = Улучшенный ${selectedGiftForUpgrade.name};
+        // Удаляем старый подарок и добавляем новый
+        const { error: deleteError } = await supabase
+            .from('user_gifts')
+            .delete()
+            .eq('id', selectedGiftForUpgrade.id);
+
+        if (deleteError) {
+            console.error('Ошибка при удалении старого подарка:', deleteError.message);
+            alert('Ошибка апгрейда. Попробуйте снова.');
+            return;
         }
-        upgradeButton.disabled = false;
-        slider.disabled = false;
-    }, 6500);
+
+        const { error: insertError } = await supabase
+            .from('user_gifts')
+            .insert([{ user_id: currentUser.id, gift_name: upgradedGiftName, acquired_at: new Date().toISOString() }]);
+
+        if (insertError) {
+            console.error('Ошибка при добавлении улучшенного подарка:', insertError.message);
+            alert('Ошибка апгрейда. Попробуйте снова.');
+            return;
+        }
+
+         alert(Поздравляем! Ваш подарок "${selectedGiftForUpgrade.name}" успешно улучшен до "${upgradedGiftName}"!);
+        alert(Поздравляем! Ваш подарок "${selectedGiftForUpgrade.name}" успешно улучшен до "${upgradedGiftName}"!);
+        } else {
+        // Неудачный апгрейд - подарок потерян
+        const { error: deleteError } = await supabase
+            .from('user_gifts')
+            .delete()
+            .eq('id', selectedGiftForUpgrade.id);
+
+        if (deleteError) {
+            console.error('Ошибка при удалении потерянного подарка:', deleteError.message);
+            alert('Ошибка апгрейда. Попробуйте снова.');
+            return;
+        }
+
+        alert(К сожалению, апгрейд не удался. Вы потеряли "${selectedGiftForUpgrade.name}".);
+    }
+
+    selectedGiftForUpgrade = null; // Сброс выбранного подарка
+    await loadUserGifts(); // Перезагрузка списка подарков
+    updateSelectedGiftDisplay(); // Обновление UI
 }
