@@ -6,6 +6,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Требуется CDN для supabase-js. Добавьте в <head> HTML-файлов:
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // Переменные для хранения информации о пользователе
 let user = {
     id: null, // ID пользователя из таблицы public.users
@@ -42,7 +43,7 @@ async function loadUserData() {
             const newUser = {
                 auth_id: user.authId,
                 telegram_user_id: Math.floor(Math.random() * 10000000000), // Временно
-                username: user_${authUser.id.substring(0, 8)}, // Обновлено в прошлый раз
+                username: user_${authUser.id.substring(0, 8)}`, // Обновлено в прошлый раз
                 balance_ton: 0,
                 balance_stars: 0
             };
@@ -82,7 +83,6 @@ async function loadUserData() {
     }
     updateUI(); // Обновляем UI после загрузки данных
 }
-
 // --- ФУНКЦИИ МОДАЛЬНОГО ОКНА ПОПОЛНЕНИЯ ---
 function showTopUpModal() {
     console.log('--- showTopUpModal() вызван ---');
@@ -103,6 +103,7 @@ function hideTopUpModal() {
         console.log('Модальное окно пополнения: КЛАСС ACTIVE УДАЛЕН.');
     }
 }
+
 // Функция для пополнения баланса (реальная логика будет на бэкенде через Supabase)
 async function topUp(currency) {
     if (!user.authId) {
@@ -187,7 +188,6 @@ function updateUI() {
     if (userBalanceElement) {
         userBalanceElement.innerText = Balance: ${user.balanceTon.toFixed(2)} TON;
     }
-
     const usernameElement = document.getElementById('username');
     if (usernameElement) {
         usernameElement.innerText = @${user.username};
