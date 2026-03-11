@@ -1,5 +1,5 @@
 // --- КОНФИГУРАЦИЯ SUPABASE ---
-var SUPABASE_URL = 'https://kkgjkqiwrppaszvkeqbe.supabase.com';
+var SUPABASE_URL = 'https://kkgjkqiwrppaszvkeqbe.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZ2prcWl3cnBwYXN6dmtlcWJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDI5MDksImV4cCI6MjA4NjMxODkwOX0.euUijEzkXldhHFbIuZuzePn2ppwON78Ub-MPLKm5a9Y';
 var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
