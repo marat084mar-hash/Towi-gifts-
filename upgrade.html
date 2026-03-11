@@ -1,50 +1,51 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Exo+2:wght@600;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Апгрейды - TON Cases</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>TON Cases</h1>
-        <nav>
-            <a href="cases.html">Кейсы</a>
-            <a href="inventory.html">Инвентарь</a>
-            <a href="upgrade.html" class="active">Апгрейд</a>
-            <a href="wallet.html">Кошелек</a>
-        </nav>
-        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
-    </header>
-
-    <main>
-        <h2>Апгрейд предмета</h2>
-        <div class="upgrade-container">
-            <div class="upgrade-item" id="current-item-view">
-                <p>Предмет для улучшения:</p>
-                <span id="current-item-name">Нет предмета</span>
-                <p>Стоимость: <span id="current-item-price">0</span> TON</p>
+    <div class="container">
+        <header class="header">
+            <a href="index.html" class="back-button"><<</a>
+            <h1 class="page-title">Апгрейды</h1>
+            <div class="balance-info">
+                <span id="balance">Баланс: 0.00 TON</span>
             </div>
-            <div class="upgrade-chance">
-                <p>Шанс успеха: <span id="chance-display">50%</span></p>
-                <input type="range" id="chance-slider" min="1" max="95" value="50">
-                <div class="upgrade-wheel-container">
-                    <div class="wheel-pointer"></div>
-                    <div id="upgrade-wheel"></div>
+        </header>
+               <main class="main-content">
+            <div class="upgrade-section">
+                <h2>Ваши подарки</h2>
+                <div id="user-gifts-list" class="user-gifts-list">
+                    <!-- Подарки пользователя будут загружены сюда -->
+                    <div class="gift-item">
+                        <span>Название подарка #1</span>
+                        <button class="button select-gift-for-upgrade" data-gift-id="1">Выбрать</button>
+                    </div>
+                </div>
+
+                <h2>Выбранный подарок для апгрейда:</h2>
+                <div id="selected-gift-info" class="selected-gift-info">
+                    <p>Пока не выбрано.</p>
+                </div>
+
+                <div class="upgrade-controls">
+                    <div class="chances-display">
+                        Шанс успеха: <span id="success-chance">75%</span>
+                    </div>
+                    <div class="upgrade-wheel">
+                        <!-- Здесь можно встроить SVG или canvas для колеса шансов, для простоты пока текст -->
+                        <img src="wheel.png" alt="Upgrade Wheel" style="max-width: 100%; height: auto; display: none;"> <!-- Пример, если будет картинка -->
+                    </div>
+                    <button id="perform-upgrade-button" class="button" disabled>Апгрейд!</button>
                 </div>
             </div>
-            <div class="upgrade-item" id="target-item-view">
-                <p>Возможный выигрыш:</p>
-                <span id="target-item-name">--</span>
-                <p>Стоимость: <span id="target-item-price">0</span> TON</p>
-            </div>
-        </div>
-        <button id="upgrade-button" disabled>Улучшить</button>
-        <div id="upgrade-result" class="result-message"></div>
-    </main>
-
+        </main>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="main.js"></script>
     <script src="upgrade.js"></script>
 </body>
 </html>
