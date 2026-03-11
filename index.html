@@ -3,29 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts - Главная</title> <!-- Или другое название страницы -->
+    <title>Towi Gifts - Главная</title>
     
-    <!-- Poppins Font -->
+    <!-- Шрифты и иконки -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome 6 (обновленная ссылка без integrity!) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer" />
     
-    <!-- Основные стили CSS -->
+    <!-- Стили -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Скрипт CDN для Supabase JS (ДОЛЖЕН БЫТЬ ПЕРЕД global.js) -->
+    <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- ГЛОБАЛЬНЫЙ JAVASCRIPT ДЛЯ МОДАЛЬНОГО ОКНА И UI -->
     <script src="js/global.js"></script>
-
-    <!-- Если для этой страницы нужен специфический JS, добавь его после global.js -->
-    <!-- <script src="js/cases.js"></script> --> 
 </head>
 <body>
     <div class="container">
-        <!-- Блок баланса и пополнения (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
+        <!-- Блок баланса и пополнения -->
         <div class="balance-info">
             <div>
                 <span class="balance-text" id="userBalance">Balance: 0.00 TON</span><br>
@@ -49,8 +42,7 @@
             </a>
         </div>
     </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ БАЛАНСА (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
+    <!-- Модальное окно пополнения -->
     <div id="topUpModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" onclick="hideTopUpModal()">
