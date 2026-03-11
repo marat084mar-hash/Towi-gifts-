@@ -1,462 +1,407 @@
+/*
+ * style.css - Обновленный стиль для Towi Gifts
+ * Включает шрифт Poppins, глубокую фиолетовую палитру,
+ * градиенты, тени, анимации и подготовку для Font Awesome 6.
+ */
+
+/* ==================== 1. CSS Variables ==================== */
+/* Эти переменные позволяют легко менять цвета во всем приложении */
 :root {
-    --primary-bg: #1a1a2e; /* Темно-фиолетовый фон */
-    --secondary-bg: #210d33; /* Более темный для карточек/модалов */
-    --accent-purple: #8a2be2; /* Яркий фиолетовый для акцентов */
-    --light-purple: #c380f7; /* Светлый фиолетовый для текста */
-    --text-color: #e0e0e0; /* Светлый текст */
-    --border-color: #6a0dad; /* Границы */
-    --button-bg: #6a0dad;
-    --button-hover-bg: #9333ea;
-    --modal-bg: #2a1444;
+    --bg-dark: #0A0A1A; /* Глубокий черный/темно-синий фон */
+    --primary-purple: #A358C8; /* Яркий акцентный фиолетовый */
+    --secondary-purple: #7D32A8; /* Более глубокий фиолетовый для градиентов и активных состояний */
+    --text-light: #E0E0E0; /* Светло-серый текст для основного контента */
+    --text-muted: #B0B0B0; /* Приглушенный серый текст для второстепенной информации */
+    --border-gray: #303030; /* Темно-серый для тонких рамок и разделителей */
+    --input-bg: #1A1A1A; /* Фон для полей ввода */
+    --success-green: #2ecc71; /* Цвет для сообщений об успехе */
+    --error-red: #e74c3c; /* Цвет для сообщений об ошибках */
+    --hover-brightness: 1.2; /* Увеличение яркости при наведении */
+    --shadow-light: rgba(0, 0, 0, 0.2); /* Легкая тень */
+    --shadow-medium: rgba(0, 0, 0, 0.4); /* Средняя тень */
+    --shadow-strong: rgba(0, 0, 0, 0.6); /* Сильная тень */
+}
+
+/* ==================== 2. Global Resets & Typography ==================== */
+/* Сброс стандартных стилей браузера и установка шрифта */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
+    font-family: 'Poppins', sans-serif; /* Применяем Poppins ко всему тексту */
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.6; /* Улучшенная читаемость текста */
+    -webkit-font-smoothing: antialiased; /* Сглаживание шрифтов для лучшей визуализации */
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh; /* Минимальная высота, чтобы фон занимал весь экран */
     display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Изменено на flex-start, чтобы контент был сверху */
-    min-height: 100vh;
-    overflow-y: auto; /* Для прокрутки содержимого */
+    flex-direction: column;
 }
 
+/* ==================== 3. General Layout & Containers ==================== */
 .container {
+    max-width: 420px; /* Ограничиваем ширину для мобильного приложения */
     width: 100%;
-    max-width: 400px; /* Ширина мобильного устройства */
-    background-color: var(--primary-bg);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header */
-.header {
-    background-color: var(--secondary-bg);
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.header .back-button {
-    color: var(--light-purple);
-    text-decoration: none;
-    font-size: 1.5em;
-    margin-right: 15px;
-}
-
-.header .page-title {
-    margin: 0;
-    font-size: 1.4em;
-    color: var(--accent-purple);
-    flex-grow: 1; /* Чтобы заголовок занимал доступное пространство */
-    text-align: center; /* Центрируем заголовок */
-}
-
-.header .balance-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-size: 0.9em;
-    position: relative; /* Для кнопки "+" */
-}
-
-.header .balance-info #balance {
-    font-weight: bold;
-    color: var(--light-purple);
-}
-
-.header .balance-info #username {
-    color: var(--text-color);
-    font-size: 0.8em;
-}
-
-.header .balance-info .plus-button {
-    position: absolute;
-    right: -30px; /* Смещаем кнопку вправо */
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: var(--accent-purple);
-    color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-/* Main Content */
-.main-content {
+    margin: 0 auto;
     padding: 20px;
-    flex-grow: 1;
+    box-sizing: border-box;
+    flex-grow: 1; /* Позволяет контейнеру занимать доступное пространство */
 }
 
-/* Buttons */
-.button {
-    background-color: var(--button-bg);
-    color: white;
+/* ==================== 4. Header Styles ==================== */
+.app-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px; /* Увеличил padding для лучшего внешнего вида */
+    color: var(--text-light);
+    position: relative;
+    border-bottom: 1px solid var(--border-gray); /* Тонкая граница для разделения */
+    background-color: var(--bg-dark); /* Обеспечиваем, что фон шапки соответствует общему */
+}
+
+.app-header .back-button {
+    background: none;
     border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 24px;
     cursor: pointer;
-    font-size: 1em;
+    padding: 0 10px;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.app-header .back-button:hover {
+    color: var(--primary-purple);
+    transform: translateX(-3px); /* Небольшая анимация при наведении */
+}
+
+.app-header .back-button:active {
+    transform: translateX(0);
+}
+
+.app-header h1 {
+    flex-grow: 1;
     text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+    font-size: 24px; /* Увеличил размер заголовка */
+    font-weight: 600;
+    margin: 0;
+    /* Компенсируем отступ кнопки назад, если заголовок центрирован */
+    /* Это может потребовать точной настройки в зависимости от других элементов */
+    transform: translateX(-15px); /* Если кнопка слева, заголовок сдвинется влево */
+}
+ /* ==================== 5. Button Styles ==================== */
+.btn {
+    display: block;
     width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-}
-
-.button:hover:not(:disabled) {
-    background-color: var(--button-hover-bg);
-}
-
-.button:disabled {
-    background-color: #4a1a70;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-/* Input fields */
-input[type="number"],
-select {
-    width: 100%;
-    padding: 10px;
+    padding: 16px 20px; /* Немного больше padding */
     margin-bottom: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: var(--secondary-bg);
-    color: var(--text-color);
-    font-size: 1em;
-    box-sizing: border-box;
-}
-
-input[type="number"]:focus,
-select:focus {
-    outline: none;
-    border-color: var(--accent-purple);
-    box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.5);
-}
- /* Main Menu specific styles */
-.main-menu-body .header {
-    justify-content: flex-end; /* Переносим баланс вправо */
-}
-.main-menu-body .header .page-title {
-    display: none; /* Скрываем заголовок "Кейсы" */
-}
-.main-menu-body .header .balance-info {
-    position: static; /* Убираем абсолютное позиционирование */
-    transform: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-}
-.main-menu-body .header .balance-info .plus-button {
-    position: static;
-    transform: none;
-    margin-left: 10px;
-}
-.menu-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 30px;
-}
-.menu-buttons .button {
-    background-color: var(--button-bg);
-    padding: 15px;
-    font-size: 1.1em;
-    border-radius: 10px;
-}
-
-/* Cases Page */
-.cases-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.case-card {
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 15px;
+    border: none;
+    border-radius: 14px; /* Более мягкие, современные углы */
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%); /* Глубокий фиолетовый градиент */
+    color: var(--text-light);
+    box-shadow: 0 6px 20px var(--shadow-medium); /* Более выраженная тень */
+    transition: all 0.3s ease-in-out; /* Плавные анимации */
+    text-decoration: none; /* Убираем подчеркивание, если используется как ссылка */
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 180px; /* Чтобы карточки были одинаковой высоты */
 }
 
-.case-icon {
-    font-size: 3em;
-    margin-bottom: 10px;
+.btn:hover {
+    background: linear-gradient(135deg, var(--hover-brightness) * var(--primary-purple) 0%, var(--primary-purple) 100%); /* Изменение градиента при наведении */
+    box-shadow: 0 8px 25px var(--shadow-strong);
+    transform: translateY(-3px); /* Небольшой подъем для эффекта "парения" */
 }
 
-.case-name {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--light-purple);
-    margin-bottom: 5px;
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    background: var(--secondary-purple); /* Более темный при нажатии */
 }
 
-.case-price {
-    font-size: 0.9em;
-    color: var(--text-color);
-    margin-bottom: 10px;
+.btn-secondary { /* Для кнопок с другим акцентом, например, "Choose Gift" */
+    background: none;
+    border: 2px solid var(--secondary-purple);
+    color: var(--primary-purple);
+    box-shadow: none;
 }
 
-.case-card .button {
-    width: auto;
-    padding: 8px 15px;
-    font-size: 0.9em;
+.btn-secondary:hover {
+    background-color: var(--secondary-purple);
+    color: var(--text-light);
+    box-shadow: 0 4px 15px var(--shadow-medium);
 }
 
-.multi-open-section {
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
+/* ==================== 6. Card Styles (Cases & Inventory Items) ==================== */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Две колонки для карточек */
+    gap: 18px; /* Отступ между карточками */
     margin-top: 20px;
 }
 
-.multi-open-section h2 {
-    color: var(--accent-purple);
-    font-size: 1.3em;
-    margin-top: 0;
-    margin-bottom: 20px;
+.card {
+    background-color: var(--input-bg); /* Более светлый фон для карточек, чтобы выделить их от общего фона */
+    border: 1px solid var(--border-gray);
+    border-radius: 18px; /* Больший радиус скругления */
+    padding: 25px 15px;
     text-align: center;
-}
-
-.multi-open-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+    box-shadow: 0 4px 15px var(--shadow-light);
+    transition: all 0.3s ease-in-out;
+    display: flex; /* Для центрирования содержимого */
+    flex-direction: column;
     justify-content: center;
-}
-.multi-open-options label {
-    font-size: 0.9em;
-    color: var(--text-color);
-}
-.multi-open-options select {
-    width: calc(50% - 5px); /* Две колонки */
-    margin-bottom: 0;
-}
-.multi-open-options .button {
-    margin-top: 15px;
-    width: 100%;
+    align-items: center;
+    min-height: 160px; /* Минимальная высота карточки */
 }
 
-/* Modal */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
+.card:hover {
+    border-color: var(--primary-purple); /* Подсвечиваем рамку */
+    box-shadow: 0 6px 20px var(--shadow-medium);
+    transform: translateY(-5px); /* Более заметный подъем */
+}
+
+.card .icon {
+    font-size: 55px; /* Размер иконки */
+    color: var(--primary-purple);
+    margin-bottom: 15px;
+}
+
+.card .text-label {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.card .price {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-top: 10px;
+}
+
+/* ==================== 7. Modal Windows / Pop-ups ==================== */
+.modal-overlay {
+    position: fixed;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--shadow-strong); /* Полупрозрачный черный фон */
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal-content {
-    background-color: var(--modal-bg);
-    margin: auto;
+    background: var(--input-bg); /* Темный, но не черный фон для модалки */
+    border-radius: 20px; /* Больший радиус скругления */
     padding: 30px;
-    border: 1px solid var(--accent-purple);
-    border-radius: 15px;
-    width: 80%;
-    max-width: 350px;
-    text-align: center;
+    box-shadow: 0 10px 30px var(--shadow-strong);
+    width: 90%;
+    max-width: 380px;
     position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform: translateY(30px); /* Появление снизу */
+    transition: transform 0.3s ease;
 }
 
-.modal-content h2 {
-    color: var(--light-purple);
-    margin-top: 0;
-    margin-bottom: 20px;
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
 }
-
-.modal-content p {
-    font-size: 1.1em;
-    margin-bottom: 25px;
-    color: var(--text-color);
-}
-
-.close-button {
-    color: var(--light-purple);
+ .modal-content .close-btn {
     position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 26px; /* Чуть крупнее */
+    color: var(--text-muted);
     cursor: pointer;
-}
-.close-button:hover,
-.close-button:focus {
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
+    transition: color 0.2s ease;
 }
 
-/* Upgrade Page */
-.upgrade-section {
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
+.modal-content .close-btn:hover {
+    color: var(--primary-purple);
 }
 
-.upgrade-section h2 {
-    color: var(--accent-purple);
-    font-size: 1.3em;
-    margin-top: 0;
-    margin-bottom: 15px;
+.modal-title {
+    font-size: 22px;
+    font-weight: 600;
     text-align: center;
-}
- .user-gifts-list {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: var(--primary-bg);
+    margin-bottom: 25px;
+    color: var(--text-light);
 }
 
-.gift-item {
+/* ==================== 8. Form Elements (Input fields) ==================== */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-gray);
+    border-radius: 10px;
+    background-color: var(--input-bg);
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(var(--primary-purple), 0.3); /* Легкое свечение при фокусе */
+}
+
+/* ==================== 9. Balance Display ==================== */
+.balance-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 5px;
-    border-bottom: 1px dashed var(--border-color);
-}
-.gift-item:last-child {
-    border-bottom: none;
-}
-.gift-item span {
-    flex-grow: 1;
-    margin-right: 10px;
-}
-.gift-item .button {
-    width: auto;
-    padding: 5px 10px;
-    font-size: 0.85em;
-    margin-bottom: 0;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-gray);
 }
 
-.selected-gift-info {
-    background-color: var(--primary-bg);
-    border: 1px solid var(--accent-purple);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 25px;
+.balance-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.username-text {
+    font-size: 16px;
+    color: var(--text-muted);
+}
+
+.add-balance-btn {
+    background: linear-gradient(45deg, var(--primary-purple), var(--secondary-purple));
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: var(--text-light);
+    cursor: pointer;
+    box-shadow: 0 4px 10px var(--shadow-medium);
+    transition: all 0.2s ease;
+}
+
+.add-balance-btn:hover {
+    transform: rotate(90deg) scale(1.05); /* Анимация вращения и увеличения */
+    box-shadow: 0 6px 15px var(--shadow-strong);
+}
+
+
+/* ==================== 10. Upgrade Wheel Specific Styles ==================== */
+/* Эти стили будут основой для колеса апгрейда */
+.upgrade-section {
     text-align: center;
-}
-.selected-gift-info p {
-    margin: 0;
-    color: var(--light-purple);
-    font-weight: bold;
+    margin-top: 30px;
 }
 
-.upgrade-controls {
-    text-align: center;
+.upgrade-chance {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
 }
 
-.chances-display {
-    font-size: 1.1em;
-    margin-bottom: 15px;
-    color: var(--text-color);
-}
-#success-chance {
-    font-weight: bold;
-    color: var(--accent-purple);
+.upgrade-wheel-container {
+    position: relative;
+    width: 280px; /* Размер колеса */
+    height: 280px;
+    margin: 30px auto;
+    border-radius: 50%;
+    background-color: var(--input-bg);
+    border: 5px solid var(--border-gray);
+    overflow: hidden; /* Обрезаем, чтобы сектора не выходили за круг */
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 0, 0, 0.6);
 }
 
 .upgrade-wheel {
-    margin-bottom: 20px;
-    /* Здесь можно добавить стили для реального колеса, если будете делать SVG/Canvas */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.35, 1.25); /* Эффект вращения с замедлением */
+    /* Сектора будут создаваться динамически JS или SVG */
+    /* Пример для двух секторов (успех/провал) */
+    background: conic-gradient(
+        var(--primary-purple) 0% 75%, /* Фиолетовая зона успеха (75%) */
+        var(--bg-dark) 75% 100%       /* Черная зона провала (25%) */
+    );
 }
 
-/* Wallet Page */
-.top-up-section {
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
+.wheel-indicator {
+    position: absolute;
+    top: -15px; /* Выше колеса */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 25px solid var(--text-light); /* Белый треугольник */
+    z-index: 1;
 }
-
-.top-up-section h2 {
-    color: var(--light-purple);
-    font-size: 1.4em;
-    margin-top: 0;
-    margin-bottom: 25px;
-    text-align: center;
-}
-
-#current-balance-display {
-    font-weight: bold;
-    color: var(--accent-purple);
-}
-
-.top-up-option {
-    background-color: var(--primary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.top-up-option h3 {
-    color: var(--light-purple);
-    font-size: 1.1em;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-.top-up-option p {
-    font-size: 0.9em;
-    color: var(--text-color);
-    margin-top: -5px;
-    margin-bottom: 15px;
-}
-.conversion-info {
-    font-size: 0.9em;
-    color: var(--accent-purple) !important;
-    font-weight: bold;
-    text-align: right;
-    margin-top: -10px !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 420px) {
+ /* ==================== 11. Responsive Design ==================== */
+@media (max-width: 375px) {
     .container {
-        border-radius: 0;
-        box-shadow: none;
+        padding: 15px;
     }
-    .header .balance-info .plus-button {
-        right: 10px; /* Adjust for smaller screens */
+    .app-header h1 {
+        font-size: 22px;
+    }
+    .btn {
+        padding: 14px 18px;
+        font-size: 16px;
+    }
+    .card-grid {
+        gap: 10px;
+    }
+    .card {
+        padding: 15px 10px;
+        min-height: 140px;
+    }
+    .card .icon {
+        font-size: 45px;
+    }
+    .card .price {
+        font-size: 17px;
+    }
+    .balance-text {
+        font-size: 22px;
+    }
+    .username-text {
+        font-size: 14px;
     }
 }
-
-
-
+```
