@@ -1,251 +1,462 @@
-```css
-/* --- УНИКАЛЬНЫЙ ДИЗАЙН "NEON-TECH" --- */
-
-/* 1. Наша собственная дизайн-система (переменные) */
 :root {
-    /* Цвета */
-    --bg-deep-space: #0D0F1B; /* Очень темный, почти черный фон */
-    --bg-surface: #1A1C2A;    /* Фон для карточек, шапки и контейнеров */
-    --accent-electric-blue: #00BFFF; /* Яркий синий, наш основной акцент */
-    --accent-vivid-violet: #8A2BE2; /* Фиолетовый для градиентов и акцентов */
-    --text-primary: #EAEAEA;      /* Основной, почти белый текст */
-    --text-secondary: #8B90A3;    /* Второстепенный, серый текст */
-    --border-color: #34374C;      /* Цвет для рамок и разделителей */
-    --success-color: #00E33A;     /* Цвет для успешных действий */
-    --failure-color: #FF4D4D;      /* Цвет для провальных действий */
-
-    /* Шрифты */
-    --font-body: 'Roboto', sans-serif;
-    --font-headings: 'Exo 2', sans-serif;
-
-    /* Другое */
-    --border-radius: 12px;
-    --transition-speed: 0.3s;
+    --primary-bg: #1a1a2e; /* Темно-фиолетовый фон */
+    --secondary-bg: #210d33; /* Более темный для карточек/модалов */
+    --accent-purple: #8a2be2; /* Яркий фиолетовый для акцентов */
+    --light-purple: #c380f7; /* Светлый фиолетовый для текста */
+    --text-color: #e0e0e0; /* Светлый текст */
+    --border-color: #6a0dad; /* Границы */
+    --button-bg: #6a0dad;
+    --button-hover-bg: #9333ea;
+    --modal-bg: #2a1444;
 }
 
-/* 2. Базовые стили и типографика */
 body {
-    font-family: var(--font-body);
-    background-color: var(--bg-deep-space);
-    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Изменено на flex-start, чтобы контент был сверху */
+    min-height: 100vh;
+    overflow-y: auto; /* Для прокрутки содержимого */
 }
 
-main {
+.container {
+    width: 100%;
+    max-width: 400px; /* Ширина мобильного устройства */
+    background-color: var(--primary-bg);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background-color: var(--secondary-bg);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header .back-button {
+    color: var(--light-purple);
+    text-decoration: none;
+    font-size: 1.5em;
+    margin-right: 15px;
+}
+
+.header .page-title {
+    margin: 0;
+    font-size: 1.4em;
+    color: var(--accent-purple);
+    flex-grow: 1; /* Чтобы заголовок занимал доступное пространство */
+    text-align: center; /* Центрируем заголовок */
+}
+
+.header .balance-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.9em;
+    position: relative; /* Для кнопки "+" */
+}
+
+.header .balance-info #balance {
+    font-weight: bold;
+    color: var(--light-purple);
+}
+
+.header .balance-info #username {
+    color: var(--text-color);
+    font-size: 0.8em;
+}
+
+.header .balance-info .plus-button {
+    position: absolute;
+    right: -30px; /* Смещаем кнопку вправо */
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--accent-purple);
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
     padding: 20px;
-    max-width: 1200px;
-    margin: 20px auto;
+    flex-grow: 1;
 }
 
-h1, h2, h3 {
-    font-family: var(--font-headings);
-    text-transform: uppercase;
-}
-
-h2 {
+/* Buttons */
+.button {
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
     text-align: center;
-    font-size: 2.2em;
-    font-weight: 800;
-    margin-bottom: 30px;
-    color: var(--accent-electric-blue);
-    text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
-/* 3. Шапка сайта (Header) */
-header {
-    background-color: var(--bg-surface);
-    padding: 15px 30px;
+.button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+}
+
+.button:disabled {
+    background-color: #4a1a70;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Input fields */
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.5);
+}
+ /* Main Menu specific styles */
+.main-menu-body .header {
+    justify-content: flex-end; /* Переносим баланс вправо */
+}
+.main-menu-body .header .page-title {
+    display: none; /* Скрываем заголовок "Кейсы" */
+}
+.main-menu-body .header .balance-info {
+    position: static; /* Убираем абсолютное позиционирование */
+    transform: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+.main-menu-body .header .balance-info .plus-button {
+    position: static;
+    transform: none;
+    margin-left: 10px;
+}
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+}
+.menu-buttons .button {
+    background-color: var(--button-bg);
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 10px;
+}
+
+/* Cases Page */
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.case-card {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 180px; /* Чтобы карточки были одинаковой высоты */
+}
+
+.case-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.case-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--light-purple);
+    margin-bottom: 5px;
+}
+
+.case-price {
+    font-size: 0.9em;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.case-card .button {
+    width: auto;
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+.multi-open-section {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.multi-open-section h2 {
+    color: var(--accent-purple);
+    font-size: 1.3em;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.multi-open-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.multi-open-options label {
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+.multi-open-options select {
+    width: calc(50% - 5px); /* Две колонки */
+    margin-bottom: 0;
+}
+.multi-open-options .button {
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--modal-bg);
+    margin: auto;
+    padding: 30px;
+    border: 1px solid var(--accent-purple);
+    border-radius: 15px;
+    width: 80%;
+    max-width: 350px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    color: var(--light-purple);
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content p {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    color: var(--text-color);
+}
+
+.close-button {
+    color: var(--light-purple);
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close-button:hover,
+.close-button:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Upgrade Page */
+.upgrade-section {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.upgrade-section h2 {
+    color: var(--accent-purple);
+    font-size: 1.3em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+ .user-gifts-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: var(--primary-bg);
+}
+
+.gift-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--border-color);
+    padding: 10px 5px;
+    border-bottom: 1px dashed var(--border-color);
+}
+.gift-item:last-child {
+    border-bottom: none;
+}
+.gift-item span {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+.gift-item .button {
+    width: auto;
+    padding: 5px 10px;
+    font-size: 0.85em;
+    margin-bottom: 0;
 }
 
-header h1 {
-    font-size: 1.6em;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin: 0;
-}
-
-nav a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 1em;
-    font-weight: 500;
-    padding: 8px 12px;
+.selected-gift-info {
+    background-color: var(--primary-bg);
+    border: 1px solid var(--accent-purple);
     border-radius: 8px;
-    transition: all var(--transition-speed) ease;
-}
-
-nav a.active, nav a:hover {
-    background-color: rgba(0, 191, 255, 0.1);
-    color: var(--accent-electric-blue);
-}
-
-.balance {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-weight: 700;
-    font-size: 1.1em;
-}
-
-#balance-display {
-    color: var(--accent-electric-blue);
-}
-[11.03.2026 2:27] ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️: /* 4. Карточки кейсов и инвентаря */
-.cases-grid, .inventory-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.case-item, .inventory-item {
-    background: linear-gradient(145deg, #202333, #161824);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 20px;
+    padding: 15px;
+    margin-bottom: 25px;
     text-align: center;
-    transition: all var(--transition-speed) ease;
-    overflow: hidden;
-    position: relative;
+}
+.selected-gift-info p {
+    margin: 0;
+    color: var(--light-purple);
+    font-weight: bold;
 }
 
-.case-item:hover, .inventory-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(0, 191, 255, 0.1);
-    border-color: var(--accent-electric-blue);
+.upgrade-controls {
+    text-align: center;
 }
 
-.case-item h3, .inventory-item .item-name {
-    margin: 10px 0;
-    font-size: 1.3em;
-    font-weight: 600;
-    color: var(--text-primary);
+.chances-display {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+#success-chance {
+    font-weight: bold;
+    color: var(--accent-purple);
 }
 
-.case-price, .inventory-item .item-price {
-    font-family: var(--font-headings);
-    font-weight: 800;
+.upgrade-wheel {
+    margin-bottom: 20px;
+    /* Здесь можно добавить стили для реального колеса, если будете делать SVG/Canvas */
+}
+
+/* Wallet Page */
+.top-up-section {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.top-up-section h2 {
+    color: var(--light-purple);
     font-size: 1.4em;
-    color: var(--accent-electric-blue);
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+#current-balance-display {
+    font-weight: bold;
+    color: var(--accent-purple);
+}
+
+.top-up-option {
+    background-color: var(--primary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.top-up-option h3 {
+    color: var(--light-purple);
+    font-size: 1.1em;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.top-up-option p {
+    font-size: 0.9em;
+    color: var(--text-color);
+    margin-top: -5px;
     margin-bottom: 15px;
 }
-
-/* 5. Кнопки (наш фирменный стиль) */
-button {
-    font-family: var(--font-headings);
-    background: linear-gradient(90deg, var(--accent-electric-blue), var(--accent-vivid-violet));
-    color: #FFFFFF;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 25px;
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition-speed) ease;
-    text-transform: uppercase;
-    box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
-    position: relative;
-    z-index: 1;
-}
-
-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.3);
-}
-
-button:disabled {
-    background: #4A4E62;
-    cursor: not-allowed;
-    box-shadow: none;
-    opacity: 0.6;
-}
-
-.multi-open button {
-    background: var(--bg-deep-space);
-    padding: 6px 12px;
+.conversion-info {
     font-size: 0.9em;
-    box-shadow: none;
-    border: 1px solid var(--border-color);
+    color: var(--accent-purple) !important;
+    font-weight: bold;
+    text-align: right;
+    margin-top: -10px !important;
 }
 
-.multi-open button:hover {
-    background-color: var(--accent-electric-blue);
-    color: var(--bg-deep-space);
-    border-color: var(--accent-electric-blue);
+/* Responsive adjustments */
+@media (max-width: 420px) {
+    .container {
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .header .balance-info .plus-button {
+        right: 10px; /* Adjust for smaller screens */
+    }
 }
 
-/* 6. Модальное окно и рулетка */
-.modal { background-color: rgba(13, 15, 27, 0.85); backdrop-filter: blur(5px); }
-.modal-content {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 40px rgba(0,0,0,0.6);
-}
-.roulette-wrapper {
-    border: 2px solid var(--border-color);
-    background-color: var(--bg-deep-space);
-}
-.roulette-wrapper::before { background-color: var(--accent-electric-blue); box-shadow: 0 0 10px var(--accent-electric-blue); }
-.roulette-item { background-color: var(--bg-surface); border-right: 1px solid var(--border-color); }
 
-/* 7. Страница апгрейда с нашим колесом */
-.upgrade-container {
-    background: var(--bg-surface);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-    padding: 30px;
-}
-#upgrade-wheel {
-    border-color: var(--border-color);
-    /* Наш уникальный фиолетово-синий градиент */
-    background: conic-gradient(var(--accent-vivid-violet) 0% 50%, var(--bg-deep-space) 50% 100%);
-}
-.wheel-pointer { border-top-color: var(--accent-electric-blue); }
-.result-message.success { color: var(--success-color); }
-.result-message.failure { color: var(--failure-color); }
 
-/* 8. Уникальные элементы инвентаря */
-.item-actions button { width: 48%; padding: 10px; font-size: 0.9em; }
-.withdraw-btn {
-    background: transparent;
-    border: 2px solid var(--accent-vivid-violet);
-    box-shadow: none;
-}
-.withdraw-btn:hover {
-    background: var(--accent-vivid-violet);
-    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
-}
-.cooldown-tag { background-color: var(--failure-color); }
-[11.03.2026 2:27] ChatGPT 4.5 & [🅼🅹] | DeepSeek | Gemini ⚡️: /* 9. Страница кошелька */
-.wallet-container { gap: 20px; }
-.deposit-option {
-    background: var(--bg-surface);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-    padding: 25px;
-}
-input[type="number"] {
-    background-color: var(--bg-deep-space);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    padding: 12px;
-    font-size: 1em;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color var(--transition-speed) ease;
-}
-input[type="number"]:focus {
-    border-color: var(--accent-electric-blue);
-    outline: none;
-}
-.deposit-info {
-    border-left-color: var(--accent-electric-blue);
-    background-color: var(--bg-deep-space);
-}
