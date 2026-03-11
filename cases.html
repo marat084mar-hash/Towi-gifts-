@@ -1,94 +1,81 @@
-html
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Exo+2:wght@600;800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <h1>TON Cases</h1>
-        <nav>
-            <a href="cases.html" class="active">Кейсы</a>
-            <a href="inventory.html">Инвентарь</a>
-            <a href="upgrade.html">Апгрейд</a>
-            <a href="wallet.html">Кошелек</a>
-        </nav>
-        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
-    </header>
-
-    <main>
-        <h2>Выберите кейс для открытия</h2>
-        <div id="cases-container" class="cases-grid">
-            <!-- Кейсы будут добавлены сюда с помощью JS -->
-        </div>
-
-        <div id="result-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <h3>Ваш выигрыш!</h3>
-                <div id="win-item">
-                    <!-- Анимация рулетки будет здесь -->
-                </div>
-                <p style="display: none;">Ваш выигрыш добавлен в инвентарь!</p>
-                <button id="sell-item-btn" style="display: none;">Продать</button>
-                <button id="upgrade-item-btn" style="display: none;">Улучшить</button>
-            </div>
-        </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="cases.js"></script>
-</body>
-</html>
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кошелек - TON Cases</title>
+    <title>Кейсы - TON Cases</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>TON Cases</h1>
-        <nav>
-            <a href="cases.html">Кейсы</a>
-            <a href="inventory.html">Инвентарь</a>
-            <a href="upgrade.html">Апгрейд</a>
-            <a href="wallet.html" class="active">Кошелек</a>
-        </nav>
-        <div class="balance">Баланс: <span id="balance-display">0.00</span> TON</div>
-    </header>
+    <div class="container">
+        <header class="header">
+            <a href="index.html" class="back-button"><<</a>
+            <h1 class="page-title">Кейсы</h1>
+            <div class="balance-info">
+                <span id="balance">Баланс: 0.00 TON</span>
+            </div>
+        </header>
+                <main class="main-content">
+            <div id="cases-grid" class="cases-grid">
+                <!-- Кейсы будут загружены сюда через cases.js -->
+                <div class="case-card">
+                    <div class="case-icon">🚬</div>
+                    <div class="case-name">Кейс 1</div>
+                    <div class="case-price">Открыть - 5 TON</div>
+                    <button class="button open-single-case" data-case-id="1">Открыть</button>
+                </div>
+                 <div class="case-card">
+                    <div class="case-icon">🐱</div>
+                    <div class="case-name">Кейс 2</div>
+                    <div class="case-price">Открыть - 10 TON</div>
+                    <button class="button open-single-case" data-case-id="2">Открыть</button>
+                </div>
+                 <div class="case-card">
+                    <div class="case-icon">💎</div>
+                    <div class="case-name">Кейс 3</div>
+                    <div class="case-price">Открыть - 15 TON</div>
+                    <button class="button open-single-case" data-case-id="3">Открыть</button>
+                </div>
+                <div class="case-card">
+                    <div class="case-icon">🐻</div>
+                    <div class="case-name">Кейс 4</div>
+                    <div class="case-price">Открыть - 20 TON</div>
+                    <button class="button open-single-case" data-case-id="4">Открыть</button>
+                </div>
+            </div>
 
-    <main>
-        <h2>Пополнить баланс</h2>
-        <div class="wallet-container">
-            <div class="deposit-option">
-                <h3>Пополнение через TON (+10% бонус)</h3>
-                <input type="number" id="ton-amount" placeholder="Сумма в TON" min="1">
-                <button id="deposit-ton-btn">Получить адрес для пополнения</button>
-                <p class="deposit-info" id="ton-deposit-info"></p>
+            <div class="multi-open-section">
+                <h2>Мульти-открытие</h2>
+                <div class="multi-open-options">
+                    <label for="multi-case-select">Выберите кейс:</label>
+                    <select id="multi-case-select">
+                        <!-- Опции будут загружены через cases.js -->
+                    </select>
+                    <label for="open-count">Количество:</label>
+                    <select id="open-count">
+                        <option value="1">x1</option>
+                        <option value="2">x2</option>
+                        <option value="3">x3</option>
+                        <option value="4">x4</option>
+                        <option value="5">x5</option>
+                    </select>
+                    <button id="open-multi-cases-button" class="button">Открыть выбранные</button>
+                </div>
             </div>
-            <div class="deposit-option">
-                <h3>Пополнение через СБП (RUB)</h3>
-                <p>Курс: 105 RUB = 1 TON</p>
-                <input type="number" id="rub-amount" placeholder="Сумма в RUB" min="105">
-                <button id="deposit-rub-btn">Получить QR-код для оплаты</button>
-                 <div class="deposit-info" id="rub-deposit-info"></div>
-            </div>
-            <div class="deposit-option">
-                <h3>Пополнение через Telegram Stars</h3>
-                <p>Курс: 100 Stars = 1 TON</p>
-                <input type="number" id="stars-amount" placeholder="Кол-во Stars" min="100">
-                <button id="deposit-stars-btn">Оплатить через Telegram</button>
-            </div>
-        </div>
-    </main>
 
+            <div id="result-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Ваш подарок!</h2>
+                    <p id="gift-display"></p>
+                    <button class="button" onclick="document.getElementById('result-modal').style.display='none'">Отлично!</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="wallet.js"></script>
+    <script src="main.js"></script>
+    <script src="cases.js"></script>
 </body>
 </html>
