@@ -10,23 +10,21 @@ function showTopUpModal() {
         modal.classList.add('active');
     }
 }
-
 function hideTopUpModal() {
     var modal = document.getElementById('topUpModal');
     if (modal) {
         modal.classList.remove('active');
     }
 }
+
 function updateUI(userData) {
     var userBalanceElement = document.getElementById('userBalance');
     if (userBalanceElement) {
-        // Проверка, есть ли userData и balance_ton в нем, иначе ставим 0.00
         var balance = (userData && typeof userData.balance_ton !== 'undefined') ? userData.balance_ton.toFixed(2) : '0.00';
         userBalanceElement.innerText = 'Balance: ' + balance + ' TON';
     }
     var usernameElement = document.getElementById('username');
     if (usernameElement) {
-        // Проверка, есть ли userData и username, иначе ставим 'guest'
         var username = (userData && userData.username) ? userData.username : 'guest';
         usernameElement.innerText = '@' + username;
     }
@@ -39,30 +37,25 @@ async function topUp(currency) {
 
 // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log("Страница загружена. Запускаем инициализацию...");
+    console.log("Страница загружена. Запускаем инициализацию (v2)...");
 
     // Получаем объект Telegram Web App
     var tg = window.Telegram.WebApp;
-    tg.ready(); // Сообщаем Telegram, что приложение готово
+    tg.ready();
 
-    // Проверяем, есть ли данные о пользователе Telegram
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
         var telegramUser = tg.initDataUnsafe.user;
         console.log("Данные пользователя Telegram получены:", telegramUser);
 
-        // Вход в Supabase (можно использовать telegram_id для создания кастомного JWT,
-        // но для простоты мы пока будем использовать анонимный вход,
-        // а профиль искать по telegram_id)
-        
+        // Используем анонимный вход для получения сессии, но ищем профиль по telegram_id
         var { data: { user: authUser }, error: authError } = await supabaseClient.auth.signInAnonymously();
         if (authError) {
             console.error("Ошибка анонимного входа:", authError);
             updateUI(null);
             return;
         }
-        console.log("Анонимный вход выполнен:", authUser);
 
-        // Ищем профиль пользователя в нашей таблице users по telegram_user_id
+        // Ищем профиль по telegram_user_id
         var { data: userProfile, error: profileError } = await supabaseClient
             .from('users')
             .select('*')
@@ -73,9 +66,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (profileError && profileError.code === 'PGRST116') {
             console.log("Профиль пользователя не найден, создаем новый...");
             var newUser = {
-                auth_id: authUser.id, // Связываем с анонимным auth-пользователем
+                auth_id: authUser.id,
                 telegram_user_id: telegramUser.id,
-                username: telegramUser.username || user_${telegramUser.id},
+                username: telegramUser.username || ('user_' + telegramUser.id),
                 balance_ton: 0,
                 balance_stars: 0
             };
@@ -102,8 +95,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         updateUI(userProfile);
 
     } else {
-        // Этот блок сработает, если открыть приложение не в Telegram
-        console.warn("Приложение открыто не в Telegram, данные пользователя недоступны. Используем гостевой режим.");
-        updateUI(null); // Показываем 'guest' и баланс 0.00
+        // Этот блок сработает, если открыть приложение НЕ в Telegram
+        console.warn("Приложение открыто не в Telegram. Используем гостевой режим.");
+        updateUI(null);
+        alert('Пожалуйста, откройте это приложение внутри Telegram для полноценной работы.');
     }
 });
