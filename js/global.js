@@ -17,15 +17,18 @@ function hideTopUpModal() {
         modal.classList.remove('active');
     }
 }
-
 function updateUI(userData) {
     var userBalanceElement = document.getElementById('userBalance');
     if (userBalanceElement) {
-        userBalanceElement.innerText = 'Balance: ' + (userData ? userData.balance_ton.toFixed(2) : '0.00') + ' TON';
+        // Проверка, есть ли userData и balance_ton в нем, иначе ставим 0.00
+        var balance = (userData && typeof userData.balance_ton !== 'undefined') ? userData.balance_ton.toFixed(2) : '0.00';
+        userBalanceElement.innerText = 'Balance: ' + balance + ' TON';
     }
     var usernameElement = document.getElementById('username');
     if (usernameElement) {
-        usernameElement.innerText = '@' + (userData ? userData.username : 'guest');
+        // Проверка, есть ли userData и username, иначе ставим 'guest'
+        var username = (userData && userData.username) ? userData.username : 'guest';
+        usernameElement.innerText = '@' + username;
     }
 }
 
@@ -38,60 +41,69 @@ async function topUp(currency) {
 document.addEventListener('DOMContentLoaded', async function() {
     console.log("Страница загружена. Запускаем инициализацию...");
 
-    var authResponse = await supabaseClient.auth.getUser();
-    var authUser = authResponse.data && authResponse.data.user ? authResponse.data.user : null;
+    // Получаем объект Telegram Web App
+    var tg = window.Telegram.WebApp;
+    tg.ready(); // Сообщаем Telegram, что приложение готово
 
-    if (!authUser) {
-        console.log("Пользователь не аутентифицирован. Выполняем анонимный вход...");
-        var signInResponse = await supabaseClient.auth.signInAnonymously();
-        if (signInResponse.error) {
-            console.error("Ошибка анонимного входа:", signInResponse.error);
-            updateUI(null); // Показать гостевой режим
-            return;
-        }
-        authUser = signInResponse.data.user;
-        console.log("Анонимный вход выполнен:", authUser);
-    } else {
-        console.log("Пользователь уже аутентифицирован:", authUser);
-    }
+    // Проверяем, есть ли данные о пользователе Telegram
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        var telegramUser = tg.initDataUnsafe.user;
+        console.log("Данные пользователя Telegram получены:", telegramUser);
 
-    // Ищем профиль пользователя в нашей таблице users
-    var profileResponse = await supabaseClient
-        .from('users')
-        .select('*')
-        .eq('auth_id', authUser.id)
-        .single();
-    var userProfile = profileResponse.data;
-    
-    // Если профиля нет, создаем его
-    if (profileResponse.error && profileResponse.error.code === 'PGRST116') {
-        console.log("Профиль пользователя не найден, создаем новый...");
-        var newUser = {
-            auth_id: authUser.id,
-            telegram_user_id: Math.floor(Math.random() * 10000000000),
-            username: 'user_' + authUser.id.substring(0, 8),
-            balance_ton: 0,
-            balance_stars: 0
-        };
-        var insertResponse = await supabaseClient
-            .from('users')
-            .insert([newUser])
-            .select()
-            .single();
+        // Вход в Supabase (можно использовать telegram_id для создания кастомного JWT,
+        // но для простоты мы пока будем использовать анонимный вход,
+        // а профиль искать по telegram_id)
         
-        if (insertResponse.error) {
-            console.error("Ошибка при создании профиля:", insertResponse.error);
+        var { data: { user: authUser }, error: authError } = await supabaseClient.auth.signInAnonymously();
+        if (authError) {
+            console.error("Ошибка анонимного входа:", authError);
             updateUI(null);
             return;
         }
-        userProfile = insertResponse.data;
-        console.log("Новый профиль пользователя создан:", userProfile);
-    } else if (profileResponse.error) {
-        console.error("Ошибка при загрузке профиля:", profileResponse.error);
-        updateUI(null);
-        return;
-    }
+        console.log("Анонимный вход выполнен:", authUser);
 
-    console.log("Профиль пользователя загружен:", userProfile);
-    updateUI(userProfile);
+        // Ищем профиль пользователя в нашей таблице users по telegram_user_id
+        var { data: userProfile, error: profileError } = await supabaseClient
+            .from('users')
+            .select('*')
+            .eq('telegram_user_id', telegramUser.id)
+            .single();
+
+        // Если профиля нет, создаем его
+        if (profileError && profileError.code === 'PGRST116') {
+            console.log("Профиль пользователя не найден, создаем новый...");
+            var newUser = {
+                auth_id: authUser.id, // Связываем с анонимным auth-пользователем
+                telegram_user_id: telegramUser.id,
+                username: telegramUser.username || user_${telegramUser.id},
+                balance_ton: 0,
+                balance_stars: 0
+            };
+            var { data: createdProfile, error: insertError } = await supabaseClient
+                .from('users')
+                .insert([newUser])
+                .select()
+                .single();
+            
+            if (insertError) {
+                console.error("Ошибка при создании профиля:", insertError);
+                updateUI(null);
+                return;
+            }
+            userProfile = createdProfile;
+            console.log("Новый профиль пользователя создан:", userProfile);
+        } else if (profileError) {
+            console.error("Ошибка при загрузке профиля:", profileError);
+            updateUI(null);
+            return;
+        }
+
+        console.log("Профиль пользователя загружен:", userProfile);
+        updateUI(userProfile);
+
+    } else {
+        // Этот блок сработает, если открыть приложение не в Telegram
+        console.warn("Приложение открыто не в Telegram, данные пользователя недоступны. Используем гостевой режим.");
+        updateUI(null); // Показываем 'guest' и баланс 0.00
+    }
 });
