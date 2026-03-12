@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
     
-    <!-- ПРАВИЛЬНЫЙ ПУТЬ К CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- ИСПРАВЛЕННЫЙ ПУТЬ К CSS -->
+    <link rel="stylesheet" href="style.css">
 
     <title>Towi Gifts - Главная</title>
 </head>
 <body>
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="index.html" class="nav__logo">Towi Gifts</a>
-            <div class="nav__menu" id="nav-menu">
-                <ul class="nav__list">
-                    <li class="nav__item"><a href="index.html" class="nav__link active-link">Главная</a></li>
-                    <li class="nav__item"><a href="cases.html" class="nav__link">Кейсы</a></li>
-                    <li class="nav__item"><a href="inventory.html" class="nav__link">Инвентарь</a></li>
-                    <li class="nav__item"><a href="upgrade.html" class="nav__link">Апгрейд</a></li>
+            <a href="index.html" class="navlogo">Towi Gifts</a>
+            <div class="navmenu" id="nav-menu">
+                <ul class="navlist">
+                    <li class="navitem"><a href="index.html" class="navlink active-link">Главная</a></li>
+                    <li class="navitem"><a href="cases.html" class="navlink">Кейсы</a></li>
+                    <li class="navitem"><a href="inventory.html" class="navlink">Инвентарь</a></li>
+                    <li class="navitem"><a href="upgrade.html" class="navlink">Апгрейд</a></li>
                 </ul>
-                <div class="nav__close" id="nav-close"><i class="ri-close-line"></i></div>
+                <div class="navclose" id="nav-close"><i class="ri-close-line"></i></div>
             </div>
             <!-- Theme change button -->
             <i class="ri-moon-line change-theme" id="theme-button"></i>
@@ -34,36 +34,3 @@
             <h1>👋 Привет!</h1>
             <p>Это веб-приложение для Telegram. Для полноценной работы, пожалуйста, откройте его через бота <a href="https://t.me/Towigifts_bot">@Towigifts_bot</a>.</p>
         </div>
-
-        <div id="app-container" style="display: none;">
-            <section class="home" id="home">
-                 <div class="home__container container grid">
-                    <div class="home__data">
-                        <span class="home__greeting">Привет, <span id="username">@guest</span></span>
-                        <h1 class="home__title">Открой свою удачу</h1>
-                        <p class="home__description">
-                            <span id="balance">0</span>
-                            <i class="ri-copper-coin-line"></i>
-                        </p>
-                        <div class="home__buttons">
-                            <a href="cases.html" class="button">К кейсам</a>
-                            <a href="#" class="button button--ghost" id="top-up-button">Пополнить</a>
-                        </div>
-                    </div>
-                    <div class="home__img">
-                        <img src="assets/img/home-img.png" alt="home image">
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <footer class="footer section"></footer>
-
-    <!-- ПОДКЛЮЧАЕМ СКРИПТЫ В САМОМ КОНЦЕ -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="assets/js/global.v2.js"></script>
-    <!-- Временно отключаем cases.v2.js, чтобы он не мешал -->
-    <!-- <script src="assets/js/cases.v2.js" type="module"></script> -->
-</body>
-</html>
