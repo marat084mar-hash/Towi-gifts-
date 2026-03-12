@@ -36,7 +36,11 @@ async function topUp(currency) {
 }
 
 // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function()
+                          // Делаем объект user доступным глобально для других скриптов
+window.user = user;
+window.updateGlobalUI = updateUI; // Также делаем функцию обновления UI глобальной
+{
     console.log("Страница загружена. Запускаем инициализацию (v2)...");
 
     // Получаем объект Telegram Web App
