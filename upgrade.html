@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts - Абгрейд</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- ДОБАВЛЕНО -->
+    <title>Towi Gifts - Апгрейды</title>
+    
+    <!-- Скрипт Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <!-- Шрифты и иконки -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,14 +17,15 @@
     
     <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/global.v2.js"></script> 
+    <script src="js/global.v2.js"></script> <!-- ИМЯ ФАЙЛА ИЗМЕНЕНО -->
+    <!-- <script src="js/upgrade.js"></script> --> <!-- Оставлено закомментированным пока не понадобится -->
 </head>
 <body>
     <div class="container">
         <header class="app-header">
             <button class="back-button" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
             <h1>Upgrades</h1>
-            <!-- Блок баланса и пополнения (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
+            <!-- Блок баланса и пополнения в шапке -->
             <div class="balance-info" style="position: absolute; right: 20px; top: 15px;">
                 <button class="add-balance-btn" onclick="showTopUpModal()">
                     <i class="fas fa-plus"></i>
@@ -30,7 +33,7 @@
             </div>
         </header>
 
-        <!-- Отображение текущего баланса и имени пользователя в шапке (опционально) -->
+        <!-- Отображение текущего баланса и имени пользователя в шапке -->
         <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
             <span class="balance-text" id="userBalance" style="font-size: 18px;">Balance: 0.00 TON</span><br>
             <span class="username-text" id="username" style="font-size: 14px;">@guest</span>
@@ -60,8 +63,7 @@
             </button>
         </div>
     </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ БАЛАНСА (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
+    <!-- Модальное окно пополнения -->
     <div id="topUpModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" onclick="hideTopUpModal()">
