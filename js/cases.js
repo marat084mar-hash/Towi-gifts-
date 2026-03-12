@@ -1,3 +1,5 @@
+// Глобальная переменная для хранения текущего открытого предмета (для кнопки Claim)
+var currentAwardedItem = null;
 // Функция для отображения кейсов на странице
 async function renderCases() {
     console.log("cases.js: Загрузка кейсов из Supabase...");
@@ -8,7 +10,7 @@ async function renderCases() {
     }
     casesListContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%;">Загрузка кейсов...</p>';
 
-    var { data: cases, error } = await supabaseClient
+    var { data: cases, error } = await window.supabaseClient // Используем window.supabaseClient
         .from('cases')
         .select('*')
         .eq('is_active', true)
@@ -48,13 +50,9 @@ async function renderCases() {
     });
 }
 
-// Глобальная переменная для хранения текущего открытого предмета (для кнопки Claim)
-var currentAwardedItem = null;
-
 // Функция для открытия модального окна открытия кейса
 function showCaseOpeningModal() {
     document.getElementById('caseOpeningModal').classList.add('active');
-    // Сбрасываем анимацию и результат, показываем только "Spinning..."
     document.getElementById('caseOpeningAnimation').style.display = 'block';
     document.getElementById('caseOpeningResult').style.display = 'none';
     document.getElementById('animationText').innerText = 'Spinning...';
@@ -64,7 +62,7 @@ function showCaseOpeningModal() {
 // Функция для закрытия модального окна открытия кейса
 function closeCaseOpeningModal() {
     document.getElementById('caseOpeningModal').classList.remove('active');
-    currentAwardedItem = null; // Сбрасываем предмет
+    currentAwardedItem = null;
 }
 
 // Хелпер: Выбор случайного предмета из пула с учетом шансов
@@ -81,14 +79,13 @@ function getRandomItem(itemsPool) {
             return itemsPool[i];
         }
     }
-    return itemsPool[itemsPool.length - 1]; // Fallback, если что-то пошло не так
+    return itemsPool[itemsPool.length - 1]; // Fallback
 }
 
 // Функция для открытия кейса
 async function openCase(caseData) {
     console.log("cases.js: Попытка открыть кейс:", caseData);
 
-    // Проверяем, есть ли глобальный объект user
     if (!window.user || !window.user.id) {
         alert('Пожалуйста, обновите страницу. Профиль пользователя не загружен.');
         return;
@@ -99,9 +96,8 @@ async function openCase(caseData) {
         return;
     }
 
-    showCaseOpeningModal(); // Показываем модальное окно открытия
-// Имитация анимации прокрутки
-    document.getElementById('caseOpeningTitle').innerText = 'Opening ' + caseData.name + '...';
+    showCaseOpeningModal();
+
     var animationTextElement = document.getElementById('animationText');
     var messages = ["Spinning...", "Almost there...", "What will it be?"];
     var msgIndex = 0;
@@ -110,37 +106,31 @@ async function openCase(caseData) {
         animationTextElement.innerText = messages[msgIndex % messages.length];
         msgIndex++;
     }, 500);
-
-    // Пауза для анимации перед результатом
     await new Promise(function(resolve) { setTimeout(resolve, 3000); });
-    clearInterval(animationInterval); // Останавливаем анимацию
+    clearInterval(animationInterval);
 
-    // Логика списания, получения предмета и сохранения в Supabase
     var result = await processCaseOpening(caseData);
 
-    // Отображаем результат
-    document.getElementById('caseOpeningAnimation').style.display = 'none'; // Скрываем анимацию
-    document.getElementById('caseOpeningResult').style.display = 'block'; // Показываем результат
+    document.getElementById('caseOpeningAnimation').style.display = 'none';
+    document.getElementById('caseOpeningResult').style.display = 'block';
 
     if (result.success) {
         document.getElementById('caseOpeningTitle').innerText = 'Case Opened!';
         document.getElementById('awardedItemName').innerText = result.awardedItem.name;
-        currentAwardedItem = result.awardedItem; // Сохраняем для кнопки Claim
+        currentAwardedItem = result.awardedItem;
     } else {
         document.getElementById('caseOpeningTitle').innerText = 'Oops!';
         document.getElementById('awardedItemName').innerText = 'Something went wrong. Try again!';
         currentAwardedItem = null;
     }
     
-    // Обновляем глобальный UI с новым балансом
-    window.updateGlobalUI(window.user);
+    window.updateUI(window.user); // Обновляем глобальный UI
 }
 
 // Кнопка Claim в модальном окне результата
 function claimAwardedItem() {
     if (currentAwardedItem) {
         alert('Предмет "' + currentAwardedItem.name + '" успешно добавлен в ваш инвентарь!');
-        // Здесь можно было бы сделать редирект в инвентарь или просто закрыть окно
         closeCaseOpeningModal();
     } else {
         alert('Нет предмета для получения.');
@@ -152,7 +142,7 @@ async function processCaseOpening(caseData) {
     try {
         // 1. Списание TON
         var newBalanceTon = window.user.balanceTon - caseData.price_ton;
-        var { data: updatedUser, error: updateError } = await supabaseClient
+        var { data: updatedUser, error: updateError } = await window.supabaseClient // Используем window.supabaseClient
             .from('users')
             .update({ balance_ton: newBalanceTon })
             .eq('id', window.user.id)
@@ -164,7 +154,7 @@ async function processCaseOpening(caseData) {
             alert("Ошибка списания TON: " + updateError.message);
             return { success: false, message: updateError.message };
         }
-        window.user.balanceTon = updatedUser.balance_ton; // Обновляем локальный баланс
+        window.user.balanceTon = updatedUser.balance_ton;
         console.log("cases.js: Баланс обновлен. Новый баланс:", window.user.balanceTon);
 
         // 2. Выбор случайного предмета
@@ -180,32 +170,32 @@ async function processCaseOpening(caseData) {
         var newItem = {
             user_id: window.user.id,
             nft_name: awardedItemData.name,
-            nft_image_url: caseData.image_url || null, // Используем изображение кейса, если у предмета нет своего
+            nft_image_url: caseData.image_url || null,
             nft_type: awardedItemData.type,
-            price_ton: 0, // Предметы из кейсов не имеют начальной цены продажи, устанавливается при продаже
+            price_ton: 0,
             is_tradable: true,
             is_withdrawable: true,
             source: 'case_opening'
         };
-        var { data: insertedItem, error: insertItemError } = await supabaseClient
+        var { data: insertedItem, error: insertItemError } = await window.supabaseClient // Используем window.supabaseClient
             .from('user_inventory')
             .insert([newItem])
             .select()
             .single();
+
         if (insertItemError) {
             console.error("cases.js: Ошибка добавления предмета в инвентарь:", insertItemError);
             alert("Ошибка добавления предмета в инвентарь: " + insertItemError.message);
             return { success: false, message: insertItemError.message };
         }
         console.log("cases.js: Предмет добавлен в инвентарь:", insertedItem);
-
         // 4. Запись транзакции
-        var { error: transactionError } = await supabaseClient
+        var { error: transactionError } = await window.supabaseClient // Используем window.supabaseClient
             .from('transactions')
             .insert({
                 user_id: window.user.id,
                 type: 'case_opening',
-                amount: -caseData.price_ton, // Списание обозначаем отрицательным числом
+                amount: -caseData.price_ton,
                 currency: 'TON',
                 details: {
                     case_id: caseData.id,
@@ -216,7 +206,6 @@ async function processCaseOpening(caseData) {
             });
         if (transactionError) {
             console.error("cases.js: Ошибка записи транзакции:", transactionError);
-            // Эта ошибка не должна блокировать успешное открытие кейса, но её нужно залогировать
         }
         console.log("cases.js: Транзакция записана.");
 
