@@ -43,93 +43,104 @@ window.updateUI = function(userData) {
 };
 
 window.topUp = async function(currency) {
+    // ВАЖНО: Проверяем authId здесь, чтобы убедиться, что пользователь аутентифицирован
+    if (!window.user.authId) {
+        alert('Для пополнения необходимо быть аутентифицированным. Попробуйте обновить приложение в Telegram.');
+        return;
+    }
     window.hideTopUpModal();
     alert('Функция пополнения (' + currency + ') будет полностью реализована после успешного теста.');
+    // TODO: Добавить реальную логику пополнения через Supabase (сейчас просто alert)
 };
 
 // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log("Страница загружена. Запускаем инициализацию (максимально упрощенная v2)...");
+    console.log("Страница загружена. Запускаем инициализацию...");
 
     var tg = window.Telegram.WebApp;
     tg.ready();
-    // Попытка получить текущего аутентифицированного пользователя
-    var authGetResponse = await window.supabaseClient.auth.getUser();
-    if (authGetResponse.data && authGetResponse.data.user) {
-        authUser = authGetResponse.data.user;
-        console.log("Пользователь уже аутентифицирован:", authUser);
-    } else {
-        console.log("Пользователь не аутентифицирован. Выполняем анонимный вход...");
-        var signInResponse = await window.supabaseClient.auth.signInAnonymously();
-        if (signInResponse.error) {
-            console.error("Ошибка анонимного входа:", signInResponse.error);
-            window.updateUI(null);
-            return;
-        }
-        authUser = signInResponse.data.user;
-        console.log("Анонимный вход выполнен:", authUser);
-    }
-    
-    // Если аутентифицированный пользователь есть, пытаемся получить/создать профиль
-    if (authUser) {
-        window.user.authId = authUser.id;
-        console.log("authId пользователя:", window.user.authId);
 
-        var profileResponse = await window.supabaseClient
+    var authUser = null; // Пользователь Supabase Auth
+    var telegramUser = null; // Пользователь из Telegram initData
+
+    // Пытаемся получить данные пользователя Telegram
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+        telegramUser = tg.initDataUnsafe.user;
+        console.log("Данные пользователя Telegram получены:", telegramUser);
+    } else {
+        console.warn("Приложение открыто не в Telegram или данные пользователя недоступны. Продолжаем в гостевом режиме.");
+        // alert('Пожалуйста, откройте это приложение внутри Telegram для полноценной работы.'); // Временно убираем alert
+    }
+
+    // Вход в Supabase: сначала пытаемся войти анонимно
+    // Это нужно, чтобы у нас всегда был auth.uid() для RLS
+    var authGetResponse = await window.supabaseClient.auth.signInAnonymously();
+    if (authGetResponse.error) {
+        console.error("Ошибка анонимного входа:", authGetResponse.error);
+        window.updateUI(null);
+        return;
+    }
+    authUser = authGetResponse.data.user;
+    console.log("Анонимный вход выполнен (или пользователь уже был):", authUser);
+    window.user.authId = authUser.id; // Присваиваем authId глобальному объекту user
+                          // Теперь, когда у нас есть authId, ищем профиль пользователя в нашей таблице users
+    // Если есть telegramUser, ищем по telegram_user_id. Иначе ищем по auth_id (для новых анонимных)
+    var selectQuery;
+    if (telegramUser) {
+        selectQuery = window.supabaseClient
             .from('users')
             .select('*')
-            .eq('auth_id', window.user.authId)
+            .eq('telegram_user_id', telegramUser.id)
             .single();
+    } else {
+        selectQuery = window.supabaseClient
+            .from('users')
+            .select('*')
+            .eq('auth_id', authUser.id) // Для обычных анонимных пользователей
+            .single();
+    }
 
-        var userProfile = profileResponse.data;
+    var profileResponse = await selectQuery;
+    var userProfile = profileResponse.data;
+    
+    // Если профиля нет, создаем его
+    if (profileResponse.error && profileResponse.error.code === 'PGRST116') {
+        console.log("Профиль пользователя не найден, создаем новый...");
         
-        if (profileResponse.error && profileResponse.error.code === 'PGRST116') {
-            console.log("Профиль пользователя не найден, создаем новый...");
-            var telegramUser = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-            
-            var newTelegramUserId = telegramUser ? telegramUser.id : Math.floor(Math.random() * 10000000000);
-            var newUsername = telegramUser && telegramUser.username ? telegramUser.username : ('user_' + authUser.id.substring(0, 8));
-
-            var newUser = {
-                auth_id: window.user.authId,
-                telegram_user_id: newTelegramUserId,
-                username: newUsername,
-                balance_ton: 0,
-                balance_stars: 0
-            };
-            var insertResponse = await window.supabaseClient
-                .from('users')
-                .insert([newUser])
-                .select()
-                .single();
-            
-            if (insertResponse.error) {
-                console.error("Ошибка при создании профиля:", insertResponse.error);
-                window.updateUI(null);
-                return;
-            }
-            userProfile = insertResponse.data;
-            console.log("Новый профиль пользователя создан:", userProfile);
-        } else if (profileResponse.error) {
-            console.error("Ошибка при загрузке профиля:", profileResponse.error);
+        var newUser = {
+            auth_id: authUser.id,
+            telegram_user_id: telegramUser ? telegramUser.id : null, // Сохраняем ID, если есть
+            username: telegramUser && telegramUser.username ? telegramUser.username : ('user_' + authUser.id.substring(0, 8)),
+            balance_ton: 0,
+            balance_stars: 0
+        };
+        var insertResponse = await window.supabaseClient
+            .from('users')
+            .insert([newUser])
+            .select()
+            .single();
+        
+        if (insertResponse.error) {
+            console.error("Ошибка при создании профиля:", insertResponse.error);
             window.updateUI(null);
             return;
         }
-
-        console.log("Профиль пользователя загружен:", userProfile);
-        window.user.id = userProfile.id;
-        window.user.telegramUserId = userProfile.telegram_user_id;
-        window.user.username = userProfile.username;
-        window.user.balanceTon = userProfile.balance_ton;
-        window.user.balanceStars = userProfile.balance_stars;
-        window.user.nftCooldownEndTime = userProfile.nft_cooldown_end_time;
-        window.updateUI(window.user);
-
-    } else {
-        console.warn("Не удалось аутентифицировать пользователя. Используем гостевой режим.");
+        userProfile = insertResponse.data;
+        console.log("Новый профиль пользователя создан:", userProfile);
+    } else if (profileResponse.error) {
+        console.error("Ошибка при загрузке профиля:", profileResponse.error);
         window.updateUI(null);
-        alert('Пожалуйста, откройте это приложение внутри Telegram для полноценной работы.');
+        return;
     }
-});
 
-    var authUser = null; // Будет установлено после входа
+    // Обновляем глобальный объект window.user данными профиля
+    window.user.id = userProfile.id;
+    window.user.telegramUserId = userProfile.telegram_user_id;
+    window.user.username = userProfile.username;
+    window.user.balanceTon = userProfile.balance_ton;
+    window.user.balanceStars = userProfile.balance_stars;
+    window.user.nftCooldownEndTime = userProfile.nft_cooldown_end_time;
+
+    console.log("Профиль пользователя загружен и обновлен:", window.user);
+    window.updateUI(window.user); // Обновляем UI с актуальными данными
+});
