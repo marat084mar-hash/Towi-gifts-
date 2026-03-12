@@ -1,4 +1,4 @@
-alert('cases.js: Скрипт CASES.JS ЗАГРУЖЕН И НАЧИНАЕТ РАБОТУ!'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+alert('cases.v2.js: Скрипт cases.v2.js ЗАГРУЖЕН И НАЧИНАЕТ РАБОТУ!'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 
 // Глобальная переменная для хранения текущего открытого предмета (для кнопки Claim)
 var currentAwardedItem = null;
@@ -61,7 +61,7 @@ async function renderCases() {
 
         casesListContainer.appendChild(card);
     });
-    alert('cases.js: Все карточки кейсов отображены.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+    alert('cases.v2.js: Все карточки кейсов отображены.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 }
 // Функция для открытия модального окна открытия кейса
 function showCaseOpeningModal() {
@@ -98,7 +98,7 @@ function getRandomItem(itemsPool) {
 // Функция для открытия кейса
 async function openCase(caseData) {
     alert('cases.js: Попытка открыть кейс: "' + caseData.name + '"'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-    console.log("cases.js: Попытка открыть кейс:", caseData);
+    console.log("cases.v2.js: Попытка открыть кейс:", caseData);
 
     if (!window.user || !window.user.id) {
         alert('cases.js: ОШИБКА! Профиль пользователя не загружен. Обновите приложение в Telegram.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
@@ -106,7 +106,7 @@ async function openCase(caseData) {
     }
 
     if (window.user.balanceTon < caseData.price_ton) {
-        alert('cases.js: Недостаточно TON для открытия "' + caseData.name + '"! Ваш баланс: ' + window.user.balanceTon.toFixed(2) + ' TON. Требуется: ' + caseData.price_ton.toFixed(2) + ' TON.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Недостаточно TON для открытия "' + caseData.name + '"! Ваш баланс: ' + window.user.balanceTon.toFixed(2) + ' TON. Требуется: ' + caseData.price_ton.toFixed(2) + ' TON.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         return;
     }
 
@@ -124,7 +124,7 @@ async function openCase(caseData) {
     await new Promise(function(resolve) { setTimeout(resolve, 3000); });
     clearInterval(animationInterval);
 
-    alert('cases.js: Анимация завершена, обрабатываем результат...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+    alert('cases.v2.js: Анимация завершена, обрабатываем результат...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
     var result = await processCaseOpening(caseData);
 
     document.getElementById('caseOpeningAnimation').style.display = 'none';
@@ -147,7 +147,7 @@ async function openCase(caseData) {
 
 // Кнопка Claim в модальном окне результата
 function claimAwardedItem() {
-    alert('cases.js: Клик на Claim Item.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+    alert('cases.v2.js: Клик на Claim Item.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
     if (currentAwardedItem) {
         alert('Предмет "' + currentAwardedItem.name + '" успешно добавлен в ваш инвентарь!');
         closeCaseOpeningModal();
@@ -157,10 +157,10 @@ function claimAwardedItem() {
 }
 // --- Асинхронная функция для обработки открытия кейса в Supabase ---
 async function processCaseOpening(caseData) {
-    alert('cases.js: Начинаем processCaseOpening().'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+    alert('cases.v2.js: Начинаем processCaseOpening().'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
     try {
         // 1. Списание TON
-        alert('cases.js: Списываем TON: ' + caseData.price_ton); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Списываем TON: ' + caseData.price_ton); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         var newBalanceTon = window.user.balanceTon - caseData.price_ton;
         var { data: updatedUser, error: updateError } = await window.supabaseClient
             .from('users')
@@ -178,17 +178,17 @@ async function processCaseOpening(caseData) {
         alert('cases.js: Баланс успешно списан. Новый баланс: ' + window.user.balanceTon.toFixed(2)); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 
         // 2. Выбор случайного предмета
-        alert('cases.js: Выбираем случайный предмет...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Выбираем случайный предмет...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         var awardedItemData = getRandomItem(caseData.items_pool);
         if (!awardedItemData) {
             console.error("cases.js: Не удалось выбрать предмет из пула.");
             alert("ОШИБКА: Не удалось выбрать предмет из пула кейса."); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
             return { success: false, message: "Не удалось выбрать предмет." };
         }
-        alert('cases.js: Выбран предмет: ' + awardedItemData.name); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Выбран предмет: ' + awardedItemData.name); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 
         // 3. Добавление предмета в инвентарь
-        alert('cases.js: Добавляем предмет в инвентарь...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Добавляем предмет в инвентарь...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         var newItem = {
             user_id: window.user.id,
             nft_name: awardedItemData.name,
@@ -210,10 +210,10 @@ async function processCaseOpening(caseData) {
             alert("ОШИБКА добавления предмета в инвентарь: " + insertItemError.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
             return { success: false, message: insertItemError.message };
         }
-        alert('cases.js: Предмет успешно добавлен в инвентарь! ID: ' + insertedItem.id); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Предмет успешно добавлен в инвентарь! ID: ' + insertedItem.id); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 
         // 4. Запись транзакции
-        alert('cases.js: Записываем транзакцию...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Записываем транзакцию...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         var { error: transactionError } = await window.supabaseClient
             .from('transactions')
             .insert({
@@ -232,11 +232,11 @@ async function processCaseOpening(caseData) {
             console.error("cases.js: Ошибка записи транзакции:", transactionError);
             alert("ВНИМАНИЕ: Ошибка записи транзакции, но кейс открыт: " + transactionError.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         }
-        alert('cases.js: Транзакция записана успешно.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
+        alert('cases.v2.js: Транзакция записана успешно.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 
         return { success: true, awardedItem: awardedItemData };
         } catch (e) {
-        console.error("cases.js: Непредвиденная ошибка при открытии кейса:", e);
+        console.error("cases.v2.js: Непредвиденная ошибка при открытии кейса:", e);
         alert("cases.js: НЕПРЕДВИДЕННАЯ ОШИБКА при открытии кейса: " + e.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         return { success: false, message: e.message };
     }
