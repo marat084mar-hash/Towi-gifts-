@@ -3,83 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts - Апгрейды</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
     
-    <!-- Скрипт Telegram Web App -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Шрифты и иконки -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer" />
-    
-    <!-- Стили -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/global.v2.js"></script> <!-- ИМЯ ФАЙЛА ИЗМЕНЕНО -->
-    <!-- <script src="js/upgrade.js"></script> --> <!-- Оставлено закомментированным пока не понадобится -->
+    <!-- Простой относительный путь к CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Апгрейд - Towi Gifts</title>
 </head>
 <body>
-    <div class="container">
-        <header class="app-header">
-            <button class="back-button" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
-            <h1>Upgrades</h1>
-            <!-- Блок баланса и пополнения в шапке -->
-            <div class="balance-info" style="position: absolute; right: 20px; top: 15px;">
-                <button class="add-balance-btn" onclick="showTopUpModal()">
-                    <i class="fas fa-plus"></i>
-                </button>
+    <!--==================== HEADER ====================-->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="index.html" class="navlogo">Towi Gifts</a>
+            <div class="navmenu" id="nav-menu">
+                <ul class="navlist">
+                    <!-- Простые относительные пути к страницам -->
+                    <li class="navitem"><a href="index.html" class="navlink">Главная</a></li>
+                    <li class="navitem"><a href="cases.html" class="navlink">Кейсы</a></li>
+                    <li class="navitem"><a href="inventory.html" class="navlink">Инвентарь</a></li>
+                    <li class="navitem"><a href="upgrade.html" class="navlink active-link">Апгрейд</a></li>
+                </ul>
+                <div class="navclose" id="nav-close"><i class="ri-close-line"></i></div>
             </div>
-        </header>
+            <div class="navtoggle" id="nav-toggle"><i class="ri-menu-line"></i></div>
+        </nav>
+    </header>
 
-        <!-- Отображение текущего баланса и имени пользователя в шапке -->
-        <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
-            <span class="balance-text" id="userBalance" style="font-size: 18px;">Balance: 0.00 TON</span><br>
-            <span class="username-text" id="username" style="font-size: 14px;">@guest</span>
+    <main class="main">
+        <!-- ЗАГЛУШКА ДЛЯ ОБЫЧНОГО БРАУЗЕРА -->
+        <div id="non-telegram-placeholder" style="display: none; text-align: center; padding: 50px; color: var(--text-color);">
+            <h1>👋 Привет!</h1>
+            <p>Для использования апгрейда, пожалуйста, откройте приложение через бота <a href="https://t.me/Towigifts_bot" style="color: var(--first-color);">@Towigifts_bot</a>.</p>
         </div>
 
-        <div class="upgrade-section">
-            <div style="display: flex; justify-content: space-around; margin-bottom: 25px;">
-                <button class="btn btn-secondary" style="width: 48%; margin-bottom: 0;">
-                    <i class="fas fa-plus"></i> Add Gift
-                </button>
-                <button class="btn btn-secondary" style="width: 48%; margin-bottom: 0;">
-                    <i class="fas fa-list-ul"></i> Choose Gift
-                </button>
-            </div>
-
-            <p class="upgrade-chance">Chances of Success: <span id="successChance">0%</span></p>
-
-            <div class="upgrade-wheel-container">
-                <div class="wheel-indicator"></div>
-                <div id="upgradeWheel" class="upgrade-wheel" style="transform: rotate(0deg);">
-                    <!-- Секторы колеса будут динамически обновляться JS -->
+        <!-- ОСНОВНОЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ -->
+        <div id="app-container" style="display: none;">
+            <section class="upgrade section container" id="upgrade">
+                <h2 class="sectiontitle-center">Апгрейд предметов</h2>
+                <div class="upgradecontainer grid">
+                     <!-- Здесь будет логика апгрейда -->
+                    <p style="color: var(--text-color); text-align: center;">Раздел апгрейда находится в разработке. Загляните позже!</p>
                 </div>
-            </div>
+            </section>
+        </div>
+    </main>
 
-            <button class="btn" onclick="startUpgrade()">
-                <i class="fas fa-arrow-up"></i> Upgrade!
-            </button>
+    <!--==================== FOOTER ====================-->
+    <footer class="footer section">
+        <div class="footercontainer container grid">
+            <p class="footer__copy">&#169; Towi Gifts. Все права защищены</p>
         </div>
-    </div>
-    <!-- Модальное окно пополнения -->
-    <div id="topUpModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideTopUpModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2 class="modal-title">Top-Up Balance</h2>
-            <button class="btn" onclick="topUp('ton')">
-                <i class="fas fa-coins"></i> TON (Bonus +10%)
-            </button>
-            <button class="btn" onclick="topUp('stars')">
-                <i class="fas fa-star"></i> Звёзды (100 звезд = 1 TON)
-            </button>
-            <button class="btn" onclick="topUp('rub')">
-                <i class="fas fa-ruble-sign"></i> СБП (105 руб = 1 TON)
-            </button>
-        </div>
-    </div>
+    </footer>
+
+    <!--=============== TELEGRAM & JS ===============-->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Простые относительные пути к JS -->
+    <script src="assets/js/global.v2.js" type="module"></script>
+    <!-- Сюда позже добавим upgrade.js, пока достаточно global -->
 </body>
 </html>
