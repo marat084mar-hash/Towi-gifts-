@@ -1,38 +1,66 @@
-// Импортируем createClient из CDN
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-// --- КОНФИГУРАЦИЯ ---
-const SUPABASE_URL = 'https://bgxazpvmixyblutkpubk.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJneGF6cHZtaXh5Ymx1dGtwdWJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM3OTg1NjcsImV4cCI6MjAyOTM3NDU2N30.C2D5T22f2X-p-aIfeHlR_1o5c2Hl5qCGw3S04yDwa44';
-
-// --- ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ---
-
-// Инициализируем клиент Supabase и делаем его доступным глобально
-window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Инициализируем Telegram Web App
-const tg = window.Telegram.WebApp;
-
-// --- ОСНОВНАЯ ЛОГИКА ---
-
-// Проверяем, запущено ли приложение в Telegram
-if (tg && tg.initData) {
-    const appContainer = document.getElementById('app-container');
-    if (appContainer) {
-        appContainer.style.display = 'block';
-    }
+// Ждем, пока вся HTML-структура страницы будет готова
+document.addEventListener('DOMContentLoaded', () => {
     
-    tg.ready();
-    tg.expand();
-    console.log("App script (global.v2.js): Telegram WebApp is ready.");
+    console.log('DOM полностью загружен. Запускаю все скрипты...');
 
-    // Здесь можно будет добавить логику для юзера, баланса и т.д.
-    
-} else {
-    // Показываем заглушку, если открыто в обычном браузере
-    const placeholder = document.getElementById('non-telegram-placeholder');
-    if (placeholder) {
-        placeholder.style.display = 'block';
+    /*=============== ПОКАЗ МЕНЮ ===============*/
+    const navMenu = document.getElementById('nav-menu');
+    const navToggle = document.getElementById('nav-toggle');
+    const navClose = document.getElementById('nav-close');
+
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            if (navMenu) navMenu.classList.add('show-menu');
+        });
     }
-    console.warn("App script (global.v2.js): Not in Telegram, showing placeholder.");
-}
+
+    if (navClose) {
+        navClose.addEventListener('click', () => {
+            if (navMenu) navMenu.classList.remove('show-menu');
+        });
+    }
+
+    /*=============== ТЕМНАЯ/СВЕТЛАЯ ТЕМА ===============*/
+    const themeButton = document.getElementById('theme-button');
+    if (themeButton) {
+        const darkTheme = 'dark-theme';
+        const iconTheme = 'ri-sun-line';
+
+        const selectedTheme = localStorage.getItem('selected-theme');
+        const selectedIcon = localStorage.getItem('selected-icon');
+
+        const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? 'dark' : 'light';
+        const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? 'ri-moon-line' : 'ri-sun-line';
+
+        if (selectedTheme) {
+            document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme);
+            themeButton.classList[selectedIcon === 'ri-moon-line' ? 'add' : 'remove'](iconTheme);
+        }
+
+        themeButton.addEventListener('click', () => {
+            document.body.classList.toggle(darkTheme);
+            themeButton.classList.toggle(iconTheme);
+            localStorage.setItem('selected-theme', getCurrentTheme());
+            localStorage.setItem('selected-icon', getCurrentIcon());
+        });
+    }
+
+    /*=============== TELEGRAM & APP LOGIC ===============*/
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+
+    if (tg && tg.initData) {
+        document.getElementById('app-container')?.style.display = 'block';
+        document.getElementById('non-telegram-placeholder')?.style.display = 'none';
+        
+        tg.ready();
+        tg.expand();
+        console.log("Приложение запущено в Telegram.");
+
+    } else {
+        document.getElementById('app-container')?.style.display = 'none';
+        document.getElementById('non-telegram-placeholder')?.style.display = 'block';
+        console.warn("Приложение запущено вне Telegram. Показываю заглушку.");
+    }
+
+    console.log('Скрипт global.v2.js успешно выполнен.');
+});
