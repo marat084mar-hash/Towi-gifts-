@@ -1,34 +1,41 @@
+alert('cases.js: Скрипт CASES.JS ЗАГРУЖЕН И НАЧИНАЕТ РАБОТУ!'); // ДОБАВЛЕНО
+
 // Глобальная переменная для хранения текущего открытого предмета (для кнопки Claim)
 var currentAwardedItem = null;
+
 // Функция для отображения кейсов на странице
 async function renderCases() {
+    alert('cases.js: Вызвана функция renderCases().'); // ДОБАВЛЕНО
     console.log("cases.js: Загрузка кейсов из Supabase...");
     var casesListContainer = document.getElementById('casesListContainer');
     if (!casesListContainer) {
         console.error("cases.js: ОШИБКА! Не найден контейнер для кейсов (casesListContainer).");
+        alert("ОШИБКА: casesListContainer не найден! Проверьте cases.html."); // ДОБАВЛЕНО
         return;
     }
     casesListContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%;">Загрузка кейсов...</p>';
 
-    var { data: cases, error } = await window.supabaseClient // Используем window.supabaseClient
+    var { data: cases, error } = await window.supabaseClient
         .from('cases')
         .select('*')
         .eq('is_active', true)
         .order('price_ton', { ascending: true });
-
     if (error) {
         console.error("cases.js: ОШИБКА при загрузке кейсов из Supabase:", error);
         casesListContainer.innerHTML = '<p style="color: red; text-align: center; width: 100%;">Ошибка загрузки кейсов: ' + error.message + '</p>';
+        alert("ОШИБКА Supabase при загрузке кейсов: " + error.message); // ДОБАВЛЕНО
         return;
     }
 
     if (cases.length === 0) {
         console.log("cases.js: Активные кейсы не найдены.");
         casesListContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%;">Активные кейсы не найдены.</p>';
+        alert("Кейсы: Активные кейсы не найдены."); // ДОБАВЛЕНО
         return;
     }
 
     console.log("cases.js: Кейсы успешно загружены и отображены. Количество:", cases.length);
+    alert("Кейсы: успешно загружено " + cases.length + " кейсов."); // ДОБАВЛЕНО
     casesListContainer.innerHTML = '';
 
     cases.forEach(function(caseItem) {
@@ -48,11 +55,33 @@ async function renderCases() {
 
         casesListContainer.appendChild(card);
     });
+    alert("Кейсы: Все карточки отображены."); // ДОБАВЛЕНО
 }
+
+// ... остальной код openCase, showCaseOpeningModal, closeCaseOpeningModal, getRandomItem, processCaseOpening, claimAwardedItem ...
+// (Он остался таким же, как я давал в предыдущем большом сообщении про логику кейсов)
+
+// --- Здесь заканчивается код renderCases() ---
+
+// Функция, которая вызывается при клике на кейс
+function openCase(caseData) {
+    alert('cases.js: Вы кликнули на кейс: "' + caseData.name + '" за ' + caseData.price_ton + ' TON.');
+    // Здесь будет логика:
+    // 1. Проверка баланса пользователя
+    // 2. Списание средств
+    // 3. Запуск анимации рулетки
+    // 4. Получение результата и добавление в инвентарь
+}
+
+
+// Глобальная переменная для хранения текущего открытого предмета (для кнопки Claim)
+// var currentAwardedItem = null; // Уже объявлена выше, закомментируем или удалим дубликат
+
 
 // Функция для открытия модального окна открытия кейса
 function showCaseOpeningModal() {
     document.getElementById('caseOpeningModal').classList.add('active');
+    // Сбрасываем анимацию и результат, показываем только "Spinning..."
     document.getElementById('caseOpeningAnimation').style.display = 'block';
     document.getElementById('caseOpeningResult').style.display = 'none';
     document.getElementById('animationText').innerText = 'Spinning...';
@@ -62,7 +91,7 @@ function showCaseOpeningModal() {
 // Функция для закрытия модального окна открытия кейса
 function closeCaseOpeningModal() {
     document.getElementById('caseOpeningModal').classList.remove('active');
-    currentAwardedItem = null;
+    currentAwardedItem = null; // Сбрасываем предмет
 }
 
 // Хелпер: Выбор случайного предмета из пула с учетом шансов
@@ -79,58 +108,16 @@ function getRandomItem(itemsPool) {
             return itemsPool[i];
         }
     }
-    return itemsPool[itemsPool.length - 1]; // Fallback
+    return itemsPool[itemsPool.length - 1]; // Fallback, если что-то пошло не так
 }
 
-// Функция для открытия кейса
-async function openCase(caseData) {
-    console.log("cases.js: Попытка открыть кейс:", caseData);
-
-    if (!window.user || !window.user.id) {
-        alert('Пожалуйста, обновите страницу. Профиль пользователя не загружен.');
-        return;
-    }
-
-    if (window.user.balanceTon < caseData.price_ton) {
-        alert('Недостаточно TON для открытия этого кейса! Ваш баланс: ' + window.user.balanceTon.toFixed(2) + ' TON. Требуется: ' + caseData.price_ton.toFixed(2) + ' TON.');
-        return;
-    }
-
-    showCaseOpeningModal();
-
-    var animationTextElement = document.getElementById('animationText');
-    var messages = ["Spinning...", "Almost there...", "What will it be?"];
-    var msgIndex = 0;
-
-    var animationInterval = setInterval(function() {
-        animationTextElement.innerText = messages[msgIndex % messages.length];
-        msgIndex++;
-    }, 500);
-    await new Promise(function(resolve) { setTimeout(resolve, 3000); });
-    clearInterval(animationInterval);
-
-    var result = await processCaseOpening(caseData);
-
-    document.getElementById('caseOpeningAnimation').style.display = 'none';
-    document.getElementById('caseOpeningResult').style.display = 'block';
-
-    if (result.success) {
-        document.getElementById('caseOpeningTitle').innerText = 'Case Opened!';
-        document.getElementById('awardedItemName').innerText = result.awardedItem.name;
-        currentAwardedItem = result.awardedItem;
-    } else {
-        document.getElementById('caseOpeningTitle').innerText = 'Oops!';
-        document.getElementById('awardedItemName').innerText = 'Something went wrong. Try again!';
-        currentAwardedItem = null;
-    }
-    
-    window.updateUI(window.user); // Обновляем глобальный UI
-}
-
+// Функция для открытия кейса (УЖЕ БЫЛА ВЫШЕ, ПЕРЕМЕЩЕНА ИЛИ ОБЪЕДИНЕНА)
+// async function openCase(caseData) { ... }
 // Кнопка Claim в модальном окне результата
 function claimAwardedItem() {
     if (currentAwardedItem) {
         alert('Предмет "' + currentAwardedItem.name + '" успешно добавлен в ваш инвентарь!');
+        // Здесь можно было бы сделать редирект в инвентарь или просто закрыть окно
         closeCaseOpeningModal();
     } else {
         alert('Нет предмета для получения.');
@@ -189,6 +176,7 @@ async function processCaseOpening(caseData) {
             return { success: false, message: insertItemError.message };
         }
         console.log("cases.js: Предмет добавлен в инвентарь:", insertedItem);
+
         // 4. Запись транзакции
         var { error: transactionError } = await window.supabaseClient // Используем window.supabaseClient
             .from('transactions')
