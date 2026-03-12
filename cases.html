@@ -65,4 +65,35 @@
         </div>
     </div>
 </body>
+   <!-- ...ваш существующий HTML-код страницы cases.html... -->
+
+    <!-- МОДАЛЬНОЕ ОКНО ОТКРЫТИЯ КЕЙСА -->
+    <div id="caseOpeningModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="close-btn" onclick="closeCaseOpeningModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="modal-title" id="caseOpeningTitle">Opening Case...</h2>
+            
+            <div id="caseOpeningAnimation" style="text-align: center; margin: 20px 0;">
+                <p style="font-size: 2em; font-weight: bold; color: var(--primary-purple);" id="animationText">
+                    Spinning...
+                </p>
+                <i class="fas fa-spinner fa-spin fa-3x" style="color: var(--text-muted); margin-top: 20px;"></i>
+            </div>
+
+            <div id="caseOpeningResult" style="text-align: center; display: none;">
+                <h3 style="color: var(--primary-green); margin-bottom: 10px;">YOU GOT:</h3>
+                <i class="fas fa-gift fa-5x" style="color: var(--primary-purple);"></i>
+                <p style="font-size: 1.5em; font-weight: bold; color: var(--text-light); margin-top: 10px;" id="awardedItemName">
+                    -- Item Name --
+                </p>
+                <button class="btn" onclick="claimAwardedItem()">
+                    <i class="fas fa-check"></i> Claim to Inventory
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ...модальное окно topUpModal, если оно у вас уже в этом файле... -->
 </html>
