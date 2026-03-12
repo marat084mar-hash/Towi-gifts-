@@ -3,84 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--=============== REMIXICONS ===============-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
-
-    <!--=============== CSS ===============-->
-    <!-- Используем простой относительный путь -->
     <link rel="stylesheet" href="assets/css/style.css">
-
     <title>Towi Gifts</title>
+    
+    <!-- СКРИПТЫ ПРИЛОЖЕНИЯ (ЗАГРУЖАЮТСЯ ОТЛОЖЕННО) -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="assets/js/global.v2.js" type="module"></script>
+    <script src="assets/js/cases.v2.js" type="module"></script>
 </head>
 <body>
-    <!--==================== HEADER ====================-->
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="index.html" class="navlogo">Towi Gifts</a>
-            <div class="navmenu" id="nav-menu">
-                <ul class="navlist">
-                    <!-- Простые относительные пути к страницам -->
-                    <li class="navitem"><a href="index.html" class="navlink active-link">Главная</a></li>
-                    <li class="navitem"><a href="cases.html" class="navlink">Кейсы</a></li>
-                    <li class="navitem"><a href="inventory.html" class="navlink">Инвентарь</a></li>
-                    <li class="navitem"><a href="upgrade.html" class="navlink">Апгрейд</a></li>
+            <a href="index.html" class="nav__logo">Towi Gifts</a>
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link active-link">Главная</a></li>
+                    <li class="nav__item"><a href="cases.html" class="nav__link">Кейсы</a></li>
+                    <li class="nav__item"><a href="inventory.html" class="nav__link">Инвентарь</a></li>
+                    <li class="nav__item"><a href="upgrade.html" class="nav__link">Апгрейд</a></li>
                 </ul>
-                <div class="navclose" id="nav-close"><i class="ri-close-line"></i></div>
+                <div class="nav__close" id="nav-close"><i class="ri-close-line"></i></div>
             </div>
-            <div class="navtoggle" id="nav-toggle"><i class="ri-menu-line"></i></div>
+            <!-- Theme change button -->
+            <i class="ri-moon-line change-theme" id="theme-button"></i>
+            <div class="nav__toggle" id="nav-toggle"><i class="ri-menu-line"></i></div>
         </nav>
     </header>
 
     <main class="main">
-        <!-- ЗАГЛУШКА ДЛЯ ОБЫЧНОГО БРАУЗЕРА -->
         <div id="non-telegram-placeholder" style="display: none; text-align: center; padding: 50px; color: var(--text-color);">
             <h1>👋 Привет!</h1>
             <p>Это веб-приложение для Telegram. Для полноценной работы, пожалуйста, откройте его через бота <a href="https://t.me/Towigifts_bot" style="color: var(--first-color);">@Towigifts_bot</a>.</p>
         </div>
 
-        <!-- ОСНОВНОЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ -->
         <div id="app-container" style="display: none;">
-            
-            <!--==================== HOME ====================-->
             <section class="home" id="home">
-                <div class="homecontainer container grid">
-                    <div class="homedata">
-                        <h1 class="hometitle">Открывай кейсы и получай подарки!</h1>
-                        <p class="homedescription">
-                            Испытай свою удачу с Towi Gifts! Уникальные кейсы с реальными призами. 
-                            Открывай, выигрывай и улучшай свои предметы.
+                 <div class="home__container container grid">
+                    <div class="home__data">
+                        <span class="home__greeting">Привет, <span id="username">@guest</span></span>
+                        <h1 class="home__title">Открой свою удачу</h1>
+                        <p class="home__description">
+                            <span id="balance">0</span>
+                            <i class="ri-copper-coin-line"></i>
                         </p>
-                        <div class="homebuttons">
+                        <div class="home__buttons">
                             <a href="cases.html" class="button">К кейсам</a>
-                            <a href="#" class="button button--ghost" id="top-up-button">Пополнить баланс</a>
+                            <a href="#" class="button button--ghost" id="top-up-button">Пополнить</a>
                         </div>
                     </div>
-
-                    <div class="homeimg">
-                         <!-- Убедись, что путь к картинке правильный -->
+                    <div class="home__img">
                         <img src="assets/img/home-img.png" alt="home image">
                     </div>
                 </div>
             </section>
-            
-            <!-- Здесь можно добавить другие секции для главной страницы, если нужно -->
-
         </div>
     </main>
 
-    <!--==================== FOOTER ====================-->
     <footer class="footer section">
-        <div class="footercontainer container grid">
+        <div class="footer__container container grid">
             <p class="footer__copy">&#169; Towi Gifts. Все права защищены</p>
         </div>
     </footer>
-    <!--=============== TELEGRAM & JS ===============-->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Простые относительные пути к JS -->
-    <script src="assets/js/global.v2.js" type="module"></script>
-    <!-- Для главной страницы файл cases.v2.js не нужен, но пусть будет, он сам проверит, нужна ли загрузка -->
-    <script src="assets/js/cases.v2.js" type="module"></script>
+
+    <!-- СКРИПТ ИНТЕРФЕЙСА (ЗАГРУЖАЕТСЯ В КОНЦЕ И ВЫПОЛНЯЕТСЯ СРАЗУ) -->
+    <script src="assets/js/ui.js"></script>
 </body>
 </html>
-    
