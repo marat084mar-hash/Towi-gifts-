@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <title>Towi Gifts</title>
     
-    <!-- СКРИПТЫ ПРИЛОЖЕНИЯ (ЗАГРУЖАЮТСЯ ОТЛОЖЕННО) -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="assets/js/global.v2.js" type="module"></script>
-    <script src="assets/js/cases.v2.js" type="module"></script>
+    <!-- ПРАВИЛЬНЫЙ ПУТЬ К CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <title>Towi Gifts - Главная</title>
 </head>
 <body>
     <header class="header" id="header">
@@ -34,7 +32,7 @@
     <main class="main">
         <div id="non-telegram-placeholder" style="display: none; text-align: center; padding: 50px; color: var(--text-color);">
             <h1>👋 Привет!</h1>
-            <p>Это веб-приложение для Telegram. Для полноценной работы, пожалуйста, откройте его через бота <a href="https://t.me/Towigifts_bot" style="color: var(--first-color);">@Towigifts_bot</a>.</p>
+            <p>Это веб-приложение для Telegram. Для полноценной работы, пожалуйста, откройте его через бота <a href="https://t.me/Towigifts_bot">@Towigifts_bot</a>.</p>
         </div>
 
         <div id="app-container" style="display: none;">
@@ -60,13 +58,12 @@
         </div>
     </main>
 
-    <footer class="footer section">
-        <div class="footer__container container grid">
-            <p class="footer__copy">&#169; Towi Gifts. Все права защищены</p>
-        </div>
-    </footer>
+    <footer class="footer section"></footer>
 
-    <!-- СКРИПТ ИНТЕРФЕЙСА (ЗАГРУЖАЕТСЯ В КОНЦЕ И ВЫПОЛНЯЕТСЯ СРАЗУ) -->
-    <script src="assets/js/ui.js"></script>
+    <!-- ПОДКЛЮЧАЕМ СКРИПТЫ В САМОМ КОНЦЕ -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="assets/js/global.v2.js"></script>
+    <!-- Временно отключаем cases.v2.js, чтобы он не мешал -->
+    <!-- <script src="assets/js/cases.v2.js" type="module"></script> -->
 </body>
 </html>
