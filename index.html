@@ -3,67 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts - Главная</title>
-    
-    <!-- Скрипт Telegram Web App (ДОБАВЛЕНО) -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Шрифты и иконки -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer" />
-    
-    <!-- Стили -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-     <script src="../js/cases.v2.js"></script>
-    <script src="../js/global.v2.js"></script><!-- ИМЯ ФАЙЛА ИЗМЕНЕНО НА global.v2.js -->
+
+    <!--=============== REMIXICONS ===============-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+
+    <!--=============== CSS ===============-->
+    <!-- Используем простой относительный путь -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <title>Towi Gifts</title>
 </head>
 <body>
-    <div class="container">
-        <!-- Блок баланса и пополнения -->
-        <div class="balance-info">
-            <div>
-                <span class="balance-text" id="userBalance">Balance: 0.00 TON</span><br>
-                <span class="username-text" id="username">@guest</span>
+    <!--==================== HEADER ====================-->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="index.html" class="navlogo">Towi Gifts</a>
+            <div class="navmenu" id="nav-menu">
+                <ul class="navlist">
+                    <!-- Простые относительные пути к страницам -->
+                    <li class="navitem"><a href="index.html" class="navlink active-link">Главная</a></li>
+                    <li class="navitem"><a href="cases.html" class="navlink">Кейсы</a></li>
+                    <li class="navitem"><a href="inventory.html" class="navlink">Инвентарь</a></li>
+                    <li class="navitem"><a href="upgrade.html" class="navlink">Апгрейд</a></li>
+                </ul>
+                <div class="navclose" id="nav-close"><i class="ri-close-line"></i></div>
             </div>
-            <button class="add-balance-btn" onclick="showTopUpModal()">
-                <i class="fas fa-plus"></i>
-            </button>
+            <div class="navtoggle" id="nav-toggle"><i class="ri-menu-line"></i></div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- ЗАГЛУШКА ДЛЯ ОБЫЧНОГО БРАУЗЕРА -->
+        <div id="non-telegram-placeholder" style="display: none; text-align: center; padding: 50px; color: var(--text-color);">
+            <h1>👋 Привет!</h1>
+            <p>Это веб-приложение для Telegram. Для полноценной работы, пожалуйста, откройте его через бота <a href="https://t.me/Towigifts_bot" style="color: var(--first-color);">@Towigifts_bot</a>.</p>
         </div>
 
-        <!-- Кнопки навигации -->
-        <div class="main-menu-buttons">
-            <a href="cases.html" class="btn">
-                <i class="fas fa-box-open"></i> Cases
-            </a>
-            <a href="upgrade.html" class="btn">
-                <i class="fas fa-arrow-up"></i> Upgrades
-            </a>
-            <a href="inventory.html" class="btn">
-                <i class="fas fa-boxes-stacked"></i> Inventory
-            </a>
-        </div>
-    </div>
+        <!-- ОСНОВНОЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ -->
+        <div id="app-container" style="display: none;">
+            
+            <!--==================== HOME ====================-->
+            <section class="home" id="home">
+                <div class="homecontainer container grid">
+                    <div class="homedata">
+                        <h1 class="hometitle">Открывай кейсы и получай подарки!</h1>
+                        <p class="homedescription">
+                            Испытай свою удачу с Towi Gifts! Уникальные кейсы с реальными призами. 
+                            Открывай, выигрывай и улучшай свои предметы.
+                        </p>
+                        <div class="homebuttons">
+                            <a href="cases.html" class="button">К кейсам</a>
+                            <a href="#" class="button button--ghost" id="top-up-button">Пополнить баланс</a>
+                        </div>
+                    </div>
 
-    <!-- Модальное окно пополнения -->
-    <div id="topUpModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideTopUpModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2 class="modal-title">Top-Up Balance</h2>
-            <button class="btn" onclick="topUp('ton')">
-                <i class="fas fa-coins"></i> TON (Bonus +10%)
-            </button>
-            <button class="btn" onclick="topUp('stars')">
-                <i class="fas fa-star"></i> Звёзды (100 звезд = 1 TON)
-            </button>
-            <button class="btn" onclick="topUp('rub')">
-                <i class="fas fa-ruble-sign"></i> СБП (105 руб = 1 TON)
-            </button>
+                    <div class="homeimg">
+                         <!-- Убедись, что путь к картинке правильный -->
+                        <img src="assets/img/home-img.png" alt="home image">
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Здесь можно добавить другие секции для главной страницы, если нужно -->
+
         </div>
-    </div>
+    </main>
+
+    <!--==================== FOOTER ====================-->
+    <footer class="footer section">
+        <div class="footercontainer container grid">
+            <p class="footer__copy">&#169; Towi Gifts. Все права защищены</p>
+        </div>
+    </footer>
+    <!--=============== TELEGRAM & JS ===============-->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Простые относительные пути к JS -->
+    <script src="assets/js/global.v2.js" type="module"></script>
+    <!-- Для главной страницы файл cases.v2.js не нужен, но пусть будет, он сам проверит, нужна ли загрузка -->
+    <script src="assets/js/cases.v2.js" type="module"></script>
 </body>
 </html>
+    
