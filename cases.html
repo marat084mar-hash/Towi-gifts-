@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!--=============== REMIXICONS ===============-->
-    <!-- Оставим CDN, это надежно -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
     
     <!--=============== CSS ===============-->
-    <!-- /* ИЗМЕНЕНО */ Добавлен слэш в начале пути -->
-    <link rel="stylesheet" href="/Towi-gifts-/assets/css/style.css">
+    <!-- ИЗМЕНЕНО: Используем относительный путь от текущего файла -->
+    <link rel="stylesheet" href="assets/css/style.css">
 
     <title>Кейсы - Towi Gifts</title>
 </head>
@@ -18,46 +17,47 @@
     <!--==================== HEADER ====================-->
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="/Towi-gifts-/" class="navlogo">Towi Gifts</a> <!-- /* ИЗМЕНЕНО */ -->
-            <div class="navmenu" id="nav-menu">
-                <ul class="navlist">
-                    <li class="navitem"><a href="/Towi-gifts-/" class="navlink">Главная</a></li> <!-- /* ИЗМЕНЕНО */ -->
-                    <li class="navitem"><a href="/Towi-gifts-/cases.html" class="navlink active-link">Кейсы</a></li> <!-- /* ИЗМЕНЕНО */ -->
-                    <li class="navitem"><a href="/Towi-gifts-/inventory.html" class="navlink">Инвентарь</a></li> <!-- /* ИЗМЕНЕНО */ -->
-                    <li class="navitem"><a href="/Towi-gifts-/upgrade.html" class="navlink">Апгрейд</a></li> <!-- /* ИЗМЕНЕНО */ -->
+            <!-- ИЗМЕНЕНО: Путь к главной странице -->
+            <a href="index.html" class="nav__logo">Towi Gifts</a> 
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <!-- ИЗМЕНЕНО: Пути ко всем страницам -->
+                    <li class="nav__item"><a href="index.html" class="nav__link">Главная</a></li>
+                    <li class="nav__item"><a href="cases.html" class="nav__link active-link">Кейсы</a></li> 
+                    <li class="nav__item"><a href="inventory.html" class="nav__link">Инвентарь</a></li> 
+                    <li class="nav__item"><a href="upgrade.html" class="nav__link">Апгрейд</a></li> 
                 </ul>
-                <div class="navclose" id="nav-close"><i class="ri-close-line"></i></div>
+                <div class="nav__close" id="nav-close"><i class="ri-close-line"></i></div>
             </div>
             <div class="nav__toggle" id="nav-toggle"><i class="ri-menu-line"></i></div>
         </nav>
     </header>
 
     <main class="main">
-        <!-- ЗАГЛУШКА ДЛЯ ОБЫЧНОГО БРАУЗЕРА -->
+        <!-- Заглушка и контейнер приложения остаются без изменений -->
         <div id="non-telegram-placeholder" style="display: none; text-align: center; padding: 50px; color: var(--text-color);">
             <h1>👋 Привет!</h1>
             <p>Это веб-приложение для Telegram. Для полноценной работы, пожалуйста, откройте его через бота <a href="https://t.me/Towigifts_bot" style="color: var(--first-color);">@Towigifts_bot</a>.</p>
         </div>
-        <!-- ОСНОВНОЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ -->
+
         <div id="app-container" style="display: none;">
             <section class="cases section container" id="cases">
-                <h2 class="sectiontitle-center">Кейсы</h2>
-                <div class="casescontainer grid">
+                <h2 class="section__title-center">Кейсы</h2>
+                <div class="cases__container grid">
                     <!-- Сюда будут загружаться кейсы из JS -->
                 </div>
             </section>
         </div>
     </main>
 
-    <!--==================== FOOTER ====================-->
     <footer class="footer section">
-        <!-- Твой футер здесь, я его пока убрал для краткости, но у тебя он должен быть -->
+        <!-- ... твой футер ... -->
     </footer>
 
     <!--=============== TELEGRAM & JS ===============-->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- /* ИЗМЕНЕНО */ Добавлен слэш в начале пути к скриптам -->
-    <script src="/Towi-gifts-/assets/js/global.v2.js" type="module"></script>
-    <script src="/Towi-gifts-/assets/js/cases.v2.js" type="module"></script>
+    <!-- ИЗМЕНЕНО: Используем относительные пути для JS -->
+    <script src="assets/js/global.v2.js" type="module"></script>
+    <script src="assets/js/cases.v2.js" type="module"></script>
 </body>
 </html>
