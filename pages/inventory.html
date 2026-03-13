@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts - Инвентарь</title>
-    
+
     <!-- Скрипт Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
+
     <!-- Шрифты и иконки -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer" />
-    
+
     <!-- Стили -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
+
+    <!-- Скрипты -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/global.v2.js"></script> <!-- ИМЯ ФАЙЛА ИЗМЕНЕНО -->
-    <!-- <script src="js/inventory.js"></script> --> <!-- Оставлено закомментированным пока не понадобится -->
+    <script src="js/global.v2.js"></script>
 </head>
 <body>
     <div class="container">
         <header class="app-header">
             <button class="back-button" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
             <h1>Inventory</h1>
+
             <!-- Блок баланса и пополнения в шапке -->
             <div class="balance-info" style="position: absolute; right: 20px; top: 15px;">
                 <button class="add-balance-btn" onclick="showTopUpModal()">
@@ -33,37 +33,76 @@
             </div>
         </header>
 
-        <!-- Отображение текущего баланса и имени пользователя в шапке -->
-        <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
-            <span class="balance-text" id="userBalance" style="font-size: 18px;">Balance: 0.00 TON</span><br>
-            <span class="username-text" id="username" style="font-size: 14px;">@guest</span>
+        <!-- Блок с аватаром и именем пользователя -->
+        <div class="user-info">
+            <img id="userAvatar" src="images/default-avatar.png" alt="Аватар" class="avatar">
+            <span class="username-text" id="username">@user</span>
         </div>
 
-        <p id="cooldownMessage" style="color: var(--text-muted); text-align: center; margin: 20px 0; display: none;">
-            <i class="fas fa-hourglass-half"></i> NFT withdrawal cooldown active. Ends in: <span id="cooldownTime"></span>
+        <!-- Сообщение о КД на вывод подарков -->
+        <p id="cooldownMessage" style="color: var(--text-muted); text-align: center; margin: 20px 0;">
+            <i class="fas fa-hourglass-half"></i> КД 21 день на вывод подарков! Telegram Stars
         </p>
 
+        <!-- Отображение текущего баланса -->
+        <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+            <span class="balance-text" id="userBalance" style="font-size: 18px;">Balance: 0.00 TON</span>
+        </div>
+
+        <!-- Инвентарь -->
         <div id="inventory-items-grid" class="card-grid">
             <p style="text-align: center; color: var(--text-muted);" id="emptyInventoryMessage">Your inventory is empty.</p>
         </div>
     </div>
-    <!-- Модальное окно пополнения (остается здесь или переносится в global_components.html если захотим) -->
+
+    <!-- Модальное окно пополнения -->
     <div id="topUpModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" onclick="hideTopUpModal()">
                 <i class="fas fa-times"></i>
             </button>
-            <h2 class="modal-title">Top-Up Balance</h2>
-            <button class="btn" onclick="topUp('ton')">
-                <i class="fas fa-coins"></i> TON (Bonus +10%)
-            </button>
-            <button class="btn" onclick="topUp('stars')">
-                <i class="fas fa-star"></i> Звёзды (100 звезд = 1 TON)
-            </button>
-            <button class="btn" onclick="topUp('rub')">
-                <i class="fas fa-ruble-sign"></i> СБП (105 руб = 1 TON)
-            </button>
+            <h2 class="modal-title">Пополнить баланс</h2>
+
+            <div class="amount-selector">
+                <button onclick="selectAmount(10)">10 TON</button>
+                <button onclick="selectAmount(50)">50 TON</button>
+                <button onclick="selectAmount(100)">100 TON</button>
+            </div>
+
+            <p>Выбранная сумма: <span id="selectedAmount">0</span> TON</p>
+            <button class="confirm-btn" onclick="confirmTopUp()">Connect your TON wallet</button>
         </div>
     </div>
+
+    <script>
+        // Функции для работы с пополнением
+        let selectedAmountValue = 0;
+
+        function selectAmount(amount) {
+            selectedAmountValue = amount;
+            document.getElementById('selectedAmount').textContent = amount;
+        }
+
+        function confirmTopUp() {
+            if (selectedAmountValue > 0) {
+                // Здесь будет логика подключения кошелька TON
+                alert(`Вы подтверждаете пополнение на ${selectedAmountValue} TON?`);
+                // В реальном приложении здесь будет вызов Telegram API для платежа
+                hideTopUpModal();
+            } else {
+                alert('Пожалуйста, выберите сумму для пополнения');
+            }
+        }
+
+        function showTopUpModal() {
+            document.getElementById('topUpModal').style.display = 'flex';
+        }
+
+        function hideTopUpModal() {
+            document.getElementById('topUpModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
 </body>
 </html>
