@@ -1,24 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
-    /* Основные цвета */
     --bg-color: #100f14;
-    --card-bg: #1c1c24;
     --primary-purple: #8a2be2;
     --primary-purple-light: #9932cc;
-    --success-green: #4ade80;
-    --warning-yellow: #facc15;
-    --danger-red: #ef4444;
+    --card-bg: #1c1c24;
     --text-main: #ffffff;
     --text-muted: #8e8e93;
     --border-color: rgba(255, 255, 255, 0.1);
-    --shadow-soft: 0 4px 15px rgba(138, 43, 226, 0.3);
-
-    /* Отступы и размеры */
-    --container-padding: 20px;
-    --border-radius-sm: 12px;
-    --border-radius-md: 20px;
-    --border-radius-lg: 24px;
 }
 
 * {
@@ -31,74 +20,41 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Inter', -apple-system, sans-serif;
-    padding: var(--container-padding);
+    padding: 20px;
     -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-/* Шапка приложения */
-.app-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    position: relative;
-}
-
-.back-button {
-    background: none;
-    border: none;
-    color: var(--text-main);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-
-.back-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.app-header h1 {
-    font-size: 24px;
-    font-weight: 600;
-    text-align: center;
-    flex-grow: 1;
-    margin-left: -40px; /* Компенсация для кнопки назад */
-}
-
-/* Блок баланса */
 .balance-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: var(--card-bg);
     padding: 16px 20px;
-    border-radius: var(--border-radius-lg);
+    border-radius: 24px;
     border: 1px solid var(--border-color);
     margin-bottom: 30px;
 }
 
-.balance-info {
+.balance-container div {
     display: flex;
-    gap: 8px;
-    align-items: center;
+    flex-direction: column;
 }
 
-#userBalance {
-    font-size: 18px;
-    font-weight: 600;
+#balance {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.balance-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
 }
 
 #username {
-    font-size: 14px;
-    color: var(--text-muted);
+    font-size: 16px;
+    color: var(--text-main);
+    font-weight: 600;
 }
 
 .add-balance-btn {
@@ -108,137 +64,116 @@ body {
     background: var(--primary-purple);
     border: none;
     color: white;
-    font-size: 16px;
+    font-size: 28px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: background-color 0.2s;
 }
 
 .add-balance-btn:hover {
     background: var(--primary-purple-light);
-    transform: scale(1.05);
 }
 
-/* Общие кнопки */
-.btn {
-    padding: 14px 24px;
-    border-radius: var(--border-radius-md);
-    border: none;
-    font-size: 16px;
+.nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    color: white;
+    text-decoration: none;
+    padding: 18px 20px;
+    border-radius: 20px;
+    font-size: 18px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+}
+
+.nav-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.2);
+}
+
+/* Стили для иконок (пример) */
+.nav-btn i { 
+    font-size: 20px; 
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    z-index: 1000;
 }
 
-.btn-primary {
-    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
-    color: white;
-    box-shadow: var(--shadow-soft);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.4);
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-/* Секции страниц */
-.upgrade-section,
-.inventory-section,
-.cases-section {
+.modal-content {
     background: var(--card-bg);
-    padding: 24px;
-    border-radius: var(--border-radius-md);
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
     border: 1px solid var(--border-color);
 }
 
-/* Колесо апгрейда */
-.upgrade-wheel-container {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 30px auto 40px;
-}
-
-.wheel-indicator {
+.close-btn {
     position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-top: 30px solid var(--primary-purple);
-    z-index: 2;
+    right: 15px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--text-muted);
 }
 
-.upgrade-wheel {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-    transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.wheel-sector {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    top: 0;
-    right: 0;
-    transform-origin: 0% 100%;
-}
-
-.wheel-sector span {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-/* Сетка инвентаря */
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+.payment-options {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
     margin-top: 20px;
 }
 
-.inventory-item-card {
-    background: rgba(255, 255, 255, 0.05);
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
     padding: 16px;
-    text-align: center;
-    transition: all 0.2s ease;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
 }
 
-.inventory-item-card:hover {
-    transform: translateY(-4px);
+.payment-option:hover {
+    background: rgba(138, 43, 226, 0.1);
+    transform: translateY(-2px);
     border-color: var(--primary-purple);
 }
 
-.item-image-container {
-    width: 80px;
-    height: 80px;
-    margin:
+.payment-option i {
+    font-size: 24px;
+    color: var(--primary-purple);
+}
+
+.payment-option strong {
+    color: var(--text-main);
+    font-size: 16px;
+}
+
+.payment-option span {
+    color: var(--text-muted);
+    font-size: 14px;
+}
