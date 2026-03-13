@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts - Кейсы</title>
 
@@ -24,7 +24,7 @@
 <body>
     <div class="container">
         <header class="app-header">
-            <button class="back-button" onclick="goBack()">
+            <button class="back-button" onclick="window.history.back()">
                 <i class="fas fa-chevron-left" aria-hidden="true"></i>
                 <span class="sr-only">Вернуться назад</span>
             </button>
@@ -34,14 +34,14 @@
             <div class="balance-info">
                 <button class="add-balance-btn" onclick="showTopUpModal()" aria-label="Пополнить баланс">
                     <i class="fas fa-plus" aria-hidden="true"></i>
-                    Пополнить
+            Пополнить
                 </button>
             </div>
         </header>
 
         <!-- Отображение текущего баланса и имени пользователя в шапке -->
         <div class="user-info">
-            <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
+            <span class="balance-text" id="balance">Balance: 0.00 TON</span>
             <span class="username-text" id="username">@guest</span>
         </div>
 
@@ -56,13 +56,12 @@
     <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ БАЛАНСА -->
     <div id="topUpModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="topUpModalTitle">
         <div class="modal-content">
-            <span class="close-btn" aria-label="Закрыть окно" onclick="closeTopUpModal()">&times;</span>
+            <span class="close-btn" aria-label="Закрыть окно" onclick="hideTopUpModal()">&times;</span>
             <h2 id="topUpModalTitle">Пополнение баланса</h2>
-
 
             <div class="payment-options">
                 <button class="payment-option" data-method="ton">
-                    <i class="fas fa-coins" aria-hidden="true"></i>
+            <i class="fas fa-coins" aria-hidden="true"></i>
             <div>
                         <strong>TON</strong>
                 <span>Бонус +10 %</span>
