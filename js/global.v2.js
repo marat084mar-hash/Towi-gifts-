@@ -12,7 +12,13 @@ async function checkAuth() {
 
 // Функция получения данных пользователя Telegram
 function getTelegramUserData() {
-  const tg = window.Telegram.WebApp;
+  const tg = window.Telegram?.WebApp;
+
+  if (!tg) {
+    console.warn('Telegram WebApp not available');
+    return null;
+  }
+
   return {
     id: tg.initDataUnsafe?.user?.id,
     username: tg.initDataUnsafe?.user?.username,
@@ -29,10 +35,17 @@ async function loadUserProfile() {
     const telegramUser = getTelegramUserData();
 
     // Проверяем наличие Telegram ID
-    if (!telegramUser.id) {
+    if (!telegramUser) {
       console.warn('Telegram user data not available');
       return;
     }
+
+    if (!telegramUser.id) {
+      console.warn('Telegram user ID not available');
+      return;
+    }
+
+    console.log('Loading profile for Telegram ID:', telegramUser.id);
 
     // Ищем пользователя в Supabase по Telegram ID
     const { data, error } = await supabase
@@ -56,14 +69,13 @@ async function loadUserProfile() {
   } catch (error) {
     console.error('Ошибка загрузки профиля:', error);
     // Показываем дефолтные значения при ошибке
-    document.getElementById('username').textContent = '@guest';
-    document.getElementById('userAvatar').src = 'default-avatar.png';
-    document.getElementById('userBalance').textContent = 'Balance: 0.00 TON';
+    setDefaultUI();
   }
 }
 
 // Функция создания нового пользователя в Supabase
 async function createNewUser(telegramUser) {
+  console.log('Creating new user:', telegramUser);
   const { error } = await supabase
     .from('users')
     .insert([{
@@ -83,25 +95,59 @@ async function createNewUser(telegramUser) {
 
 // Функция обновления UI с данными пользователя
 function updateUI(userData) {
-  document.getElementById('username').textContent = `@${userData.username || 'user'}`;
-  if (userData.avatar_url) {
-    document.getElementById('userAvatar').src = userData.avatar_url;
-  } else {
-    document.getElementById('userAvatar').src = 'default-avatar.png'; // Запасной аватар
+  console.log('Updating UI with user data:', userData);
+
+  const usernameEl = document.getElementById('username');
+  const avatarEl = document.getElementById('userAvatar');
+  const balanceEl = document.getElementById('userBalance');
+
+  // Проверяем существование элементов перед установкой значений
+  if (usernameEl) {
+    usernameEl.textContent = `@${userData.username || 'user'}`;
   }
-  document.getElementById('userBalance').textContent = `Balance: ${userData.balance || 0} TON`;
+
+  if (avatarEl) {
+    if (userData.avatar_url) {
+      avatarEl.src = userData.avatar_url;
+    } else {
+      avatarEl.src = 'default-avatar.png'; // Запасной аватар
+    }
+  }
+
+  if (balanceEl) {
+    balanceEl.textContent = `Balance: ${userData.balance || 0} TON`;
+  }
+}
+
+// Установка дефолтных значений UI
+function setDefaultUI() {
+  const usernameEl = document.getElementById('username');
+  const avatarEl = document.getElementById('userAvatar');
+  const balanceEl = document.getElementById('userBalance');
+
+  if (usernameEl) usernameEl.textContent = '@guest';
+  if (avatarEl) avatarEl.src = 'default-avatar.png';
+  if (balanceEl) balanceEl.textContent = 'Balance: 0.00 TON';
 }
 
 // Обработчик загрузки DOM — запускаем загрузку профиля
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log('DOM loaded, initializing...');
+
   // Сначала проверяем авторизацию в Supabase
   const user = await checkAuth();
   if (user) {
     // Если пользователь авторизован — отображаем его email
-    document.getElementById('user-name').textContent = user.user.email;
+    const userNameEl = document.getElementById('user-name');
+    if (userNameEl) {
+      userNameEl.textContent = user.user.email;
+    }
   } else {
     // Если не авторизован — показываем кнопку входа
-    document.getElementById('login-btn').style.display = 'block';
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+      loginBtn.style.display = 'block';
+    }
   }
 
   // Загружаем профиль пользователя (включая данные из Telegram)
