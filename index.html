@@ -39,5 +39,30 @@
 
     <!-- Подключение твоего глобального скрипта -->
     <script src="js/global.v2.js"></script>
+
+    <div id="topUpModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Пополнение баланса</h2>
+
+        <div class="payment-options">
+            <button class="payment-option" data-method="ton">
+                <i class="fas fa-coins"></i>
+                <div>
+                    <strong>TON</strong>
+                    <span>Бонус +10 %</span>
+                </div>
+            </button>
+
+            <button class="payment-option" data-method="stars">
+                <i class="fas fa-star"></i>
+                <div>
+            <strong>Telegram Stars</strong>
+            <span>100 звёзд = 1 TON</span>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
