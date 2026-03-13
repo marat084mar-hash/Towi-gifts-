@@ -22,22 +22,15 @@
 <body>
     <div class="container">
         <!-- Блок баланса и профиля пользователя -->
-       <div class="balance-info">
-  <div class="user-profile">
-    <img id="userAvatar" src="default-avatar.png" alt="Аватар пользователя" class="profile-avatar">
-    <span class="username-text" id="username">@guest</span>
-  </div>
-  <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
-  <button class="add-balance-btn" onclick="showTopUpModal()">
-    <i class="fas fa-plus"></i>
-  </button>
-</div>
-            <div>
-                <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
+        <div class="balance-info">
+            <div class="user-profile">
+                <img id="userAvatar" src="default-avatar.png" alt="Аватар пользователя" class="profile-avatar">
+                <span class="username-text" id="username">@guest</span>
             </div>
-           <button class="add-balance-btn" onclick="showTopUpModal()">
-    <i class="fas fa-plus"></i>
-</button>
+            <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
+            <button class="add-balance-btn" onclick="showTopUpModal()">
+                <i class="fas fa-plus"></i>
+            </button>
         </div>
 
         <!-- Кнопки навигации -->
@@ -73,27 +66,39 @@
         </div>
     </div>
 
-    <!-- Скрипт для загрузки данных пользователя (добавить перед закрывающим тегом body) -->
+    <!-- Скрипт для загрузки данных пользователя -->
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Здесь должен быть код для получения данных пользователя из Telegram/Supabase
-            const userData = await getUserData(); // Ваша функция для получения данных
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Получаем данные пользователя Telegram
+                const tg = window.Telegram.WebApp;
+                const telegramUser = {
+                    id: tg.initDataUnsafe?.user?.id,
+                    username: tg.initDataUnsafe?.user?.username,
+                    photo_url: tg.initDataUnsafe?.user?.photo_url
+                };
 
-            if (userData) {
-                document.getElementById('userAvatar').src = userData.avatar_url;
-                document.getElementById('username').textContent = `@${userData.username}`;
-                document.getElementById('userId').textContent = `ID: ${userData.telegram_id}`;
+                if (!telegramUser.id) {
+                    console.warn('Данные пользователя Telegram не доступны');
+                    return;
+                }
+
+                // Вызываем функцию из global.v2.js для загрузки профиля
+                await loadUserProfile(telegramUser);
+
+            } catch (error) {
+                console.error('Ошибка при загрузке данных пользователя:', error);
             }
         });
 
-        // Пример функции получения данных (замените на ваш код)
-        async function getUserData() {
-            // Ваш код для получения userData из Supabase/Telegram
-            return {
-                avatar_url: 'https://example.com/avatar.jpg', // замените на реальный URL
-                username: 'example_user',
-                telegram_id: '123456789'
-            };
+        // Функция показа модального окна пополнения
+        function showTopUpModal() {
+            document.getElementById('topUpModal').classList.add('active');
+        }
+
+        // Функция скрытия модального окна пополнения
+        function hideTopUpModal() {
+            document.getElementById('topUpModal').classList.remove('active');
         }
     </script>
 </body>
