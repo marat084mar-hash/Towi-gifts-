@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function displayUserData(user) {
     const usernameElement = document.getElementById('username');
     const balanceElement = document.getElementById('balance');
+    const balanceContainer = document.querySelector('.balance-container');
 
     if (usernameElement) {
         usernameElement.textContent = `@${user.username || 'user'}`;
@@ -37,9 +38,33 @@ function displayUserData(user) {
     if (balanceElement) {
         balanceElement.textContent = '0.00 TON'; // Временное значение
     }
+
+    // Добавляем аватар, если его ещё нет
+    if (balanceContainer && !document.getElementById('user-avatar')) {
+        const avatar = document.createElement('img');
+        avatar.id = 'user-avatar';
+        avatar.alt = 'Avatar';
+        avatar.style.width = '48px';
+        avatar.style.height = '48px';
+        avatar.style.borderRadius = '50%';
+        avatar.style.marginRight = '12px';
+
+        // Формируем URL аватара через Telegram API
+        if (user.photo_url) {
+            avatar.src = user.photo_url;
+        } else {
+            // Заглушка, если фото нет
+            avatar.src = 'https://ui-avatars.com/api/?name=' +
+                encodeURIComponent(user.first_name || 'User') +
+                '&background=8a2be2&color=fff';
+        }
+
+        // Вставляем аватар перед текстом баланса
+        balanceContainer.insertBefore(avatar, balanceContainer.firstChild);
+    }
 }
 
-// Функции для работы с модальным окном
+// Функции для работы с модальным окном (остаются без изменений)
 function showTopUpModal() {
     document.getElementById('topUpModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -72,11 +97,9 @@ function handleTopUp(method) {
     switch (method) {
         case 'ton':
             alert('Пополнение через TON (бонус +10%)');
-            // Здесь будет интеграция с TON Connect
             break;
         case 'stars':
             alert('Пополнение звёздами (100 звёзд = 1 TON)');
-            // Здесь будет интеграция с Telegram Stars API
             break;
         default:
             console.warn('Неизвестный метод пополнения:', method);
