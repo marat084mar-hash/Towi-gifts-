@@ -1,237 +1,106 @@
-/* style.css — Финальная версия стиля для Towi Gifts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* ==================== 1. CSS Variables ==================== */
 :root {
-  --bg-dark: #0A0A1A;
-  --primary-purple: #A358C8;
-  --secondary-purple: #7D32A8;
-  --text-light: #E0E0E0;
-  --text-muted: #B0B0B0;
-  --border-gray: #303030;
-  --input-bg: #1A1A1A;
-  --shadow-strong: rgba(0, 0, 0, 0.6);
-  --shadow-medium: rgba(0, 0, 0, 0.4);
-  --avatar-size: 30px; /* Новая переменная для размера аватарки */
+    --bg-color: #100f14;
+    --primary-purple: #8a2be2;
+    --primary-purple-light: #9932cc;
+    --card-bg: #1c1c24;
+    --text-main: #ffffff;
+    --text-muted: #8e8e93;
+    --border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* ==================== 2. Global Resets & Typography ==================== */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-light);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* ==================== 3. General Layout & Containers ==================== */
-.container {
-  max-width: 420px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px;
+.balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    padding: 16px 20px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
 }
 
-/* ==================== 4. Header Styles ==================== */
-.app-header {
-  display: flex;
-  align-items: center;
-  padding: 15px 0;
-  position: relative;
-  border-bottom: 1px solid var(--border-gray);
-  margin-bottom: 20px;
+.balance-container div {
+    display: flex;
+    flex-direction: column;
 }
 
-.app-header .back-button {
-  background: none;
-  border: none;
-  color: var(--text-light);
-  font-size: 24px;
-  cursor: pointer;
-  transition: color 0.2s ease-in-out;
+#balance {
+    font-size: 24px;
+    font-weight: 700;
 }
 
-.app-header .back-button:hover {
-  color: var(--primary-purple);
+.balance-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
 }
 
-.app-header h1 {
-  flex-grow: 1;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-}
-
-/* ==================== 5. Button Styles ==================== */
-.btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 16px 20px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 14px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-  color: var(--text-light);
-  box-shadow: 0 6px 20px var(--shadow-medium);
-  transition: all 0.3s ease-in-out;
-  text-decoration: none;
-}
-
-.btn:hover {
-  filter: brightness(1.2);
-  box-shadow: 0 8px 25px var(--shadow-strong);
-  transform: translateY(-3px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-/* ==================== 7. Modal Windows ==================== */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--shadow-strong);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-content {
-  background: var(--input-bg);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 30px var(--shadow-strong);
-  width: 90%;
-  max-width: 380px;
-  position: relative;
-  transform: translateY(30px);
-  transition: transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.modal-overlay.active .modal-content {
-  transform: translateY(0);
-}
-
-.modal-content .close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 26px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.modal-title {
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-/* ==================== 9. Balance Display ==================== */
-.balance-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  gap: 20px; /* расстояние между элементами */
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Расстояние между аватаркой и текстом */
-}
-
-.balance-text {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.username-text {
-  font-size: 16px;
-  color: var(--text-muted);
+#username {
+    font-size: 16px;
+    color: var(--text-main);
+    font-weight: 600;
 }
 
 .add-balance-btn {
-  background: linear-gradient(45deg, var(--primary-purple), var(--secondary-purple));
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  color: var(--text-light);
-  cursor: pointer;
-  box-shadow: 0 4px 10px var(--shadow-medium);
-  transition: all 0.2s ease;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary-purple);
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .add-balance-btn:hover {
-  transform: rotate(90deg) scale(1.05);
+    background: var(--primary-purple-light);
 }
 
-/* ==================== 10. User Profile Styles (NEW) ==================== */
-#userAvatar {
-  width: 50px; /* Увеличен с 30px до 50px */
-  height: 50px; /* Увеличен с 30px до 50px */
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--border-gray);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+.nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.user-id {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin-left: 8px;
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    color: white;
+    text-decoration: none;
+    padding: 18px 20px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
 }
 
-/* Улучшение для модального окна — отступы для кнопок */
-.modal-content .btn {
-  width: 100%;
-  margin-bottom: 10px;
+.nav-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.2);
 }
 
-/* Стили для элементов формы в модальном окне */
-.modal-content input,
-.modal-content textarea {
-  width: 100%;
-  padding: 12px;
-  background: var(--input-bg);
-  border:
+/* Стили для иконок (пример) */
+.nav-btn i { 
+    font-size: 20px; 
+}
