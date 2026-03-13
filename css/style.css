@@ -165,12 +165,13 @@ body {
 
 /* ==================== 9. Balance Display ==================== */
 .balance-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-gray);
+  gap: 20px; /* Добавлен зазор между элементами */
 }
 
 .balance-text {
@@ -205,18 +206,18 @@ body {
 
 /* ==================== 10. User Profile Styles (NEW) ==================== */
 .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Расстояние между аватаркой и текстом */
 }
 
 #userAvatar {
-    width: var(--avatar-size);
-    height: var(--avatar-size);
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--border-gray);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  width: 50px; /* Увеличен с 30px до 50px */
+  height: 50px; /* Увеличен с 30px до 50px */
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-gray);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .user-id {
