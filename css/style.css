@@ -13,6 +13,7 @@
     --input-bg: #1A1A1A;
     --shadow-strong: rgba(0, 0, 0, 0.6);
     --shadow-medium: rgba(0, 0, 0, 0.4);
+    --avatar-size: 30px; /* Новая переменная для размера аватарки */
 }
 
 /* ==================== 2. Global Resets & Typography ==================== */
@@ -102,6 +103,7 @@ body {
 .btn:active {
     transform: translateY(0);
 }
+
 /* ==================== 7. Modal Windows ==================== */
 .modal-overlay {
     position: fixed;
@@ -200,3 +202,39 @@ body {
 .add-balance-btn:hover {
     transform: rotate(90deg) scale(1.05);
 }
+
+/* ==================== 10. User Profile Styles (NEW) ==================== */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#userAvatar {
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-gray);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.user-id {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-left: 8px;
+}
+
+/* Улучшение для модального окна — отступы для кнопок */
+.modal-content .btn {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Стили для элементов формы в модальном окне */
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+    padding: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-gray);
