@@ -16,16 +16,17 @@
     margin: 0;
     padding: 0;
 }
+
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Inter', -apple-system, sans-serif;
     padding: 20px;
     -webkit-font-smoothing: antialiased;
-    display: flex; /* Для центрирования контента, если нужно */
+    display: flex;
     flex-direction: column;
-    align-items: center; /* Центрируем по горизонтали */
-    min-height: 100vh; /* Минимальная высота на весь экран */
+    align-items: center;
+    min-height: 100vh;
 }
 
 /* Стили для контейнера баланса */
@@ -39,10 +40,15 @@ body {
     border: 1px solid var(--border-color);
     margin-bottom: 30px;
     width: 100%;
-    max-width: 400px; /* Ограничиваем ширину */
+    max-width: 400px;
 }
 
-.balance-container div {
+.user-info-display { /* Новый класс для контейнера аватара и текста */
+    display: flex;
+    align-items: center;
+}
+
+.balance-text { /* Контейнер для текста баланса и юзернейма */
     display: flex;
     flex-direction: column;
 }
@@ -86,12 +92,12 @@ body {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 400px; /* Ограничиваем ширину */
+    max-width: 400px;
     margin-bottom: 20px;
 }
 
 .nav-btn {
-    background: var(--primary-purple); /* Тот самый фиолетовый */
+    background: var(--primary-purple);
     color: white;
     text-decoration: none;
     padding: 22px;
@@ -107,8 +113,8 @@ body {
     box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
 }
 
-.nav-btn .icon {
-    font-size: 24px; /* Размер иконки */
+.nav-btn i { /* Стили для иконок Font Awesome */
+    font-size: 24px;
 }
 
 .nav-btn:active {
@@ -126,7 +132,8 @@ body {
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
     display: none; /* Скрыто по умолчанию, показывается JS-ом */
-    align-items: flex-end; /* Появление снизу */
+    justify-content: center;
+    align-items: flex-end;
     z-index: 1000;
 }
 
@@ -136,7 +143,7 @@ body {
     border-radius: 24px 24px 0 0;
     padding: 30px 20px;
     animation: slideUp 0.3s ease-out;
-    max-width: 500px; /* Ограничиваем ширину модалки на больших экранах */
+    max-width: 500px;
 }
 
 @keyframes slideUp {
@@ -168,7 +175,6 @@ body {
     flex-direction: column;
     gap: 12px;
 }
-
 .pay-option {
     display: flex;
     align-items: center;
@@ -190,6 +196,7 @@ body {
 .pay-option:active { background: rgba(255,255,255,0.1); }
 .pay-option.ton { border-color: #0088cc; }
 .pay-option.stars { border-color: #ffca28; }
+
 /* Стили для ошибки аутентификации */
 .auth-error {
     color: #ffffff;
