@@ -18,7 +18,8 @@
     <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="js/config/supabase.js"></script>
-<script type="module" src="js/global.v2.js"></script>
+    <script type="module" src="js/global.v2.js"></script>
+    <script src="js/cases.js"></script>
 </head>
 <body>
     <div class="container">
@@ -78,22 +79,5 @@
             </div>
         </div>
     </div>
-
-    <script src="js/cases.js"></script>
-
-    <script>
-        // Функция для безопасного возврата назад или на главную
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                window.location.href = '/'; // или другой URL главной страницы
-            }
-        }
-
-        // Пример функции для закрытия модального окна
-        function closeTopUpModal() {
-            document.getElementById('topUpModal').style
-
 </body>
 </html>
