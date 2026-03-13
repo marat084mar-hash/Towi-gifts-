@@ -59,6 +59,45 @@ function displayUserData(user) {
     // const userBalance = await fetchBalance(user.id);
     // document.getElementById('balance').textContent = `${userBalance.toFixed(2)} TON`;
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('deposit-modal');
+    const openBtn = document.querySelector('.add-balance-btn');
+    const closeBtn = document.querySelector('.close-modal');
+
+    // Открыть модалку
+    if (openBtn) {
+        openBtn.onclick = () => {
+            modal.style.display = 'flex';
+        };
+    }
+
+    // Закрыть модалку
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+        };
+    }
+    // Закрыть при клике вне окна
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+});
+
+// Функции-заглушки для оплаты
+function payStars() {
+    Telegram.WebApp.showAlert("Оплата Stars скоро появится!");
+}
+
+function payTON() {
+    // Здесь будет вызов TonConnect
+    Telegram.WebApp.showAlert("Подключение к Tonkeeper...");
+}
+
+function paySBP() {
+    Telegram.WebApp.showAlert("Перенаправляем на оплату СБП...");
+}
 
 // Пример функции для Supabase (добавь ее позже)
 /*
