@@ -15,10 +15,16 @@ async function renderCases() {
     }
     casesListContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%;">Загрузка кейсов...</p>';
 
+    // Проверка существования supabaseClient
+    if (!window.supabaseClient) {
+        console.error('Supabase client not initialized!');
+        alert('cases.js: ОШИБКА! Клиент Supabase не инициализирован!');
+        return;
+    }
 
     // Запрос к Supabase для получения всех активных кейсов
     alert('cases.js: Выполняем запрос к Supabase за кейсами...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-    var { data: cases, error } = await window.supabaseClient // Используем window.supabaseClient
+    var { data: cases, error } = await window.supabaseClient
         .from('cases')
         .select('*')
         .eq('is_active', true)
@@ -44,17 +50,24 @@ async function renderCases() {
 
     // Создаем карточку для каждого кейса
     cases.forEach(function(caseItem) {
-        // alert('cases.js: Создаем карточку для кейса: ' + caseItem.name); // Можно убрать, чтобы не было слишком много alert
+        // Валидация данных caseItem
+        if (!caseItem || !caseItem.name || !caseItem.price_ton) {
+            console.warn('cases.js: Некорректный кейс:', caseItem);
+            return;
+        }
+
+        alert('cases.js: Создаем карточку для кейса: ' + caseItem.name); // Можно убрать, чтобы не было слишком много alert
         var card = document.createElement('div');
         card.className = 'card';
-        card.setAttribute('data-case-id', caseItem.id); 
+        card.setAttribute('data-case-id', caseItem.id);
 
-        card.innerHTML = 
+        // Исправлено: добавлены backticks для шаблона innerHTML
+        card.innerHTML = `
             <i class="icon fas fa-box-open"></i>
             <p class="text-label">${caseItem.name}</p>
             <p class="price">Open - ${caseItem.price_ton} TON</p>
         `;
-        
+
         card.onclick = function() {
             openCase(caseItem);
         };
@@ -63,6 +76,7 @@ async function renderCases() {
     });
     alert('cases.v2.js: Все карточки кейсов отображены.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
 }
+
 // Функция для открытия модального окна открытия кейса
 function showCaseOpeningModal() {
     document.getElementById('caseOpeningModal').classList.add('active');
@@ -100,11 +114,19 @@ async function openCase(caseData) {
     alert('cases.js: Попытка открыть кейс: "' + caseData.name + '"'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
     console.log("cases.v2.js: Попытка открыть кейс:", caseData);
 
+    // Валидация caseData
+    if (!caseData || !caseData.price_ton || !caseData.items_pool) {
+        alert('cases.js: ОШИБКА! Некорректные данные кейса.');
+        return;
+    }
+
     if (!window.user || !window.user.id) {
         alert('cases.js: ОШИБКА! Профиль пользователя не загружен. Обновите приложение в Telegram.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         return;
     }
 
+    // Приведение price_ton к числу
+    caseData.price_ton = parseFloat(caseData.price_ton);
     if (window.user.balanceTon < caseData.price_ton) {
         alert('cases.v2.js: Недостаточно TON для открытия "' + caseData.name + '"! Ваш баланс: ' + window.user.balanceTon.toFixed(2) + ' TON. Требуется: ' + caseData.price_ton.toFixed(2) + ' TON.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
         return;
@@ -139,109 +161,4 @@ async function openCase(caseData) {
         document.getElementById('caseOpeningTitle').innerText = 'Oops!';
         document.getElementById('awardedItemName').innerText = 'Something went wrong. Try again!';
         currentAwardedItem = null;
-        alert('cases.js: НЕУДАЧА! ' + result.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-    }
-    
-    window.updateUI(window.user); // Обновляем глобальный UI
-}
-
-// Кнопка Claim в модальном окне результата
-function claimAwardedItem() {
-    alert('cases.v2.js: Клик на Claim Item.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-    if (currentAwardedItem) {
-        alert('Предмет "' + currentAwardedItem.name + '" успешно добавлен в ваш инвентарь!');
-        closeCaseOpeningModal();
-    } else {
-        alert('Нет предмета для получения.');
-    }
-}
-// --- Асинхронная функция для обработки открытия кейса в Supabase ---
-async function processCaseOpening(caseData) {
-    alert('cases.v2.js: Начинаем processCaseOpening().'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-    try {
-        // 1. Списание TON
-        alert('cases.v2.js: Списываем TON: ' + caseData.price_ton); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-        var newBalanceTon = window.user.balanceTon - caseData.price_ton;
-        var { data: updatedUser, error: updateError } = await window.supabaseClient
-            .from('users')
-            .update({ balance_ton: newBalanceTon })
-            .eq('id', window.user.id)
-            .select()
-            .single();
-
-        if (updateError) {
-            console.error("cases.js: Ошибка списания TON:", updateError);
-            alert("ОШИБКА списания TON: " + updateError.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-            return { success: false, message: updateError.message };
-        }
-        window.user.balanceTon = updatedUser.balance_ton;
-        alert('cases.js: Баланс успешно списан. Новый баланс: ' + window.user.balanceTon.toFixed(2)); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-
-        // 2. Выбор случайного предмета
-        alert('cases.v2.js: Выбираем случайный предмет...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-        var awardedItemData = getRandomItem(caseData.items_pool);
-        if (!awardedItemData) {
-            console.error("cases.js: Не удалось выбрать предмет из пула.");
-            alert("ОШИБКА: Не удалось выбрать предмет из пула кейса."); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-            return { success: false, message: "Не удалось выбрать предмет." };
-        }
-        alert('cases.v2.js: Выбран предмет: ' + awardedItemData.name); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-
-        // 3. Добавление предмета в инвентарь
-        alert('cases.v2.js: Добавляем предмет в инвентарь...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-        var newItem = {
-            user_id: window.user.id,
-            nft_name: awardedItemData.name,
-            nft_image_url: caseData.image_url || null,
-            nft_type: awardedItemData.type,
-            price_ton: 0,
-            is_tradable: true,
-            is_withdrawable: true,
-            source: 'case_opening'
-        };
-        var { data: insertedItem, error: insertItemError } = await window.supabaseClient
-            .from('user_inventory')
-            .insert([newItem])
-            .select()
-            .single();
-
-        if (insertItemError) {
-            console.error("cases.js: Ошибка добавления предмета в инвентарь:", insertItemError);
-            alert("ОШИБКА добавления предмета в инвентарь: " + insertItemError.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-            return { success: false, message: insertItemError.message };
-        }
-        alert('cases.v2.js: Предмет успешно добавлен в инвентарь! ID: ' + insertedItem.id); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-
-        // 4. Запись транзакции
-        alert('cases.v2.js: Записываем транзакцию...'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-        var { error: transactionError } = await window.supabaseClient
-            .from('transactions')
-            .insert({
-                user_id: window.user.id,
-                type: 'case_opening',
-                amount: -caseData.price_ton,
-                currency: 'TON',
-                details: {
-                    case_id: caseData.id,
-                    case_name: caseData.name,
-                    awarded_item_id: insertedItem.id,
-                    awarded_item_name: awardedItemData.name
-                }
-            });
-        if (transactionError) {
-            console.error("cases.js: Ошибка записи транзакции:", transactionError);
-            alert("ВНИМАНИЕ: Ошибка записи транзакции, но кейс открыт: " + transactionError.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-        }
-        alert('cases.v2.js: Транзакция записана успешно.'); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-
-        return { success: true, awardedItem: awardedItemData };
-        } catch (e) {
-        console.error("cases.v2.js: Непредвиденная ошибка при открытии кейса:", e);
-        alert("cases.js: НЕПРЕДВИДЕННАЯ ОШИБКА при открытии кейса: " + e.message); // ДОБАВЛЕНО ДЛЯ ОТЛАДКИ
-        return { success: false, message: e.message };
-    }
-}
-
-
-// Запускаем отображение кейсов, когда страница загрузится
-document.addEventListener('DOMContentLoaded', renderCases);
+        alert('cases.js: НЕУДАЧА!
