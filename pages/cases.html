@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts - Кейсы</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- ДОБАВЛЕНО -->
+
+    <!-- Обязательные скрипты -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <!-- Шрифты и иконки -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer">
 
-    <!-- Стили -->
-   <link rel="stylesheet" href="css/slyle.css">
+    <!-- Стили (исправлено имя файла) -->
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/cases.css">
 
     <!-- Скрипты (ПРАВИЛЬНЫЙ ПОРЯДОК) -->
@@ -21,57 +23,70 @@
 <body>
     <div class="container">
         <header class="app-header">
-            <button class="back-button" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-chevron-left" aria-label="Вернуться назад"></i>
+            </button>
             <h1>Cases</h1>
-            <!-- Блок баланса и пополнения (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
-            <div class="balance-info" style="position: absolute; right: 20px; top: 15px;">
-                <button class="add-balance-btn" onclick="showTopUpModal()">
-                    <i class="fas fa-plus"></i>
+
+            <!-- Блок баланса и пополнения -->
+            <div class="balance-info">
+                <button class="add-balance-btn" onclick="showTopUpModal()" aria-label="Пополнить баланс">
+                    <i class="fas fa-plus" aria-label="Добавить"></i>
                 </button>
             </div>
         </header>
 
-        <!-- Отображение текущего баланса и имени пользователя в шапке (опционально) -->
-        <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
-            <span class="balance-text" id="userBalance" style="font-size: 18px;">Balance: 0.00 TON</span><br>
-            <span class="username-text" id="username" style="font-size: 14px;">@guest</span>
+        <!-- Отображение текущего баланса и имени пользователя в шапке -->
+        <div class="user-info">
+            <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
+            <span class="username-text" id="username">@guest</span>
         </div>
 
-        <!-- Здесь будет твой список кейсов. -->
-        <div id="casesListContainer" class="card-grid" style="margin-top: 30px;">
-            <p style="text-align: center; color: var(--text-muted); width: 100%;">
+        <!-- Список кейсов -->
+        <div id="casesListContainer" class="card-grid">
+            <p class="no-cases-message">
                 No cases added yet. Add your custom cases here!
             </p>
         </div>
-
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ БАЛАНСА (ТЕПЕРЬ НА ВСЕХ СТРАНИЦАХ) -->
-   <div id="topUpModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Пополнение баланса</h2>
+    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ БАЛАНСА -->
+    <div id="topUpModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" aria-label="Закрыть окно">&times;</span>
+            <h2>Пополнение баланса</h2>
 
-        <div class="payment-options">
-            <button class="payment-option" data-method="ton">
-                <i class="fas fa-coins"></i>
-                <div>
-                    <strong>TON</strong>
-                    <span>Бонус +10 %</span>
-                </div>
-            </button>
+            <div class="payment-options">
+                <button class="payment-option" data-method="ton">
+                    <i class="fas fa-coins" aria-label="Оплата через TON"></i>
+                    <div>
+                        <strong>TON</strong>
+                <span>Бонус +10 %</span>
+            </div>
+                </button>
 
-            <button class="payment-option" data-method="stars">
-                <i class="fas fa-star"></i>
-                <div>
-            <strong>Telegram Stars</strong>
-            <span>100 звёзд = 1 TON</span>
-                </div>
-            </button>
+                <button class="payment-option" data-method="stars">
+            <i class="fas fa-star" aria-label="Оплата звёздами Telegram"></i>
+            <div>
+                <strong>Telegram Stars</strong>
+                <span>100 звёзд = 1 TON</span>
+            </div>
+                </button>
+            </div>
         </div>
     </div>
-</div>
-        </div>
-    </div>
+
     <script src="js/cases.js"></script>
+
+    <script>
+        // Функция для безопасного возврата назад или на главную
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/'; // или другой URL главной страницы
+            }
+        }
+    </script>
 </body>
+</html>
