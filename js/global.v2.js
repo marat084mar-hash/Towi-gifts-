@@ -1,183 +1,75 @@
-import { supabase } from './config/supabase.js';
+document.addEventListener('DOMContentLoaded', () => {
+    const tg = window.Telegram.WebApp;
 
-// Функция проверки авторизации пользователя в Supabase
-async function checkAuth() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    console.error('Error retrieving user:', error.message);
-    return null;
-  }
-  return data;
-}
+    // 1. Проверяем, что приложение открыто в Telegram
+    if (tg.initDataUnsafe?.user?.id) {
+        // Если да, инициализируем приложение
+        tg.ready();
+        tg.expand(); // Раскрываем приложение на весь экран
 
-// Функция получения данных пользователя Telegram
-function getTelegramUserData() {
-  const tg = window.Telegram?.WebApp;
-
-  if (!tg) {
-    console.warn('Telegram WebApp not available');
-    return null;
-  }
-
-  return {
-    id: tg.initDataUnsafe?.user?.id,
-    username: tg.initDataUnsafe?.user?.username,
-    firstName: tg.initDataUnsafe?.user?.first_name,
-    lastName: tg.initDataUnsafe?.user?.last_name,
-    photoUrl: tg.initDataUnsafe?.user?.photo_url
-  };
-}
-
-// Основная функция загрузки профиля пользователя
-async function loadUserProfile() {
-  try {
-    // Получаем данные пользователя Telegram
-    const telegramUser = getTelegramUserData();
-
-    // Проверяем наличие Telegram ID
-    if (!telegramUser) {
-      console.warn('Telegram user data not available');
-      return;
-    }
-
-    if (!telegramUser.id) {
-      console.warn('Telegram user ID not available');
-      return;
-    }
-
-    console.log('Loading profile for Telegram ID:', telegramUser.id);
-
-    // Ищем пользователя в Supabase по Telegram ID
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('telegram_id', telegramUser.id)
-      .single();
-
-    // Если пользователь не найден (код ошибки PGRST101) — создаём нового
-    if (error && error.code === 'PGRST101') {
-      await createNewUser(telegramUser);
-      return;
-    }
-
-    // Если произошла другая ошибка — выбрасываем её
-    if (error) throw error;
-
-    // Если пользователь найден — обновляем интерфейс
-    updateUI(data);
-
-  } catch (error) {
-    console.error('Ошибка загрузки профиля:', error);
-    // Показываем дефолтные значения при ошибке
-    setDefaultUI();
-  }
-}
-
-// Функция создания нового пользователя в Supabase
-async function createNewUser(telegramUser) {
-  console.log('Creating new user:', telegramUser);
-  const { error } = await supabase
-    .from('users')
-    .insert([{
-      telegram_id: telegramUser.id,
-      username: telegramUser.username,
-      avatar_url: telegramUser.photoUrl || null,
-      balance: 0
-    }]);
-
-  if (error) {
-    console.error('Ошибка создания пользователя:', error);
-  } else {
-    // После успешного создания перезагружаем профиль
-    await loadUserProfile();
-  }
-}
-
-// Функция обновления UI с данными пользователя
-function updateUI(userData) {
-  console.log('Updating UI with user data:', userData);
-
-  const usernameEl = document.getElementById('username');
-  const avatarEl = document.getElementById('userAvatar');
-  const balanceEl = document.getElementById('userBalance');
-
-  // Проверяем существование элементов перед установкой значений
-  if (usernameEl) {
-    usernameEl.textContent = `@${userData.username || 'user'}`;
-  }
-
-  if (avatarEl) {
-    if (userData.avatar_url) {
-      avatarEl.src = userData.avatar_url;
+        // 2. Отображаем данные пользователя
+        displayUserData(tg.initDataUnsafe.user);
     } else {
-      avatarEl.src = 'default-avatar.png'; // Запасной аватар
+        // 3. Если открыто не в Telegram, блокируем интерфейс
+        document.body.innerHTML = `
+            <div class="auth-error">
+                <h1>Authentication Error</h1>
+                <p>Please open this app through our official Telegram bot.</p>
+            </div>
+        `;
+        // Добавляем стили для сообщения об ошибке
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                body { display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+                .auth-error { color: #ffffff; }
+            </style>
+        `);
     }
-  }
-
-  if (balanceEl) {
-    balanceEl.textContent = `Balance: ${userData.balance || 0} TON`;
-  }
-}
-
-// Установка дефолтных значений UI
-function setDefaultUI() {
-  const usernameEl = document.getElementById('username');
-  const avatarEl = document.getElementById('userAvatar');
-  const balanceEl = document.getElementById('userBalance');
-
-  if (usernameEl) usernameEl.textContent = '@guest';
-  if (avatarEl) avatarEl.src = 'default-avatar.png';
-  if (balanceEl) balanceEl.textContent = 'Balance: 0.00 TON';
-}
-
-// Обработчик загрузки DOM — запускаем загрузку профиля
-document.addEventListener('DOMContentLoaded', async () => {
-  console.log('DOM loaded, initializing...');
-
-  // Сначала проверяем авторизацию в Supabase
-  const user = await checkAuth();
-  if (user) {
-    // Если пользователь авторизован — отображаем его email
-    const userNameEl = document.getElementById('user-name');
-    if (userNameEl) {
-      userNameEl.textContent = user.user.email;
-    }
-  } else {
-    // Если не авторизован — показываем кнопку входа
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-      loginBtn.style.display = 'block';
-    }
-  }
-
-  // Загружаем профиль пользователя (включая данные из Telegram)
-  await loadUserProfile();
 });
-// Добавьте эту функцию в global.v2.js
-function topUp(method) {
-  console.log('Пополнение баланса:', method);
-  hideTopUpModal(); // Скрываем модальное окно
 
-  switch (method) {
-    case 'ton':
-      alert('Пополнение через TON (бонус +10%)');
-      break;
-    case 'stars':
-      alert('Пополнение звёздами (100 звёзд = 1 TON)');
-      break;
-    case 'rub':
-      alert('Пополнение через СБП (105 руб = 1 TON)');
-      break;
-    default:
-      console.warn('Неизвестный метод пополнения:', method);
-  }
+function displayUserData(user) {
+    // Находим элементы для отображения данных
+    const usernameElement = document.getElementById('username');
+    const balanceContainer = document.querySelector('.balance-container'); // Предполагаем, что у баланса есть контейнер
+
+    if (usernameElement) {
+        usernameElement.textContent = `@${user.username || 'user'}`;
+    }
+
+    // Создаем и вставляем аватар, если его еще нет
+    if (balanceContainer && !document.getElementById('user-avatar')) {
+        const avatar = document.createElement('img');
+        avatar.id = 'user-avatar';
+        avatar.alt = 'Avatar';
+        avatar.style.width = '48px';
+        avatar.style.height = '48px';
+        avatar.style.borderRadius = '50%';
+        avatar.style.marginRight = '12px';
+        
+        // Запрос фото профиля через твоего бота (это безопасный метод)
+        // Тебе нужно будет настроить бэкенд или Supabase Function для этого.
+        // Пока что поставим заглушку.
+        // TODO: Заменить на реальный URL фото
+        avatar.src = `https://t.me/i/userpic/320/${user.username}.jpg`; // Это не всегда работает, лучший способ - через API бота
+        
+        balanceContainer.prepend(avatar); // Вставляем аватар перед текстом баланса
+    }
+
+    // TODO: Здесь будет логика получения баланса из Supabase по user.id
+    // const userBalance = await fetchBalance(user.id);
+    // document.getElementById('balance').textContent = `${userBalance.toFixed(2)} TON`;
 }
 
-// Функции для управления модальным окном
-function showTopUpModal() {
-  document.getElementById('topUpModal').classList.add('active');
+// Пример функции для Supabase (добавь ее позже)
+/*
+async function fetchBalance(userId) {
+    // const { data, error } = await supabase
+    //     .from('users')
+    //     .select('balance')
+    //     .eq('telegram_id', userId)
+    //     .single();
+    //
+    // if (error) return 0;
+    // return data.balance;
 }
-
-function hideTopUpModal() {
-  document.getElementById('topUpModal').classList.remove('active');
-}
+*/
