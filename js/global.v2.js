@@ -153,3 +153,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Загружаем профиль пользователя (включая данные из Telegram)
   await loadUserProfile();
 });
+// Добавьте эту функцию в global.v2.js
+function topUp(method) {
+  console.log('Пополнение баланса:', method);
+  hideTopUpModal(); // Скрываем модальное окно
+
+  switch (method) {
+    case 'ton':
+      alert('Пополнение через TON (бонус +10%)');
+      break;
+    case 'stars':
+      alert('Пополнение звёздами (100 звёзд = 1 TON)');
+      break;
+    case 'rub':
+      alert('Пополнение через СБП (105 руб = 1 TON)');
+      break;
+    default:
+      console.warn('Неизвестный метод пополнения:', method);
+  }
+}
+
+// Функции для управления модальным окном
+function showTopUpModal() {
+  document.getElementById('topUpModal').classList.add('active');
+}
+
+function hideTopUpModal() {
+  document.getElementById('topUpModal').classList.remove('active');
+}
