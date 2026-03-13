@@ -56,51 +56,30 @@
     </div>
 
     <!-- Модальное окно пополнения -->
-    <div id="topUpModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideTopUpModal()">
-                <i class="fas fa-times"></i>
+   <div id="topUpModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Пополнение баланса</h2>
+
+        <div class="payment-options">
+            <button class="payment-option" data-method="ton">
+                <i class="fas fa-coins"></i>
+                <div>
+                    <strong>TON</strong>
+                    <span>Бонус +10 %</span>
+                </div>
             </button>
-            <h2 class="modal-title">Пополнить баланс</h2>
 
-            <div class="amount-selector">
-                <button onclick="selectAmount(10)">10 TON</button>
-                <button onclick="selectAmount(50)">50 TON</button>
-                <button onclick="selectAmount(100)">100 TON</button>
-            </div>
-
-            <p>Выбранная сумма: <span id="selectedAmount">0</span> TON</p>
-            <button class="confirm-btn" onclick="confirmTopUp()">Connect your TON wallet</button>
+            <button class="payment-option" data-method="stars">
+                <i class="fas fa-star"></i>
+                <div>
+            <strong>Telegram Stars</strong>
+            <span>100 звёзд = 1 TON</span>
+                </div>
+            </button>
         </div>
     </div>
+</div>
 
-    <script>
-        // Функции для работы с пополнением
-        let selectedAmountValue = 0;
-
-        function selectAmount(amount) {
-            selectedAmountValue = amount;
-            document.getElementById('selectedAmount').textContent = amount;
-        }
-
-        function confirmTopUp() {
-            if (selectedAmountValue > 0) {
-                // Здесь будет логика подключения кошелька TON
-                alert(`Вы подтверждаете пополнение на ${selectedAmountValue} TON?`);
-                // В реальном приложении здесь будет вызов Telegram API для платежа
-                hideTopUpModal();
-            } else {
-                alert('Пожалуйста, выберите сумму для пополнения');
-            }
-        }
-
-        function showTopUpModal() {
-            document.getElementById('topUpModal').style.display = 'flex';
-        }
-
-        function hideTopUpModal() {
-            document.getElementById('topUpModal').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
