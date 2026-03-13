@@ -15,19 +15,19 @@
     <!-- Стили -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Скрипты -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Убираем прямое подключение Supabase из head -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
+
     <script type="module">
         // Инициализация Telegram WebApp
         if (window.Telegram?.WebApp) {
             window.Telegram.WebApp.ready();
         }
 
-        // Подключаем global.v2.js после инициализации
-        import('./js/global.v2.js').catch(err => {
-            console.error('Ошибка загрузки global.v2.js:', err);
-        });
+        // Подключаем global.v2.js напрямую через src
+        // Это гарантирует правильную обработку относительных путей внутри модуля
     </script>
+    <script type="module" src="./js/global.v2.js"></script>
 </head>
 <body>
     <div class="container">
@@ -94,15 +94,15 @@
             switch (method) {
                 case 'ton':
                     alert('Пополнение через TON (бонус +10%)');
-            break;
+                    break;
                 case 'stars':
-            alert('Пополнение звёздами (100 звёзд = 1 TON)');
-            break;
+                    alert('Пополнение звёздами (100 звёзд = 1 TON)');
+                    break;
                 case 'rub':
-            alert('Пополнение через СБП (105 руб = 1 TON)');
-            break;
+                    alert('Пополнение через СБП (105 руб = 1 TON)');
+                    break;
                 default:
-            console.warn('Неизвестный метод пополнения:', method);
+                    console.warn('Неизвестный метод пополнения:', method);
             }
         }
     </script>
