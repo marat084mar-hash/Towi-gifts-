@@ -3,105 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts — Главная</title>
-
-    <!-- Скрипт Telegram Web App -->
+    <title>Towi Gifts</title>
+    <!-- Обязательный скрипт Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <!-- Шрифты и иконки -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer">
-
-    <!-- Стили -->
+    <!-- Подключение твоих стилей -->
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- Убираем прямое подключение Supabase из head -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
-
-    <script type="module">
-        // Инициализация Telegram WebApp
-        if (window.Telegram?.WebApp) {
-            window.Telegram.WebApp.ready();
-        }
-
-        // Подключаем global.v2.js напрямую через src
-        // Это гарантирует правильную обработку относительных путей внутри модуля
-    </script>
-    <script type="module" src="./js/global.v2.js"></script>
+    <!-- Если используешь иконки Font Awesome, раскомментируй -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
 </head>
 <body>
+    <!-- Блок с балансом и аватаром -->
     <div class="balance-container">
-    <!-- Сюда JS вставит <img> с аватаром -->
-    <div>
-        <span class="balance-label">Balance:</span>
-        <h1 id="balance">0.00 TON</h1>
-        <p id="username">@guest</p>
-    </div>
-    <button class="add-balance-btn">+</button>
-</div>
-
-        <!-- Кнопки навигации -->
-        <div class="main-menu-buttons">
-            <a href="pages/cases.html" class="btn">
-                <i class="fas fa-box-open"></i> Cases
-            </a>
-            <a href="pages/upgrade.html" class="btn">
-                <i class="fas fa-arrow-up"></i> Upgrades
-            </a>
-            <a href="pages/inventory.html" class="btn">
-                <i class="fas fa-boxes-stacked"></i> Inventory
-            </a>
+        <!-- Сюда JS вставит <img> с аватаром -->
+        <div>
+            <span class="balance-label">Balance:</span>
+            <h1 id="balance">0.00 TON</h1>
+            <p id="username">@guest</p>
         </div>
+        <button class="add-balance-btn">+</button>
     </div>
 
-    <!-- Модальное окно пополнения -->
-    <div id="topUpModal" class="modal-overlay">
+    <!-- Блок навигационных кнопок -->
+    <div class="nav-buttons">
+        <a href="pages/cases.html" class="nav-btn">
+            <span class="icon">🎁</span> Cases
+        </a>
+        <a href="pages/upgrade.html" class="nav-btn">
+            <span class="icon">↑</span> Upgrades
+        </a>
+        <a href="pages/inventory.html" class="nav-btn">
+            <span class="icon">🎒</span> Inventory
+        </a>
+    </div>
+
+    <!-- Модальное окно пополнения (всегда в самом низу body) -->
+    <div id="deposit-modal" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-btn" onclick="hideTopUpModal()">
-                <i class="fas fa-times"></i> Закрыть
-            </button>
-            <h2 class="modal-title">Пополнение баланса</h2>
-            <button class="btn" onclick="topUp('ton')">
-                <i class="fas fa-coins"></i> TON (бонус +10%)
-            </button>
-            <button class="btn" onclick="topUp('stars')">
-                <i class="fas fa-star"></i> Звёзды (100 звёзд = 1 TON)
-            </button>
-            <button class="btn" onclick="topUp('rub')">
-                <i class="fas fa-ruble-sign"></i> СБП (105 руб = 1 TON)
-            </button>
+            <div class="modal-header">
+                <h3>Top Up Balance</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="payment-list">
+                <button class="pay-option ton" onclick="pay('ton')">
+                    <img src="https://ton.org/download/ton_symbol.png" alt="TON"> TON Coin
+                </button>
+                <button class="pay-option stars" onclick="pay('stars')">
+                    <img src="https://telegram.org/img/t_logo.png" alt="Stars"> Telegram Stars
+                </button>
+                <button class="pay-option sbp" onclick="pay('sbp')">
+                    <span class="pay-icon">💳</span> СБП / Карта
+                </button>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Функции для управления модальным окном
-        function showTopUpModal() {
-            document.getElementById('topUpModal').classList.add('active');
-        }
-
-        function hideTopUpModal() {
-            document.getElementById('topUpModal').classList.remove('active');
-        }
-
-        // Функция пополнения баланса
-        function topUp(method) {
-            console.log('Пополнение через:', method);
-            hideTopUpModal();
-
-            switch (method) {
-                case 'ton':
-                    alert('Пополнение через TON (бонус +10%)');
-                    break;
-                case 'stars':
-                    alert('Пополнение звёздами (100 звёзд = 1 TON)');
-                    break;
-                case 'rub':
-                    alert('Пополнение через СБП (105 руб = 1 TON)');
-                    break;
-                default:
-                    console.warn('Неизвестный метод пополнения:', method);
-            }
-        }
-    </script>
+    <!-- Подключение твоего глобального скрипта -->
+    <script src="js/global.js"></script>
 </body>
 </html>
