@@ -8,31 +8,35 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Подключение твоих стилей -->
     <link rel="stylesheet" href="css/style.css">
-    <!-- Если используешь иконки Font Awesome, раскомментируй -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
+    <!-- Подключение иконок Font Awesome (теперь раскомментировано!) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <!-- Блок с балансом и аватаром -->
     <div class="balance-container">
-        <!-- Сюда JS вставит <img> с аватаром -->
-        <div>
-            <span class="balance-label">Balance:</span>
-            <h1 id="balance">0.00 TON</h1>
-            <p id="username">@guest</p>
+        <!-- Внутренний div для аватара, баланса и имени пользователя -->
+        <div class="user-info-display"> <!-- Добавил класс для более точного таргетинга -->
+            <!-- Сюда JS вставит <img> с аватаром -->
+            <div class="balance-text">
+                <span class="balance-label">Balance:</span>
+                <h1 id="balance">0.00 TON</h1>
+                <p id="username">@guest</p>
+            </div>
         </div>
         <button class="add-balance-btn">+</button>
     </div>
 
     <!-- Блок навигационных кнопок -->
     <div class="nav-buttons">
+        <!-- Используем иконки Font Awesome -->
         <a href="pages/cases.html" class="nav-btn">
-            <span class="icon">🎁</span> Cases
+            <i class="fas fa-gift"></i> Cases
         </a>
         <a href="pages/upgrade.html" class="nav-btn">
-            <span class="icon">↑</span> Upgrades
+            <i class="fas fa-arrow-up"></i> Upgrades
         </a>
         <a href="pages/inventory.html" class="nav-btn">
-            <span class="icon">🎒</span> Inventory
+            <i class="fas fa-box"></i> Inventory
         </a>
     </div>
 
