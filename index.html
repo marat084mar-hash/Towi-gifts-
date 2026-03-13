@@ -15,22 +15,26 @@
     <!-- Стили -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Скрипты (правильный порядок) -->
+    <!-- Скрипты -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-  // Инициализация Telegram WebApp
-  if (window.Telegram?.WebApp) {
-    window.Telegram.WebApp.ready();
-  }
-</script>
-    <script src="global.v2.js" type="module"></script>
+    <script type="module">
+        // Инициализация Telegram WebApp
+        if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.ready();
+        }
+
+        // Подключаем global.v2.js после инициализации
+        import('./js/global.v2.js').catch(err => {
+            console.error('Ошибка загрузки global.v2.js:', err);
+        });
+    </script>
 </head>
 <body>
     <div class="container">
         <!-- Блок баланса и профиля пользователя -->
         <div class="balance-info">
             <div class="user-profile">
-                <img id="userAvatar" src="default-avatar.png" alt="Аватар пользователя" class="profile-avatar">
+                <img id="userAvatar" src="./images/default-avatar.png" alt="Аватар пользователя" class="profile-avatar">
                 <span class="username-text" id="username">@guest</span>
             </div>
             <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
@@ -72,39 +76,34 @@
         </div>
     </div>
 
-    <!-- Скрипт для загрузки данных пользователя -->
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Получаем данные пользователя Telegram
-                const tg = window.Telegram.WebApp;
-                const telegramUser = {
-                    id: tg.initDataUnsafe?.user?.id,
-                    username: tg.initDataUnsafe?.user?.username,
-                    photo_url: tg.initDataUnsafe?.user?.photo_url
-                };
-
-                if (!telegramUser.id) {
-                    console.warn('Данные пользователя Telegram не доступны');
-                    return;
-                }
-
-                // Вызываем функцию из global.v2.js для загрузки профиля
-                await loadUserProfile(telegramUser);
-
-            } catch (error) {
-                console.error('Ошибка при загрузке данных пользователя:', error);
-            }
-        });
-
-        // Функция показа модального окна пополнения
+        // Функции для управления модальным окном
         function showTopUpModal() {
             document.getElementById('topUpModal').classList.add('active');
         }
 
-        // Функция скрытия модального окна пополнения
         function hideTopUpModal() {
             document.getElementById('topUpModal').classList.remove('active');
+        }
+
+        // Функция пополнения баланса
+        function topUp(method) {
+            console.log('Пополнение через:', method);
+            hideTopUpModal();
+
+            switch (method) {
+                case 'ton':
+                    alert('Пополнение через TON (бонус +10%)');
+            break;
+                case 'stars':
+            alert('Пополнение звёздами (100 звёзд = 1 TON)');
+            break;
+                case 'rub':
+            alert('Пополнение через СБП (105 руб = 1 TON)');
+            break;
+                default:
+            console.warn('Неизвестный метод пополнения:', method);
+            }
         }
     </script>
 </body>
