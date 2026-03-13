@@ -1,13 +1,14 @@
+/* ОБЩИЕ СТИЛИ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
-    --bg-color: #100f14;
-    --primary-purple: #8a2be2;
-    --primary-purple-light: #9932cc;
-    --card-bg: #1c1c24;
-    --text-main: #ffffff;
-    --text-muted: #8e8e93;
-    --border-color: rgba(255, 255, 255, 0.1);
+    --bg-color: #100f14; /* Темный фон */
+    --primary-purple: #8a2be2; /* Твой основной фиолетовый */
+    --primary-purple-light: #9932cc; /* Чуть светлее для ховера/актива */
+    --card-bg: #1c1c24; /* Цвет фона для карточек и модалки */
+    --text-main: #ffffff; /* Основной цвет текста */
+    --text-muted: #8e8e93; /* Приглушенный текст */
+    --border-color: rgba(255, 255, 255, 0.1); /* Цвет тонкой границы */
 }
 
 * {
@@ -15,15 +16,19 @@
     margin: 0;
     padding: 0;
 }
-
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Inter', -apple-system, sans-serif;
     padding: 20px;
     -webkit-font-smoothing: antialiased;
+    display: flex; /* Для центрирования контента, если нужно */
+    flex-direction: column;
+    align-items: center; /* Центрируем по горизонтали */
+    min-height: 100vh; /* Минимальная высота на весь экран */
 }
 
+/* Стили для контейнера баланса */
 .balance-container {
     display: flex;
     align-items: center;
@@ -33,6 +38,8 @@ body {
     border-radius: 24px;
     border: 1px solid var(--border-color);
     margin-bottom: 30px;
+    width: 100%;
+    max-width: 400px; /* Ограничиваем ширину */
 }
 
 .balance-container div {
@@ -73,89 +80,63 @@ body {
     background: var(--primary-purple-light);
 }
 
+/* Стили для навигационных кнопок (Cases, Upgrades, Inventory) */
 .nav-buttons {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px; /* Ограничиваем ширину */
+    margin-bottom: 20px;
 }
 
 .nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    background: var(--primary-purple); /* Тот самый фиолетовый */
     color: white;
     text-decoration: none;
-    padding: 18px 20px;
+    padding: 22px;
     border-radius: 20px;
-    font-size: 18px;
-    font-weight: 600;
-    border: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
-}
-
-.nav-btn:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.2);
-}
-
-/* Стили для иконок (пример) */
-.nav-btn i { 
-    font-size: 20px; 
-}
-/* Стили для кнопок меню (Cases, Upgrade, Inventory) */
-.nav-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.nav-btn {
-    background: #8a2be2; /* Твой фиолетовый */
-    color: white;
-    border: none;
-    border-radius: 18px;
-    padding: 20px;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
+    font-size: 20px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
+    gap: 12px;
+    transition: transform 0.1s, background 0.2s;
+    border: none;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+}
+
+.nav-btn .icon {
+    font-size: 24px; /* Размер иконки */
 }
 
 .nav-btn:active {
-    transform: scale(0.97);
-    background: #9b42f5;
+    transform: scale(0.96);
+    background: var(--primary-purple-light);
 }
 
-/* Стили модального окна */
+/* Стили модального окна пополнения */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    display: none; /* Скрыто по умолчанию */
-    justify-content: center;
-    align-items: flex-end; /* Появляется снизу */
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none; /* Скрыто по умолчанию, показывается JS-ом */
+    align-items: flex-end; /* Появление снизу */
     z-index: 1000;
 }
 
 .modal-content {
-    background: #1c1c24;
+    background: var(--card-bg);
     width: 100%;
     border-radius: 24px 24px 0 0;
-    padding: 24px;
+    padding: 30px 20px;
     animation: slideUp 0.3s ease-out;
+    max-width: 500px; /* Ограничиваем ширину модалки на больших экранах */
 }
 
 @keyframes slideUp {
@@ -167,40 +148,63 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .close-modal {
-    background: none;
+    background: #32323e;
     border: none;
-    color: #8e8e93;
-    font-size: 28px;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 20px;
     cursor: pointer;
 }
 
-/* Кнопки оплаты */
-.payment-methods {
+/* Опции оплаты */
+.payment-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.pay-btn {
+.pay-option {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 16px;
+    gap: 15px;
+    padding: 18px;
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.05);
     color: white;
     font-size: 16px;
     font-weight: 600;
+    transition: 0.2s;
     cursor: pointer;
 }
 
-.pay-btn:active { background: rgba(255,255,255,0.1); }
-.pay-btn.stars { border-color: #ffca28; color: #ffca28; }
-.pay-btn.ton { border-color: #0088cc; color: #0088cc; }
-
+.pay-option img { width: 24px; }
+.pay-option .pay-icon { font-size: 24px; }
+.pay-option:active { background: rgba(255,255,255,0.1); }
+.pay-option.ton { border-color: #0088cc; }
+.pay-option.stars { border-color: #ffca28; }
+/* Стили для ошибки аутентификации */
+.auth-error {
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+    text-align: center;
+    max-width: 300px;
+}
+.auth-error h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.auth-error p {
+    font-size: 16px;
+    color: #ccc;
+}
