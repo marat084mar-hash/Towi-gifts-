@@ -18,68 +18,70 @@
     <!-- Скрипты -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/global.v2.js"></script>
+    <!-- Подключаем скрипт для логики инвентаря -->
+    <script src="js/inventory.js"></script>
 </head>
 <body>
     <div class="container">
         <header class="app-header">
-            <button class="back-button" onclick="history.back()"><i class="fas fa-chevron-left"></i></button>
-            <h1>Inventory</h1>
+            <button class="back-button" onclick="history.back()">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                <span class="sr-only">Вернуться назад</span>
+            </button>
+            <h1 id="pageTitle"></h1>
 
             <!-- Блок баланса и пополнения в шапке -->
             <div class="balance-info" style="position: absolute; right: 20px; top: 15px;">
-                <button class="add-balance-btn" onclick="showTopUpModal()">
-                    <i class="fas fa-plus"></i>
+                <button class="add-balance-btn" onclick="showTopUpModal()" aria-label="Пополнить баланс">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
                 </button>
             </div>
         </header>
 
         <!-- Блок с аватаром и именем пользователя -->
         <div class="user-info">
-            <img id="userAvatar" src="images/default-avatar.png" alt="Аватар" class="avatar">
-            <span class="username-text" id="username">@user</span>
+            <img id="userAvatar" src="" alt="Аватар пользователя" class="avatar">
+            <span class="username-text" id="username"></span>
         </div>
 
         <!-- Сообщение о КД на вывод подарков -->
-        <p id="cooldownMessage" style="color: var(--text-muted); text-align: center; margin: 20px 0;">
-            <i class="fas fa-hourglass-half"></i> КД 21 день на вывод подарков! Telegram Stars
-        </p>
+        <p id="cooldownMessage" style="color: var(--text-muted); text-align: center; margin: 20px 0;"></p>
 
         <!-- Отображение текущего баланса -->
         <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-            <span class="balance-text" id="userBalance" style="font-size: 18px;">Balance: 0.00 TON</span>
+            <span class="balance-text" id="userBalance" style="font-size: 18px;"></span>
         </div>
 
         <!-- Инвентарь -->
         <div id="inventory-items-grid" class="card-grid">
-            <p style="text-align: center; color: var(--text-muted);" id="emptyInventoryMessage">Your inventory is empty.</p>
+            <p style="text-align: center; color: var(--text-muted);" id="emptyInventoryMessage"></p>
         </div>
     </div>
 
     <!-- Модальное окно пополнения -->
-   <div id="topUpModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Пополнение баланса</h2>
+    <div id="topUpModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="topUpModalTitle">
+        <div class="modal-content">
+            <span class="close-btn" aria-label="Закрыть окно" onclick="closeTopUpModal()">&times;</span>
+            <h2 id="topUpModalTitle"></h2>
 
-        <div class="payment-options">
-            <button class="payment-option" data-method="ton">
-                <i class="fas fa-coins"></i>
-                <div>
-                    <strong>TON</strong>
-                    <span>Бонус +10 %</span>
-                </div>
-            </button>
+            <div class="payment-options">
+                <button class="payment-option" data-method="ton">
+                    <i class="fas fa-coins" aria-hidden="true"></i>
+            <div>
+                        <strong id="paymentMethodTON"></strong>
+                <span id="paymentBonusTON"></span>
+            </div>
+                </button>
 
-            <button class="payment-option" data-method="stars">
-                <i class="fas fa-star"></i>
-                <div>
-            <strong>Telegram Stars</strong>
-            <span>100 звёзд = 1 TON</span>
-                </div>
-            </button>
+                <button class="payment-option" data-method="stars">
+            <i class="fas fa-star" aria-hidden="true"></i>
+            <div>
+                <strong id="paymentMethodStars"></strong>
+                <span id="paymentRateStars"></span>
+            </div>
+                </button>
+            </div>
         </div>
     </div>
-</div>
-
 </body>
 </html>
