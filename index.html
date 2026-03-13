@@ -22,12 +22,16 @@
 <body>
     <div class="container">
         <!-- Блок баланса и профиля пользователя -->
-        <div class="balance-info">
-            <div class="user-profile" id="userProfile">
-                <img id="userAvatar" src="" alt="Аватар пользователя" style="border-radius: 50%; width: 30px; height: 30px; object-fit: cover; border: 2px solid #555;">
-                <span class="username-text" id="username">@guest</span>
-                <span class="user-id" id="userId"></span>
-            </div>
+       <div class="balance-info">
+  <div class="user-profile">
+    <img id="userAvatar" src="default-avatar.png" alt="Аватар пользователя" class="profile-avatar">
+    <span class="username-text" id="username">@guest</span>
+  </div>
+  <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
+  <button class="add-balance-btn" onclick="showTopUpModal()">
+    <i class="fas fa-plus"></i>
+  </button>
+</div>
             <div>
                 <span class="balance-text" id="userBalance">Balance: 0.00 TON</span>
             </div>
