@@ -2,90 +2,67 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts</title>
-    
-    <!-- Иконки Font Awesome (бесплатные) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    
+    <!-- Обязательный скрипт Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Подключение твоих стилей -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключение иконок Font Awesome (теперь раскомментировано!) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- Блок с балансом и аватаром -->
+   <div class="balance-container">
+    <!-- Сюда JS вставит <img> с аватаром -->
+    <div>
+        <span class="balance-label">Balance:</span>
+        <h1 id="balance">0.00 TON</h1>
+        <p id="username">@guest</p>
+    </div>
+    <button class="add-balance-btn">+</button>
+</div>
 
-    <header class="header">
-        <div class="user-profile">
-            <!-- Заглушка аватара, если Supabase не ответит -->
-            <img src="https://ui-avatars.com/api/?name=User&background=8a2be2&color=fff" alt="Avatar" id="user-avatar" class="avatar">
-            <div class="user-info">
-                <span id="balance">0.00 TON</span>
-                <span id="user-nickname">Загрузка...</span>
-            </div>
-        </div>
-        <button class="add-balance-btn" id="add-balance-btn"><i class="fa-solid fa-plus"></i></button>
-    </header>
-
-    <main id="app-container">
-        <!-- ГЛАВНОЕ МЕНЮ -->
-        <section id="page-main" class="page active">
-            <nav class="main-nav">
-                <button data-page="page-cases" class="nav-button">
-                    <i class="fa-solid fa-box-open"></i> Cases
-                </button>
-                <button data-page="page-upgrades" class="nav-button">
-                    <i class="fa-solid fa-arrow-up-trending-lines"></i> Upgrades
-                </button>
-                <button data-page="page-inventory" class="nav-button">
-                    <i class="fa-solid fa-briefcase"></i> Inventory
-                </button>
-            </nav>
-        </section>
-
-        <!-- КЕЙСЫ -->
-        <section id="page-cases" class="page">
-            <div id="main-cases-view">
-                <div class="cases-grid"></div>
-            </div>
-            <div id="case-view" style="display: none;">
-                <h2 id="case-name-dynamic">Кейс</h2>
-                <div class="roulette-container"><div class="roulette-items"></div></div>
-                <div class="case-controls">
-                    <button id="open-case-button" class="nav-button">Открыть</button>
-                    <button id="back-to-cases-list" class="back-btn">Назад</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ИНВЕНТАРЬ -->
-        <section id="page-inventory" class="page">
-            <h2>Ваш Инвентарь</h2>
-            <div class="inventory-grid"></div>
-            <button class="nav-button back-to-main">Назад в меню</button>
-        </section>
-        
-        <!-- АПГРЕЙДЫ -->
-        <section id="page-upgrades" class="page">
-             <h2>Улучшение предметов</h2>
-             <p style="text-align: center; color: #aaa;">Скоро появится...</p>
-             <button class="nav-button back-to-main">Назад в меню</button>
-        </section>
-    </main>
-    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ -->
-    <div id="add-balance-modal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close-btn">&times;</button>
-            <i class="fa-solid fa-wallet" style="font-size: 3rem; color: #8a2be2; margin-bottom: 1rem;"></i>
-            <h3>Пополнение TON</h3>
-            <p>Отправьте TON на адрес ниже:</p>
-            <div class="wallet-address" style="background: #111; padding: 10px; border-radius: 8px; margin: 15px 0; word-break: break-all; font-size: 0.8rem;">
-                UQAn...ващ_кошелек...
-            </div>
-            <button class="nav-button" onclick="alert('Адрес скопирован!')">Копировать адрес</button>
-        </div>
+    <!-- Блок навигационных кнопок -->
+    <div class="nav-buttons">
+        <!-- Используем иконки Font Awesome -->
+        <a href="pages/cases.html" class="nav-btn">
+            <i class="fas fa-gift"></i> Cases
+        </a>
+        <a href="pages/upgrade.html" class="nav-btn">
+            <i class="fas fa-arrow-up"></i> Upgrades
+        </a>
+        <a href="pages/inventory.html" class="nav-btn">
+            <i class="fas fa-box"></i> Inventory
+        </a>
     </div>
 
-    <!-- СКРИПТЫ (проверьте пути!) -->
-    <script src="config/supabase.js" type="module"></script>
-    <script src="js/main-router.js" type="module"></script>
+    <!-- Подключение твоего глобального скрипта -->
+    <script src="js/global.js"></script>
+
+    <div id="topUpModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Пополнение баланса</h2>
+
+        <div class="payment-options">
+            <button class="payment-option" data-method="ton">
+                <i class="fas fa-coins"></i>
+                <div>
+                    <strong>TON</strong>
+                    <span>Бонус +10 %</span>
+                </div>
+            </button>
+
+            <button class="payment-option" data-method="stars">
+                <i class="fas fa-star"></i>
+                <div>
+            <strong>Telegram Stars</strong>
+            <span>100 звёзд = 1 TON</span>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
