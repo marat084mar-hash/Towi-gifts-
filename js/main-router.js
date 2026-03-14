@@ -1,51 +1,106 @@
-import { supabase } from '../config/supabase.js';
+document.addEventListener('DOMContentLoaded', async () => {
+    const tg = window.Telegram?.WebApp;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const pages = document.querySelectorAll('.page');
-    const navButtons = document.querySelectorAll('.nav-button[data-page]');
-    const backButtons = document.querySelectorAll('.back-to-main, .back-btn');
-    const modal = document.getElementById('add-balance-modal');
-    const openModalBtn = document.getElementById('add-balance-btn');
-    const closeModalBtn = document.querySelector('.modal-close-btn');
-
-    // Функция перехода
-    function navigateTo(pageId) {
-        pages.forEach(p => p.classList.remove('active'));
-        const target = document.getElementById(pageId);
-        if(target) target.classList.add('active');
-    }
-
-    // Клики по кнопкам меню
-    navButtons.forEach(btn => {
-        btn.addEventListener('click', () => navigateTo(btn.dataset.page));
-    });
-
-    // Кнопки назад
-    backButtons.forEach(btn => {
-        btn.addEventListener('click', () => navigateTo('page-main'));
-    });
-
-    // Модальное окно
-    openModalBtn.onclick = () => modal.classList.add('visible');
-    closeModalBtn.onclick = () => modal.classList.remove('visible');
-    window.onclick = (event) => { if (event.target == modal) modal.classList.remove('visible'); }
-
-    // Проверка Supabase (логин через Telegram ID)
-    async function initApp() {
-        const tg = window.Telegram.WebApp;
+    // Инициализация Telegram WebApp
+    if (tg?.initDataUnsafe?.user?.id) {
+        tg.ready();
         tg.expand();
-        const user = tg.initDataUnsafe?.user || { id: 12345, username: 'LocalUser' }; // Заглушка для ПК
-
-        document.getElementById('user-nickname').textContent = @${user.username || user.first_name};
-        
-        // Попытка получить данные из Supabase
-        const { data, error } = await supabase.from('users').select('*').eq('user_id', user.id).single();
-        if (data) {
-            document.getElementById('balance').textContent = ${data.balance.toFixed(2)} TON;
-            if(data.avatar_url) document.getElementById('user-avatar').src = data.avatar_url;
-        } else {
-            console.error("Ошибка Supabase или юзер не найден:", error);
-        }
+        await loadUserData(tg.initDataUnsafe.user); // Загружаем данные из Supabase
+    } else {
+        // Блокировка интерфейса при открытии не через Telegram
+        document.body.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <h2>Ошибка</h2>
+                <p>Это приложение работает только внутри Telegram.</p>
+                <button onclick="window.close()" style="margin-top: 20px;">Закрыть</button>
+            </div>
+        `;
+        return; // Прерываем выполнение, если не в Telegram
     }
-    initApp();
+
+    // Добавляем обработчик для кнопки пополнения баланса
+    const addBalanceBtn = document.querySelector('.add-balance-btn');
+    if (addBalanceBtn) {
+        addBalanceBtn.addEventListener('click', showTopUpModal);
+    } else {
+        console.warn('Кнопка пополнения баланса не найдена');
+    }
+
+    // Инициализация модального окна (выполняется только если в Telegram)
+    initTopUpModal();
 });
+
+// Функция загрузки данных пользователя из Supabase
+async function loadUserData(telegramUser) {
+    try {
+        const { data, error } = await window.supabaseClient
+            .from('users')
+            .select('id, balance_ton, username')
+            .eq('telegram_id', telegramUser.id)
+            .single();
+
+        if (error) {
+            if (error.code === 'PGRST.55000') {
+                // Пользователь не найден — создаём запись
+                await createUserRecord(telegramUser);
+                return await loadUserData(telegramUser); // Повторяем загрузку
+            } else {
+                console.error('Ошибка загрузки данных пользователя:', error);
+                displayUserData(telegramUser); // Отображаем базовые данные без баланса
+                return;
+            }
+        }
+
+        window.userData = data; // Сохраняем в глобальную переменную
+        displayUserData(telegramUser, data); // Передаём данные для отображения
+    } catch (err) {
+        console.error('Критическая ошибка при загрузке данных:', err);
+        displayUserData(telegramUser); // Отображаем базовые данные
+    }
+}
+
+// Создание записи пользователя в Supabase, если её нет
+async function createUserRecord(user) {
+    const { error } = await window.supabaseClient
+        .from('users')
+        .insert([{
+            telegram_id: user.id,
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            username: user.username || null,
+            first_name: user.first_name || null,
+            last_name: user.last_name || null,
+            balance_ton: 0.00,
+            created_at: new Date().toISOString()
+        }]);
+
+    if (error) console.error('Ошибка создания пользователя:', error);
+}
+
+// Отображение данных пользователя
+function displayUserData(user, userData = null) {
+    const usernameElement = document.getElementById('username');
+    const balanceElement = document.getElementById('balance');
+    const balanceContainer = document.querySelector('.balance-container');
+
+    // Имя пользователя
+    if (usernameElement) {
+        usernameElement.textContent = `@${user.username || 'user'}`;
+    }
+
+    // Баланс — берём из Supabase или показываем 0.00 TON
+    if (balanceElement) {
+        if (userData && userData.balance_ton !== undefined) {
+            balanceElement.textContent = `${parseFloat(userData.balance_ton).toFixed(2)} TON`;
+        } else {
+            balanceElement.textContent = '0.00 TON';
+@@ -115,7 +115,7 @@
+                '&background=8a2be2&color=fff';
+        }
+
+        // Исправленная вставка аватара в начало контейнера
+        // Вставка аватара в начало контейнера
+        balanceContainer.prepend(avatar);
+    }
+}
