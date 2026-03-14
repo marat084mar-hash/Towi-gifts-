@@ -1,35 +1,46 @@
-const db = window.supabaseClient || window.supabase;
+const db = window.supabase;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const container = document.getElementById('cases-container');
-    if (!container) return;
-
-    // Загружаем кейсы из таблицы 'cases'
-    const { data: cases, error } = await db
-        .from('cases')
-        .select('*');
-
-    if (error) {
-        console.error("Ошибка загрузки кейсов:", error);
+    if (!window.dynamicContentContainer) {
+        console.error("Dynamic content container not found. Is global.js loaded correctly?");
         return;
     }
 
-    container.innerHTML = ''; // Очищаем лоадер
+    const casesContainer = window.dynamicContentContainer;
+    casesContainer.innerHTML = '<div class="loader"></div>'; // Показываем лоадер
+                          try {
+        const { data: cases, error } = await db.from('cases').select('*').order('price_ton', { ascending: true });
 
-    cases.forEach(c => {
-        const item = document.createElement('div');
-        item.className = 'case-card';
-        item.innerHTML = `
-            <img src="${c.image_url}" alt="${c.name}">
-            <div class="case-name">${c.name}</div>
-            <div class="case-price">${c.price_ton} TON</div>
-            <button class="open-btn" onclick="openCasePage('${c.id}')">Открыть</button>
-        `;
-        container.appendChild(item);
-    });
+        if (error) {
+            console.error('Ошибка при загрузке кейсов:', error.message);
+            casesContainer.innerHTML = <p class="hint-text" style="color: red;">Не удалось загрузить кейсы: ${error.message}</p>;
+            return;
+        }
+
+        casesContainer.innerHTML = ''; // Очищаем лоадер
+
+        if (cases && cases.length > 0) {
+            cases.forEach(caseItem => {
+                const card = document.createElement('a'); // Используем <a> для клика
+                card.href = case-opening.html?id=${caseItem.id}; // Ссылка на страницу открытия
+                card.className = 'case-card';
+                card.innerHTML = 
+                    <img src="${caseItem.image_url}" alt="${caseItem.name}">
+                    <div class="case-name">${caseItem.name}</div>
+                    <div class="case-price">${caseItem.price_ton} TON</div>
+                ;
+                casesContainer.appendChild(card);
+            });
+        } else {
+            casesContainer.innerHTML = <p class="hint-text">Пока нет доступных кейсов. Скоро появятся новые!</p>;
+        }
+    } catch (e) {
+        console.error('Непредвиденная ошибка при загрузке кейсов:', e.message);
+        casesContainer.innerHTML = <p class="hint-text" style="color: red;">Ошибка: ${e.message}</p>;
+    }
 });
 
-function openCasePage(id) {
-    // Переход на страницу открытия конкретного кейса
-    window.location.href = `case-view.html?id=${id}`;
-}
+// Если вам нужна отдельная функция для открытия кейса, а не просто ссылка
+window.openCasePage = (caseId) => {
+    window.location.href = case-opening.html?id=${caseId};
+};
