@@ -1,34 +1,45 @@
-/* style.css */
 :root {
     --bg-color: #0f172a; /* Глубокий темно-синий/черный */
     --card-bg: #1e293b;   /* Цвет карточек */
     --accent-purple: #8c52ff; /* Ваш фиолетовый */
+    --accent-purple-light: #a77cff; /* Светлее для градиентов/ховера */
     --text-main: #ffffff;
     --text-hint: #94a3b8;
+    --success-green: #4ade80;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --hover-transition: 0.3s ease-in-out;
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
-    font-family: 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 16px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    box-sizing: border-box;
+    visibility: hidden; /* Скрываем тело, пока не загрузится JS */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease-in-out;
 }
-
-/* Хедер профиля */
+body.visible {
+    visibility: visible;
+    opacity: 1;
+}
+/* --- Хедер профиля --- */
 .app-header {
     background: rgba(30, 41, 59, 0.7);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
-    padding: 20px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .user-profile {
@@ -43,33 +54,66 @@ body {
     border-radius: 50%;
     border: 2px solid var(--accent-purple);
     object-fit: cover;
+    box-shadow: 0 0 10px rgba(140, 82, 255, 0.3);
 }
 
 #user-balance-value {
     display: block;
     font-size: 20px;
     font-weight: 700;
+    background: linear-gradient(45deg, var(--accent-purple), var(--accent-purple-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 #user-username {
     color: var(--text-hint);
     font-size: 14px;
+    font-weight: 400;
 }
 
 /* Кнопка плюса */
 #deposit-btn {
     background: var(--accent-purple);
     border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
     color: white;
-    font-size: 24px;
+    font-size: 28px;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(140, 82, 255, 0.4);
+    transition: all var(--hover-transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Главное меню */
+#deposit-btn:hover {
+    background: var(--accent-purple-light);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(140, 82, 255, 0.6);
+}
+
+/* --- Кнопка "Назад" для подстраниц --- */
+.back-button {
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin-right: 15px;
+    transition: color var(--hover-transition), transform var(--hover-transition);
+}
+.back-button:hover {
+    color: var(--text-main);
+    transform: translateX(-3px);
+}
+
+/* --- Главное меню (кнопки) --- */
 .main-menu {
     display: flex;
     flex-direction: column;
@@ -77,7 +121,7 @@ body {
 }
 
 .menu-button {
-    background: var(--accent-purple);
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-purple-light));
     color: white;
     text-decoration: none;
     padding: 20px;
@@ -87,49 +131,225 @@ body {
     gap: 15px;
     font-size: 18px;
     font-weight: 600;
-    transition: transform 0.2s;
+    box-shadow: 0 4px 15px rgba(140, 82, 255, 0.3);
+    transition: all var(--hover-transition);
+    overflow: hidden; /* Для эффекта света */
+    position: relative;
 }
 
-.menu-button:active {
-    transform: scale(0.98);
+.menu-button:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(140, 82, 255, 0.5);
+}
+
+/* Эффект свечения при наведении */
+.menu-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewX(-30deg);
+    transition: left var(--hover-transition);
+}
+
+.menu-button:hover::before {
+    left: 100%;
 }
 
 .menu-button i {
-    font-size: 24px;
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.8);
 }
 
-/* Модальное окно */
+/* --- Модальное окно --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
     background: var(--card-bg);
+    border: 1px solid var(--border-color);
     width: 90%;
+    max-width: 450px;
     padding: 24px;
     border-radius: 24px;
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: fadeInScale 0.3s ease-out forwards;
 }
 
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content h2 {
+    color: var(--accent-purple-light);
+    margin-top: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.payment-options {
+    margin-top: 25px;
+}
 .payment-button {
     width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
     color: white;
     padding: 16px;
     border-radius: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all var(--hover-transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.payment-button:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent-purple);
+    transform: translateY(-2px);
 }
 
-.bonus {
+.payment-button i {
+    font-size: 20px;
+    color: var(--accent-purple-light);
+}
+
+.payment-button .bonus {
     display: block;
-    font-size: 11px;
-    color: #4ade80; /* Зеленый для бонуса */
+    font-size: 12px;
+    color: var(--success-green); /* Зеленый для бонуса */
+    margin-top: 5px;
+    font-weight: 400;
+}
+.payment-button span {
+    display: block;
+}
+
+/* Кнопка закрытия модального окна */
+.modal-content button[id*="close-modal-btn"] {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-hint);
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all var(--hover-transition);
+}
+.modal-content button[id*="close-modal-btn"]:hover {
+    background-color: var(--accent-purple);
+    color: white;
+    border-color: var(--accent-purple);
+}
+
+/* --- Нижняя навигация --- */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-color);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+    animation: slideInUp 0.5s ease-out forwards;
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.bottom-nav .menu-button {
+    background: transparent;
+    color: var(--text-hint);
+    flex-direction: column;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 5px;
+    transition: all var(--hover-transition);
+    box-shadow: none; /* Убираем тень, чтобы не конфликтовала с эффектом */
+}
+
+.bottom-nav .menu-button:hover {
+    color: var(--text-main);
+    background-color: rgba(140, 82, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.bottom-nav .menu-button.active {
+    color: var(--accent-purple); /* Активная кнопка */
+    font-weight: 600;
+    position: relative;
+    /* pointer-events: none; - Отключено в JS */
+}
+
+.bottom-nav .menu-button.active i {
+    color: var(--accent-purple);
+}
+.bottom-nav .menu-button i {
+    font-size: 20px;
+}
+
+/* --- Общие стили для страниц --- */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--accent-purple-light);
+    text-shadow: 0 0 10px rgba(140, 82, 255, 0.5);
+}
+
+.hint-text {
+    font-size: 13px;
+    color: var(--text-hint);
+    text-align: center;
+    margin: 15px 0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    padding-bottom: 80px; /* Отступ для нижней навигации */
+}
+
+/* --- Анимация загрузки --- */
+.loader {
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-left-color: var(--accent-purple);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 50px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
