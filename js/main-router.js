@@ -1,65 +1,51 @@
-// Импортируем функции, которые нам понадобятся
-import { initCasesPage } from './cases.v2.js';
-import { initInventoryPage } from './inventory.js';
-import { initUpgradePage } from './upgrade.js';
-import { updateBalanceInHeader } from './global.v2.js';
+import { supabase } from '../config/supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Находим все навигационные кнопки один раз
-    const navButtons = document.querySelectorAll('.nav-button');
     const pages = document.querySelectorAll('.page');
-    const appContainer = document.getElementById('app-container');
+    const navButtons = document.querySelectorAll('.nav-button[data-page]');
+    const backButtons = document.querySelectorAll('.back-to-main, .back-btn');
+    const modal = document.getElementById('add-balance-modal');
+    const openModalBtn = document.getElementById('add-balance-btn');
+    const closeModalBtn = document.querySelector('.modal-close-btn');
 
-    // Функция для переключения страниц
+    // Функция перехода
     function navigateTo(pageId) {
-        // Скрываем все страницы
-        pages.forEach(page => {
-            page.classList.remove('active');
-        });
-
-        // Показываем нужную
-        const targetPage = document.getElementById(pageId);
-        if (targetPage) {
-            targetPage.classList.add('active');
-            
-            // Запускаем инициализацию конкретной страницы
-            if (pageId === 'page-cases') {
-                initCasesPage(); // Эта функция должна быть в cases.v2.js
-            } else if (pageId === 'page-inventory') {
-                initInventoryPage(); // Эта функция должна быть в inventory.js
-            } else if (pageId === 'page-upgrades') {
-                initUpgradePage(); // Эта функция должна быть в upgrade.js
-            }
-        }
+        pages.forEach(p => p.classList.remove('active'));
+        const target = document.getElementById(pageId);
+        if(target) target.classList.add('active');
     }
 
-    // Вешаем обработчики на все кнопки навигации
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const pageId = button.dataset.page;
-            navigateTo(pageId);
-        });
+    // Клики по кнопкам меню
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => navigateTo(btn.dataset.page));
     });
 
-    // --- Логика модального окна ---
-    const addBalanceBtn = document.getElementById('add-balance-btn');
-    const modal = document.getElementById('add-balance-modal');
-
-    addBalanceBtn.addEventListener('click', () => {
-        modal.classList.add('visible');
+    // Кнопки назад
+    backButtons.forEach(btn => {
+        btn.addEventListener('click', () => navigateTo('page-main'));
     });
 
-    // Закрытие модального окна (например, по клику на фон)
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.classList.remove('visible');
+    // Модальное окно
+    openModalBtn.onclick = () => modal.classList.add('visible');
+    closeModalBtn.onclick = () => modal.classList.remove('visible');
+    window.onclick = (event) => { if (event.target == modal) modal.classList.remove('visible'); }
+
+    // Проверка Supabase (логин через Telegram ID)
+    async function initApp() {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const user = tg.initDataUnsafe?.user || { id: 12345, username: 'LocalUser' }; // Заглушка для ПК
+
+        document.getElementById('user-nickname').textContent = @${user.username || user.first_name};
+        
+        // Попытка получить данные из Supabase
+        const { data, error } = await supabase.from('users').select('*').eq('user_id', user.id).single();
+        if (data) {
+            document.getElementById('balance').textContent = ${data.balance.toFixed(2)} TON;
+            if(data.avatar_url) document.getElementById('user-avatar').src = data.avatar_url;
+        } else {
+            console.error("Ошибка Supabase или юзер не найден:", error);
         }
-    });
-
-    // --- Начальная загрузка ---
-    // Показываем главную страницу по умолчанию
-    navigateTo('page-main');
-    
-    // Загружаем и отображаем баланс пользователя при старте
-    updateBalanceInHeader();
+    }
+    initApp();
 });
