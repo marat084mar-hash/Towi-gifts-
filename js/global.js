@@ -1,37 +1,42 @@
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram?.WebApp;
 const db = window.supabase; // Используем window.supabase, как мы его определили в config/supabase.js
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (!tg) {
+        console.error("Telegram WebApp не доступен");
+        return;
+    }
+
     tg.ready();
     tg.expand();
     document.body.classList.add('visible'); // Показываем тело страницы с анимацией
-                          // --- БЛОКИРОВКА ДОСТУПА НЕ ИЗ TELEGRAM ---
-    // !!! ИСПРАВЛЕНО: ДОБАВЛЕН ЛОГИЧЕСКИЙ ОПЕРАТОР '||' (ИЛИ) !!!
-    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) { 
-        // !!! ИСПРАВЛЕНО: ВСЯ HTML-СТРОКА ОБЕРНУТА В ОБРАТНЫЕ КАВЫЧКИ () !!!
-        document.body.innerHTML = 
+
+    // --- БЛОКИРОВКА ДОСТУПА НЕ ИЗ TELEGRAM ---
+    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+        document.body.innerHTML = `
             <style>
-                body { 
-                    background-color: #0f172a; 
-                    color: white; 
-                    display: flex; 
-                    flex-direction: column; 
-                    justify-content: center; 
-                    align-items: center; 
-                    height: 100vh; 
-                    font-family: 'Poppins', sans-serif; 
-                    text-align: center; 
-                    padding: 20px;
-                    opacity: 1 !important; /* Гарантируем видимость для сообщения об ошибке */
-                    visibility: visible !important;
+                body {
+                    background-color: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            padding: 20px;
+            opacity: 1 !important; /* Гарантируем видимость для сообщения об ошибке */
+            visibility: visible !important;
                 }
-                h1 { color: #8c52ff; font-size: 28px; margin-bottom: 15px;}
-                p { margin-top: 10px; color: #94a3b8; font-size: 16px;}
+                h1 { color: #8c52ff; font-size: 28px; margin-bottom: 15px; }
+                p { margin-top: 10px; color: #94a3b8; font-size: 16px; }
             </style>
             <h1>Доступ запрещен</h1>
             <p>Пожалуйста, откройте это приложение через официального Telegram-бота.</p>
             <p>Это Telegram Web App и оно работает только внутри Telegram.</p>
-        ;
+        `;
+
         // Для локальной разработки, если вы хотите игнорировать эту проверку, раскомментируйте 3 строки ниже.
         // Закомментируйте 'return' выше, чтобы заглушка сработала
         // const mockUser = { id: 12345, username: 'dev_user', first_name: 'Developer', photo_url: 'https://i.pravatar.cc/150' };
@@ -41,16 +46,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Теперь user точно есть (либо настоящий, либо заглушка, если вы ее включили)
-    let user = tg.initDataUnsafe.user; 
+    let user = tg.initDataUnsafe.user;
 
     // Отображаем данные пользователя в хедере
-    // !!! ИСПРАВЛЕНО: ОБЕРНУТО В ОБРАТНЫЕ КАВЫЧКИ () !!!
-    document.getElementById('user-username').textContent = user.username ? @${user.username} : user.first_name;
-    if (user.photo_url) {
-        document.getElementById('user-avatar').src = user.photo_url;
-    } else {
-        // !!! ИСПРАВЛЕНО: ОБЕРНУТО В ОБРАТНЫЕ КАВЫЧКИ () !!!
-        document.getElementById('user-avatar').src = https://i.pravatar.cc/150?u=${user.id}`; 
+    const usernameElement = document.getElementById('user-username');
+    if (usernameElement) {
+        usernameElement.textContent = user.username ? `@${user.username}` : user.first_name;
+    }
+
+    const avatarElement = document.getElementById('user-avatar');
+    if (avatarElement) {
+        if (user.photo_url) {
+            avatarElement.src = user.photo_url;
+        } else {
+            avatarElement.src = `https://i.pravatar.cc/150?u=${user.id}`;
+        }
     }
 
     // Загружаем баланс из базы данных
@@ -58,7 +68,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         await fetchBalance(user);
     } else {
         console.error("Supabase клиент не инициализирован. Проверьте config/supabase.js");
-        document.getElementById('user-balance-value').textContent = 'DB Error';
+        const balanceElement = document.getElementById('user-balance-value');
+        if (balanceElement) {
+            balanceElement.textContent = 'DB Error';
+        }
     }
 
     // Настраиваем модальное окно пополнения
@@ -81,14 +94,20 @@ async function fetchBalance(user) {
             .select('balance')
             .eq('id', user.id)
             .single();
+
         if (error && error.code === 'PGRST116') { // PGRST116 = "Row not found"
-            // !!! ИСПРАВЛЕНО: ОБЕРНУТО В ОБРАТНЫЕ КАВЫЧКИ () !!!
-            console.warn(Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.); 
+            console.warn(`Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.`);
             const { data: newProfile, error: createError } = await db
                 .from('profiles')
-                .insert([{ id: user.id, username: user.username || 'unknown', balance: 0, avatar_url: user.photo_url || '' }]) 
-                .select()
-                .single();
+                .insert([{
+                    id: user.id,
+            username: user.username || 'unknown',
+            balance: 0,
+            avatar_url: user.photo_url || ''
+        }])
+        .select()
+        .single();
+
             if (createError) throw createError;
             profile = newProfile;
         } else if (error) {
@@ -96,11 +115,17 @@ async function fetchBalance(user) {
         }
 
         if (profile) {
-            document.getElementById('user-balance-value').textContent = ${parseFloat(profile.balance).toFixed(2)} TON;
+            const balanceElement = document.getElementById('user-balance-value');
+            if (balanceElement) {
+                balanceElement.textContent = `${parseFloat(profile.balance).toFixed(2)} TON`;
+            }
         }
     } catch (e) {
         console.error("Ошибка при получении/создании профиля пользователя:", e.message);
-        document.getElementById('user-balance-value').textContent = 'ERR TON';
+        const balanceElement = document.getElementById('user-balance-value');
+        if (balanceElement) {
+            balanceElement.textContent = 'ERR TON';
+        }
     }
 }
 
@@ -144,7 +169,7 @@ function setPageSpecifics() {
             pageTitleElement.textContent = 'Улучшение предметов';
             titleText = 'Апгрейд - Towi Gifts';
         } else if (currentPath === 'index.html' || currentPath === '') {
-             pageTitleElement.style.display = 'none'; // На главной странице скрываем h1
+            pageTitleElement.style.display = 'none'; // На главной странице скрываем h1
         }
     }
     // Устанавливаем заголовок в шапке браузера/приложения
@@ -165,7 +190,6 @@ function setPageSpecifics() {
         }
     });
 }
-
 // Кастомное событие для обновления баланса (для вызова из других скриптов)
 document.addEventListener('balanceUpdated', async () => {
     const userId = tg.initDataUnsafe?.user?.id;
