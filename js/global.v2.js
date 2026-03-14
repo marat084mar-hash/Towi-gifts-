@@ -18,6 +18,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return; // Прерываем выполнение, если не в Telegram
     }
 
+    // Добавляем обработчик для кнопки пополнения баланса
+    const addBalanceBtn = document.querySelector('.add-balance-btn');
+    if (addBalanceBtn) {
+        addBalanceBtn.addEventListener('click', showTopUpModal);
+    } else {
+        console.warn('Кнопка пополнения баланса не найдена');
+    }
+
     // Инициализация модального окна (выполняется только если в Telegram)
     initTopUpModal();
 });
@@ -112,29 +120,48 @@ function displayUserData(user, userData = null) {
     }
 }
 
-// Функции для работы с модальным окном (остаются без изменений)
+// Функции для работы с модальным окном
 function showTopUpModal() {
-    document.getElementById('topUpModal').style.display = 'flex';
+    const modal = document.getElementById('topUpModal');
+    if (!modal) {
+        console.error('Модальное окно не найдено в DOM');
+        return;
+    }
+    modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
 function hideTopUpModal() {
-    document.getElementById('topUpModal').style.display = 'none';
+    const modal = document.getElementById('topUpModal');
+    if (!modal) return;
+    modal.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
 
 function initTopUpModal() {
     const modal = document.getElementById('topUpModal');
-    const closeBtn = document.querySelector('.close-btn');
+    if (!modal) {
+        console.error('Модальное окно не найдено в DOM');
+        return;
+    }
 
-    closeBtn.addEventListener('click', hideTopUpModal);
+    const closeBtn = modal.querySelector('.close-btn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', hideTopUpModal);
+    } else {
+        console.warn('Кнопка закрытия не найдена в модальном окне');
+    }
 
     window.addEventListener('click', (e) => {
         if (e.target === modal) hideTopUpModal();
     });
 
-    document.querySelectorAll('.payment-option').forEach(button => {
-        button.addEventListener('click', () => handleTopUp(button.dataset.method));
+    const paymentButtons = modal.querySelectorAll('.payment-option');
+    paymentButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const method = button.dataset.method;
+            handleTopUp(method);
+        });
     });
 }
 
