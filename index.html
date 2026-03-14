@@ -1,78 +1,91 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- Все ваши мета-теги, подключения стилей и т.д. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Towi Gifts</title>
+    
+    <!-- Иконки Font Awesome (бесплатные) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
-    <!-- ============================================= -->
-    <!-- ОБЩАЯ ШАПКА - ОНА НИКОГДА НЕ МЕНЯЕТСЯ -->
-    <!-- ============================================= -->
     <header class="header">
         <div class="user-profile">
-            <img src="placeholder.jpg" alt="User Avatar" id="user-avatar" class="avatar">
+            <!-- Заглушка аватара, если Supabase не ответит -->
+            <img src="https://ui-avatars.com/api/?name=User&background=8a2be2&color=fff" alt="Avatar" id="user-avatar" class="avatar">
             <div class="user-info">
-                <span id="user-nickname">@nickname</span>
-                <span class="balance" id="balance">0.00 TON</span>
+                <span id="balance">0.00 TON</span>
+                <span id="user-nickname">Загрузка...</span>
             </div>
         </div>
-        <button class="add-balance-btn" id="add-balance-btn">+</button>
+        <button class="add-balance-btn" id="add-balance-btn"><i class="fa-solid fa-plus"></i></button>
     </header>
 
-    <!-- ============================================= -->
-    <!-- ГЛАВНЫЙ КОНТЕЙНЕР ДЛЯ ВСЕХ СТРАНИЦ -->
-    <!-- ============================================= -->
     <main id="app-container">
-
-        <!-- Секция 1: Главное меню (видна по умолчанию) -->
+        <!-- ГЛАВНОЕ МЕНЮ -->
         <section id="page-main" class="page active">
             <nav class="main-nav">
                 <button data-page="page-cases" class="nav-button">
-                    <img src="src/img/cases_icon.png" alt=""> Cases
+                    <i class="fa-solid fa-box-open"></i> Cases
                 </button>
                 <button data-page="page-upgrades" class="nav-button">
-                    <img src="src/img/upgrades_icon.png" alt=""> Upgrades
+                    <i class="fa-solid fa-arrow-up-trending-lines"></i> Upgrades
                 </button>
                 <button data-page="page-inventory" class="nav-button">
-                    <img src="src/img/inventory_icon.png" alt=""> Inventory
+                    <i class="fa-solid fa-briefcase"></i> Inventory
                 </button>
             </nav>
         </section>
 
-        <!-- Секция 2: Кейсы (изначально скрыта) -->
+        <!-- КЕЙСЫ -->
         <section id="page-cases" class="page">
-            <!-- Сюда вставляете ВЕСЬ КОНТЕНТ из body файла cases.html -->
-            <!-- Например: -->
-            <h2>Кейсы</h2>
-            <div class="cases-grid">
-                <!-- ... ваши карточки кейсов ... -->
+            <div id="main-cases-view">
+                <div class="cases-grid"></div>
+            </div>
+            <div id="case-view" style="display: none;">
+                <h2 id="case-name-dynamic">Кейс</h2>
+                <div class="roulette-container"><div class="roulette-items"></div></div>
+                <div class="case-controls">
+                    <button id="open-case-button" class="nav-button">Открыть</button>
+                    <button id="back-to-cases-list" class="back-btn">Назад</button>
+                </div>
             </div>
         </section>
 
-        <!-- Секция 3: Апгрейды (изначально скрыта) -->
-        <section id="page-upgrades" class="page">
-            <!-- Сюда вставляете ВЕСЬ КОНТЕНТ из body файла upgrade.html -->
-        </section>
-
-        <!-- Секция 4: Инвентарь (изначально скрыта) -->
+        <!-- ИНВЕНТАРЬ -->
         <section id="page-inventory" class="page">
-            <!-- Сюда вставляете ВЕСЬ КОНТЕНТ из body файла inventory.html -->
+            <h2>Ваш Инвентарь</h2>
+            <div class="inventory-grid"></div>
+            <button class="nav-button back-to-main">Назад в меню</button>
         </section>
-
+        
+        <!-- АПГРЕЙДЫ -->
+        <section id="page-upgrades" class="page">
+             <h2>Улучшение предметов</h2>
+             <p style="text-align: center; color: #aaa;">Скоро появится...</p>
+             <button class="nav-button back-to-main">Назад в меню</button>
+        </section>
     </main>
-
-    <!-- Модальное окно для пополнения (изначально скрыто) -->
+    <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ -->
     <div id="add-balance-modal" class="modal">
-        <!-- ... контент вашего модального окна ... -->
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <i class="fa-solid fa-wallet" style="font-size: 3rem; color: #8a2be2; margin-bottom: 1rem;"></i>
+            <h3>Пополнение TON</h3>
+            <p>Отправьте TON на адрес ниже:</p>
+            <div class="wallet-address" style="background: #111; padding: 10px; border-radius: 8px; margin: 15px 0; word-break: break-all; font-size: 0.8rem;">
+                UQAn...ващ_кошелек...
+            </div>
+            <button class="nav-button" onclick="alert('Адрес скопирован!')">Копировать адрес</button>
+        </div>
     </div>
 
-
-    <!-- Подключаем скрипты -->
+    <!-- СКРИПТЫ (проверьте пути!) -->
     <script src="config/supabase.js" type="module"></script>
-    <script src="js/main-router.js" type="module"></script> <!-- Новый главный скрипт -->
-    <!-- ... остальные скрипты ... -->
-
+    <script src="js/main-router.js" type="module"></script>
 </body>
 </html>
