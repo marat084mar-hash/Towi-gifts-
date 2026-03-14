@@ -1,59 +1,61 @@
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кейсы - Towi Gifts</title>
-    <!-- Стили находятся на уровень выше -->
-    <link rel="stylesheet" href="../style.css"> 
-    <!-- Иконки (если нужны) -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
-    
-    <!-- Хедер с информацией о пользователе (должен быть на всех страницах) -->
-    <header class="app-header">
-        <div class="user-profile">
-            <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
-            <div>
-                <span id="user-balance-value">0.00 TON</span>
-                <span id="user-username">@username</span>
+<!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Кейсы - Towi Gifts</title>
+        <link rel="stylesheet" href="../style.css">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    </head>
+    <body>
+        <header class="app-header">
+            <div class="user-profile">
+                <button class="back-button" onclick="history.back()"><i class='bx bx-chevron-left'></i></button>
+                <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
+                <div>
+                    <span id="user-balance-value">0.00 TON</span>
+                    <span id="user-username">@username</span>
+                </div>
+            </div>
+            <div class="balance-controls">
+                <button id="deposit-btn" title="Пополнить баланс">+</button>
+            </div>
+        </header>
+
+        <main>
+            <h1 class="page-title">Доступные кейсы</h1>
+            <div id="cases-container" class="grid-container">
+                <div class="loader"></div>
+            </div>
+        </main>
+
+        <div id="deposit-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>Пополнение баланса</h2>
+                <p>Выберите способ оплаты:</p>
+                <div class="payment-options">
+                    <button id="pay-ton-btn" class="payment-button">
+                        Пополнить через TON
+                        <span class="bonus">+10% бонус к пополнению!</span>
+                    </button>
+                    <button id="pay-stars-btn" class="payment-button">
+                        Пополнить через Telegram Stars
+                        <span class="bonus">Вывод заблокирован на 21 день</span>
+                    </button>
+                </div>
+                <button id="close-modal-btn">Закрыть</button>
             </div>
         </div>
-        <div class="balance-controls">
-            <button id="deposit-btn" title="Пополнить баланс">+</button>
-        </div>
-    </header>
 
-    <main>
-        <!-- СОДЕРЖИМОЕ ДЛЯ СТРАНИЦЫ КЕЙСОВ -->
-        <h1 class="page-title">Доступные кейсы</h1>
-        <div id="cases-container" class="grid-container">
-            <div class="loader"></div> <!-- Анимация загрузки -->
-        </div>
-    
-    <!-- Модальное окно для пополнения (если оно должно быть на всех страницах) -->
-    <div id="deposit-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Пополнение баланса</h2>
-            <p>Выберите способ оплаты:</p>
-            <div class="payment-options">
-                <button id="pay-ton-btn" class="payment-button">
-                    Пополнить через TON
-                    <span class="bonus">+10% бонус к пополнению!</span>
-                </button>
-                <button id="pay-stars-btn" class="payment-button">
-                    Пополнить через Telegram Stars
-                    <span class="bonus">Вывод заблокирован на 21 день</span>
-                </button>
-            </div>
-            <button id="close-modal-btn" style="margin-top: 20px;">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ ИЗ ПОДПАПКИ -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="module" src="../config/supabase.js"></script> <!-- Выходим на уровень выше к config/supabase.js -->
-    <script src="../js/global.js"></script> <!-- Выходим на уровень выше к js/global.js -->
-    <script src="../js/cases.v2.js"></script> <!-- Собственный скрипт для этой страницы -->
-</body>
-</html>
+        <nav class="bottom-nav main-menu">
+            <a href="cases.html" class="menu-button"><i class='bx bxs-box icon'></i> <span>Кейсы</span></a>
+            <a href="upgrade.html" class="menu-button"><i class='bx bxs-up-arrow-circle icon'></i> <span>Апгрейд</span></a>
+            <a href="inventory.html" class="menu-button"><i class='bx bxs-briefcase-alt-2 icon'></i> <span>Инвентарь</span></a>
+        </nav>
+        
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <script type="module" src="../config/supabase.js"></script>
+        <script src="../js/global.js"></script>
+        <script src="../js/cases.v2.js"></script>
+    </body>
+    </html>
