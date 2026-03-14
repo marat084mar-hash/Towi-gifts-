@@ -1,344 +1,179 @@
-/* =================================================================== */
-/* 1. ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ (THEME) */
-/* =================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 :root {
-    --bg-color: #181818; /* Основной фон, почти черный */
-    --surface-color: #242424; /* Цвет фона для карточек и элементов */
-    --primary-color: #8a2be2; /* Фиолетовый акцент (BlueViolet) */
-    --primary-hover-color: #9932cc; /* Более темный фиолетовый при наведении (DarkOrchid) */
-    --text-color-primary: #ffffff; /* Основной белый текст */
-    --text-color-secondary: #aaaaaa; /* Вторичный серый текст (для никнеймов и т.д.) */
-    --border-radius-main: 12px; /* Основной радиус скругления */
-    --font-main: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --bg-color: #100f14;
+    --primary-purple: #8a2be2;
+    --primary-purple-light: #9932cc;
+    --card-bg: #1c1c24;
+    --text-main: #ffffff;
+    --text-muted: #8e8e93;
+    --border-color: rgba(255, 255, 255, 0.1);
 }
 
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-main);
     background-color: var(--bg-color);
-    color: var(--text-color-primary);
-    padding: 1rem;
-    overscroll-behavior-y: contain; /* Предотвращает "оттягивание" страницы на мобильных */
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* =================================================================== */
-/* 2. ШАПКА (HEADER) */
-/* =================================================================== */
-.header {
+.balance-container {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    background-color: var(--surface-color);
-    padding: 0.75rem 1rem;
-    border-radius: var(--border-radius-main);
-    margin-bottom: 1.5rem;
+    background: var(--card-bg);
+    padding: 16px 20px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
 }
 
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.user-profile .avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    background-color: #555; /* Заглушка, если нет аватара */
-}
-
-.user-profile .user-info {
+.balance-container div {
     display: flex;
     flex-direction: column;
 }
 
-.user-info #user-nickname {
-    color: var(--text-color-secondary);
-    font-size: 0.9rem;
+#balance {
+    font-size: 24px;
+    font-weight: 700;
 }
 
-.user-info .balance {
-    font-size: 1.1rem;
+.balance-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+#username {
+    font-size: 16px;
+    color: var(--text-main);
     font-weight: 600;
 }
 
 .add-balance-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background-color: var(--primary-color);
-    color: var(--text-color-primary);
+    background: var(--primary-purple);
     border: none;
-    font-size: 2rem;
-    line-height: 40px; /* Центрирует "+" вертикально */
-    text-align: center;
+    color: white;
+    font-size: 28px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s;
 }
 
 .add-balance-btn:hover {
-    background-color: var(--primary-hover-color);
+    background: var(--primary-purple-light);
 }
 
-/* =================================================================== */
-/* 3. КОНТЕЙНЕР ПРИЛОЖЕНИЯ И ЛОГИКА СТРАНИЦ (SPA) */
-/* =================================================================== */
-main#app-container {
-    /* Тут стили для контейнера, если нужны */
-}
-
-.page {
-    display: none; /* Все страницы по умолчанию скрыты */
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.page.active {
-    display: block; /* Активная страница видима */
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* =================================================================== */
-/* 4. СТРАНИЦА: ГЛАВНОЕ МЕНЮ (page-main) */
-/* =================================================================== */
-.main-nav {
+.nav-buttons {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
 }
-.nav-button {
+
+.nav-btn {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    width: 100%;
-    padding: 1.25rem;
-    background-color: var(--primary-color);
-    color: var(--text-color-primary);
+    gap: 12px;
+    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    color: white;
+    text-decoration: none;
+    padding: 18px 20px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 600;
     border: none;
-    border-radius: var(--border-radius-main);
-    font-size: 1.2rem;
-    font-weight: 500;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.nav-button:hover {
-    background-color: var(--primary-hover-color);
-}
-
-.nav-button:active {
-    transform: scale(0.98);
-}
-
-.nav-button img {
-    width: 24px;
-    height: 24px;
-}
-
-/* =================================================================== */
-/* 5. СТРАНИЦА: КЕЙСЫ (page-cases) */
-/* =================================================================== */
-
-/* --- Экран со списком кейсов --- */
-.cases-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-}
-
-.case-card {
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius-main);
-    padding: 1rem;
-    text-align: center;
-    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
 }
 
-.case-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+.nav-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.2);
 }
 
-.case-card .case-image {
-    width: 100%;
-    max-width: 120px;
-    height: auto;
-    margin-bottom: 1rem;
+/* Стили для иконок (пример) */
+.nav-btn i { 
+    font-size: 20px; 
 }
 
-.case-card .case-name {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-}
-
-.case-card .case-price {
-    font-size: 0.9rem;
-    color: var(--text-color-secondary);
-}
-
-/* --- Экран с рулеткой --- */
-#case-view {
-    display: none; /* Изначально скрыт */
-    text-align: center;
-}
-
-.roulette-container {
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius-main);
-    padding: 1rem;
-    margin-bottom: 1rem;
-    overflow: hidden; /* Обязательно для рулетки */
-    position: relative;
-}
-
-/* Линия-указатель по центру */
-.roulette-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    height: 100%;
-    background-color: var(--primary-color);
-    z-index: 2;
-}
-
-
-.roulette-items {
-    display: flex;
-    gap: 0.5rem;
-    /* transition и transform будут управляться из JS */
-}
-
-.roulette-item {
-    flex-shrink: 0; /* Чтобы предметы не сжимались */
-    width: 100px;
-    height: 100px;
-    background-color: #333;
-    border-radius: var(--border-radius-main);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid transparent;
-}
-
-.roulette-item img {
-    width: 80%;
-    height: 80%;
-    object-fit: contain;
-}
-
-/* Стили для редкости предметов */
-.rarity-common { border-color: #90a4ae; } /* Серый */
-.rarity-uncommon { border-color: #4fc3f7; } /* Голубой */
-.rarity-rare { border-color: #29b6f6; } /* Синий */
-.rarity-mythical { border-color: #ba68c8; } /* Фиолетовый */
-.rarity-legendary { border-color: #ffd54f; } /* Золотой */
-
-/* Кнопки управления кейсом */
-.case-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.case-controls #open-case-button {
-    /* Используем стиль .nav-button */
-    justify-content: center; /* Центрируем контент кнопки */
-}
-
-.case-controls #back-to-cases-list {
-    background: none;
-    border: 1px solid var(--text-color-secondary);
-    color: var(--text-color-secondary);
-    padding: 0.75rem;
-    border-radius: var(--border-radius-main);
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.case-controls #back-to-cases-list:hover {
-    background-color: var(--surface-color);
-    color: var(--text-color-primary);
-}
-
-
-/* =================================================================== */
-/* 6. СТРАНИЦЫ: АПГРЕЙДЫ И ИНВЕНТАРЬ (ЗАГЛУШКИ) */
-/* =================================================================== */
-/* Эти стили можно будет расширить, когда появится контент */
-#page-upgrades h2, #page-inventory h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: var(--text-color-secondary);
-}
-/* =================================================================== */
-/* 7. МОДАЛЬНОЕ ОКНО */
-/* =================================================================== */
 .modal {
-    display: none; /* По умолчанию скрыто */
     position: fixed;
-    z-index: 100;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    animation: fadeIn 0.3s;
-}
-
-.modal.visible {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
 .modal-content {
-    background-color: var(--surface-color);
-    padding: 2rem;
-    border-radius: var(--border-radius-main);
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
     width: 90%;
     max-width: 400px;
-    text-align: center;
     position: relative;
-    animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid var(--border-color);
 }
 
-.modal-close-btn {
+.close-btn {
     position: absolute;
-    top: 10px;
     right: 15px;
-    font-size: 1.5rem;
-    color: var(--text-color-secondary);
-    background: none;
-    border: none;
+    top: 10px;
+    font-size: 28px;
     cursor: pointer;
+    color: var(--text-muted);
 }
 
-@keyframes scaleIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
 }
-.nav-button i {
-    margin-right: 15px;
-    width: 20px;
-    text-align: center;
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
 }
-.header .add-balance-btn i {
-    margin-right: 0;
-    font-size: 1.2rem;
+
+.payment-option:hover {
+    background: rgba(138, 43, 226, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--primary-purple);
 }
-.modal.visible { display: flex; } /* Чтобы модалка работала */
+
+.payment-option i {
+    font-size: 24px;
+    color: var(--primary-purple);
+}
+
+.payment-option strong {
+    color: var(--text-main);
+    font-size: 16px;
+}
+
+.payment-option span {
+    color: var(--text-muted);
+    font-size: 14px;
+}
