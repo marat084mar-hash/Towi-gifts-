@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Иконки (например, с Boxicons) -->
+    <!-- Стили находятся в корневой папке -->
+    <link rel="stylesheet" href="style.css"> 
+    <!-- Иконки (один раз в хедере) -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
@@ -25,20 +26,21 @@
     </header>
 
     <main>
-<div class="main-menu">
-    <a href="pages/cases.html" class="menu-button"> <!-- Убрали / -->
-        <i class='bx bxs-box icon'></i>
-        <span>Cases</span>
-    </a>
-    <a href="pages/upgrade.html" class="menu-button"> <!-- Убрали / -->
-        <i class='bx bxs-up-arrow-circle icon'></i>
-        <span>Upgrades</span>
-    </a>
-    <a href="pages/inventory.html" class="menu-button"> <!-- Убрали / -->
-        <i class='bx bxs-briefcase-alt-2 icon'></i>
-        <span>Inventory</span>
-    </a>
-</div>
+        <div class="main-menu">
+            <!-- ССЫЛКИ НА СТРАНИЦЫ ИЗ КОРНЕВОЙ ПАПКИ В ПОДПАПКУ -->
+            <a href="pages/cases.html" class="menu-button">
+                <i class='bx bxs-box icon'></i>
+                <span>Cases</span>
+            </a>
+            <a href="pages/upgrade.html" class="menu-button">
+                <i class='bx bxs-up-arrow-circle icon'></i>
+                <span>Upgrades</span>
+            </a>
+            <a href="pages/inventory.html" class="menu-button">
+                <i class='bx bxs-briefcase-alt-2 icon'></i>
+                <span>Inventory</span>
+            </a>
+        </div>
     </main>
 
     <!-- Модальное окно для пополнения -->
@@ -61,6 +63,7 @@
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- СКРИПТЫ В КОРНЕВОЙ ПАПКЕ -->
     <script type="module" src="config/supabase.js"></script>
     <script src="js/global.js"></script>
 </body>
