@@ -8,9 +8,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadUserData(tg.initDataUnsafe.user); // Загружаем данные из Supabase
     } else {
         // Блокировка интерфейса при открытии не через Telegram
-        
+        document.body.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <h2>Ошибка</h2>
+                <p>Это приложение работает только внутри Telegram.</p>
+                <button onclick="window.close()" style="margin-top: 20px;">Закрыть</button>
+            </div>
+        `;
+        return; // Прерываем выполнение, если не в Telegram
+    }
 
-    // Инициализация модального окна
+    // Инициализация модального окна (выполняется только если в Telegram)
     initTopUpModal();
 });
 
