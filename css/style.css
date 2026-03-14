@@ -8,6 +8,8 @@
     --text-main: #ffffff;
     --text-muted: #8e8e93;
     --border-color: rgba(255, 255, 255, 0.1);
+    --success-green: #4caf50;
+    --warning-orange: #ff9800;
 }
 
 * {
@@ -22,8 +24,27 @@ body {
     font-family: 'Inter', -apple-system, sans-serif;
     padding: 20px;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
 }
 
+/* Общие стили для всех страниц */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* Баланс пользователя */
 .balance-container {
     display: flex;
     align-items: center;
@@ -57,6 +78,7 @@ body {
     font-weight: 600;
 }
 
+/* Кнопка пополнения баланса */
 .add-balance-btn {
     width: 44px;
     height: 44px;
@@ -67,16 +89,21 @@ body {
     font-size: 28px;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .add-balance-btn:hover {
     background: var(--primary-purple-light);
 }
 
+/* Навигация */
 .nav-buttons {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    margin-bottom: 30px;
 }
 
 .nav-btn {
@@ -93,6 +120,7 @@ body {
     border: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    text-align: center;
 }
 
 .nav-btn:active {
@@ -100,22 +128,26 @@ body {
     box-shadow: 0 2px 10px rgba(138, 43, 226, 0.2);
 }
 
-/* Стили для иконок (пример) */
-.nav-btn i { 
-    font-size: 20px; 
+.nav-btn i {
+    font-size: 20px;
 }
 
+/* Модальное окно */
 .modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
 }
 
 .modal-content {
@@ -135,6 +167,19 @@ body {
     font-size: 28px;
     cursor: pointer;
     color: var(--text-muted);
+}
+
+.close-btn:hover {
+    color: var(--text-main);
+}
+
+/* Экраны модального окна */
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
 }
 
 .payment-options {
@@ -176,4 +221,258 @@ body {
 .payment-option span {
     color: var(--text-muted);
     font-size: 14px;
+}
+
+/* Экран ввода суммы */
+#amountTitle {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#amountInput {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    margin: 20px 0;
+    font-size: 16px;
+    outline: none;
+}
+
+#amountInput:focus {
+    border-color: var(--primary-purple);
+    background: rgba(138, 43, 226, 0.05);
+}
+.action-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary-purple);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.action-btn:hover {
+    background: var(--primary-purple-light);
+    transform: translateY(-2px);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.back-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+/* Заголовки и текст в модальном окне */
+.modal h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-align: center;
+    color: var(--text-main);
+}
+
+.modal p {
+    font-size: 16px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Стили для иконок Font Awesome (если используете) */
+.fas {
+    display: inline-block;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 20px;
+        border-radius: 16px;
+    }
+    
+    .payment-option {
+        padding: 14px;
+    }
+    
+    #amountInput {
+        padding: 12px;
+        font-size: 15px;
+    }
+    
+    .action-btn,
+    .back-btn {
+        padding: 12px;
+    }
+}
+
+/* Анимации для модального окна */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+.modal.show .modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal:not(.show) .modal-content {
+    animation: modalFadeOut 0.2s ease-in;
+}
+
+/* Специальные стили для разных страниц */
+
+/* Страница cases.html */
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.case-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.case-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Страница upgrade.html */
+.upgrade-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.upgrade-item {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+/* Страница inventory.html */
+.inventory-list {
+    list-style: none;
+}
+
+.inventory-item {
+    background: var(--card-bg);
+    padding: 16px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Сообщения об ошибках/успехе */
+.alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-green);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.alert-warning {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-orange);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+/* Общие стили для кнопок */
+.btn {
+    padding: 12px 24px;
+    border-radius: 16px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary-purple);
+    color: white;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Скроллбар для длинных страниц */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(138, 43, 226, 0.5);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(138, 43, 226, 0.8);
 }
