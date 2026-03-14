@@ -1,68 +1,67 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts</title>
-    <!-- Обязательный скрипт Telegram Web App -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Подключение твоих стилей -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Подключение иконок Font Awesome (теперь раскомментировано!) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <!-- Иконки (например, с Boxicons) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <!-- Блок с балансом и аватаром -->
-   <div class="balance-container">
-    <!-- Сюда JS вставит <img> с аватаром -->
-    <div>
-        <span class="balance-label">Balance:</span>
-        <h1 id="balance">0.00 TON</h1>
-        <p id="username">@guest</p>
-    </div>
-    <button class="add-balance-btn">+</button>
-</div>
+    
+    <header class="app-header">
+        <div class="user-profile">
+            <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
+            <div>
+                <span id="user-balance-value">0.00 TON</span>
+                <span id="user-username">@username</span>
+            </div>
+        </div>
+        <div class="balance-controls">
+            <button id="deposit-btn" title="Пополнить баланс">+</button>
+        </div>
+    </header>
 
-    <!-- Блок навигационных кнопок -->
-    <div class="nav-buttons">
-        <!-- Используем иконки Font Awesome -->
-        <a href="pages/cases.html" class="nav-btn">
-            <i class="fas fa-gift"></i> Cases
-        </a>
-        <a href="pages/upgrade.html" class="nav-btn">
-            <i class="fas fa-arrow-up"></i> Upgrades
-        </a>
-        <a href="pages/inventory.html" class="nav-btn">
-            <i class="fas fa-box"></i> Inventory
-        </a>
-    </div>
+    <main>
+        <div class="main-menu">
+            <a href="/pages/cases.html" class="menu-button">
+                <i class='bx bxs-box icon'></i> <!-- Иконка кейса -->
+                <span>Cases</span>
+            </a>
+            <a href="/pages/upgrade.html" class="menu-button">
+                <i class='bx bxs-up-arrow-circle icon'></i> <!-- Иконка апгрейда -->
+                <span>Upgrades</span>
+            </a>
+            <a href="/pages/inventory.html" class="menu-button">
+                <i class='bx bxs-briefcase-alt-2 icon'></i> <!-- Иконка инвентаря -->
+                <span>Inventory</span>
+            </a>
+        </div>
+    </main>
 
-    <!-- Подключение твоего глобального скрипта -->
-    <script src="js/global.js"></script>
-
-    <div id="topUpModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Пополнение баланса</h2>
-
-        <div class="payment-options">
-            <button class="payment-option" data-method="ton">
-                <i class="fas fa-coins"></i>
-                <div>
-                    <strong>TON</strong>
-                    <span>Бонус +10 %</span>
-                </div>
-            </button>
-
-            <button class="payment-option" data-method="stars">
-                <i class="fas fa-star"></i>
-                <div>
-            <strong>Telegram Stars</strong>
-            <span>100 звёзд = 1 TON</span>
-                </div>
-            </button>
+    <!-- Модальное окно для пополнения -->
+    <div id="deposit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Пополнение баланса</h2>
+            <p>Выберите способ оплаты:</p>
+            <div class="payment-options">
+                <button id="pay-ton-btn" class="payment-button">
+                    Пополнить через TON
+                    <span class="bonus">+10% бонус к пополнению!</span>
+                </button>
+                <button id="pay-stars-btn" class="payment-button">
+                    Пополнить через Telegram Stars
+                    <span class="bonus">Вывод заблокирован на 21 день</span>
+                </button>
+            </div>
+            <button id="close-modal-btn" style="margin-top: 20px;">Закрыть</button>
         </div>
     </div>
-</div>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="/config/supabase.js"></script>
+    <script src="/js/global.js"></script>
 </body>
 </html>
