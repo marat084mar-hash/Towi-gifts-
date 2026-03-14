@@ -1,179 +1,177 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
+/* --- Глобальные переменные и сброс стилей --- */
 :root {
-    --bg-color: #100f14;
-    --primary-purple: #8a2be2;
-    --primary-purple-light: #9932cc;
-    --card-bg: #1c1c24;
-    --text-main: #ffffff;
-    --text-muted: #8e8e93;
-    --border-color: rgba(255, 255, 255, 0.1);
+    --tg-theme-bg-color: #18222d; /* Основной фон, как в Telegram Desktop */
+    --tg-theme-secondary-bg-color: #212b36; /* Цвет фона для карточек, кнопок */
+    --tg-theme-text-color: #ffffff; /* Основной цвет текста */
+    --tg-theme-hint-color: #aaaaaa; /* Второстепенный текст (username) */
+    --accent-purple: #8c52ff; /* Фиолетовый акцент для кнопок */
+    --accent-purple-hover: #7b45e6; /* Фиолетовый при наведении */
+    --border-radius-main: 12px; /* Основной радиус скругления */
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+/* Используем шрифт, похожий на системный в Telegram */
 body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    font-family: 'Inter', -apple-system, sans-serif;
-    padding: 20px;
-    -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-sizing: border-box;
+    /* Убираем "мерцание" при загрузке данных */
+    visibility: hidden; 
 }
 
-.balance-container {
+/* --- Хедер (профиль и баланс) --- */
+.app-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    background: var(--card-bg);
-    padding: 16px 20px;
-    border-radius: 24px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 30px;
+    align-items: center;
+    background-color: var(--tg-theme-secondary-bg-color);
+    padding: 10px 15px;
+    border-radius: var(--border-radius-main);
+    margin-bottom: 20px;
 }
 
-.balance-container div {
-    display: flex;
-    flex-direction: column;
-}
-
-#balance {
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.balance-label {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-}
-
-#username {
-    font-size: 16px;
-    color: var(--text-main);
-    font-weight: 600;
-}
-
-.add-balance-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--primary-purple);
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.add-balance-btn:hover {
-    background: var(--primary-purple-light);
-}
-
-.nav-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.nav-btn {
+.user-profile {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
-    color: white;
-    text-decoration: none;
-    padding: 18px 20px;
-    border-radius: 20px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#user-username {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--tg-theme-hint-color);
+}
+
+.wallet {
+    text-align: right;
+}
+
+#user-balance-value {
     font-size: 18px;
     font-weight: 600;
+    display: block;
+}
+
+.balance-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+#deposit-btn {
+    background-color: var(--accent-purple);
+    color: white;
     border: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
 }
 
-.nav-btn:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.2);
+#deposit-btn:hover {
+    background-color: var(--accent-purple-hover);
 }
 
-/* Стили для иконок (пример) */
-.nav-btn i { 
-    font-size: 20px; 
+/* --- Основное меню (кнопки) --- */
+.main-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.modal {
+.menu-button {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: var(--accent-purple);
+    color: white;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: var(--border-radius-main);
+    font-size: 18px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.menu-button:hover {
+    background-color: var(--accent-purple-hover);
+}
+
+.menu-button .icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* --- Модальное окно пополнения --- */
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
+    display: none; /* Скрыто по умолчанию */
     justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
 .modal-content {
-    background: var(--card-bg);
-    padding: 30px;
-    border-radius: 20px;
+    background-color: var(--tg-theme-secondary-bg-color);
+    padding: 25px;
+    border-radius: var(--border-radius-main);
     width: 90%;
     max-width: 400px;
-    position: relative;
-    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
 }
 
-.close-btn {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 28px;
-    cursor: pointer;
-    color: var(--text-muted);
+.modal-content h2 {
+    margin-top: 0;
 }
-
 .payment-options {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 15px;
     margin-top: 20px;
 }
 
-.payment-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--border-color);
-    padding: 16px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: left;
-}
-
-.payment-option:hover {
-    background: rgba(138, 43, 226, 0.1);
-    transform: translateY(-2px);
-    border-color: var(--primary-purple);
-}
-
-.payment-option i {
-    font-size: 24px;
-    color: var(--primary-purple);
-}
-
-.payment-option strong {
-    color: var(--text-main);
+.payment-button {
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--accent-purple);
+    background-color: transparent;
+    color: var(--tg-theme-text-color);
     font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.payment-button:hover {
+    background-color: rgba(140, 82, 255, 0.1);
 }
 
-.payment-option span {
-    color: var(--text-muted);
-    font-size: 14px;
+.payment-button .bonus {
+    display: block;
+    font-size: 12px;
+    color: var(--tg-theme-hint-color);
+    margin-top: 4px;
 }
