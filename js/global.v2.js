@@ -65,9 +65,9 @@ async function createUserRecord(user) {
         .from('users')
         .insert([{
             telegram_id: user.id,
-            username: user.username,
-            first_name: user.first_name,
-            last_name: user.last_name,
+            username: user.username || null,
+            first_name: user.first_name || null,
+            last_name: user.last_name || null,
             balance_ton: 0.00,
             created_at: new Date().toISOString()
         }]);
@@ -115,7 +115,7 @@ function displayUserData(user, userData = null) {
                 '&background=8a2be2&color=fff';
         }
 
-        // Исправленная вставка аватара в начало контейнера
+        // Вставка аватара в начало контейнера
         balanceContainer.prepend(avatar);
     }
 }
