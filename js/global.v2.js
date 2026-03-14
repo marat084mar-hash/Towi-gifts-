@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Инициализация модального окна (выполняется только если в Telegram)
     initTopUpModal();
-});
+}
 
 // Функция загрузки данных пользователя из Supabase
 async function loadUserData(telegramUser) {
