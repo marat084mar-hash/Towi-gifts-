@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadUserData(tg.initDataUnsafe.user); // Загружаем данные из Supabase
     } else {
         // Блокировка интерфейса при открытии не через Telegram
-     document.body.innerHTML = `
+        document.body.innerHTML = `
             <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                 <h2>Ошибка</h2>
                 <p>Это приложение работает только внутри Telegram.</p>
@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
         return; // Прерываем выполнение, если не в Telegram
-    });   
-
+    }
+        
     // Добавляем обработчик для кнопки пополнения баланса
     const addBalanceBtn = document.querySelector('.add-balance-btn');
     if (addBalanceBtn) {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Инициализация модального окна (выполняется только если в Telegram)
     initTopUpModal();
-}
+});
 
 // Функция загрузки данных пользователя из Supabase
 async function loadUserData(telegramUser) {
