@@ -1,37 +1,53 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const tg = window.Telegram?.WebApp;
 
-    // Инициализация Telegram WebApp
-    if (tg?.initDataUnsafe?.user?.id) {
-        tg.ready();
-        tg.expand();
-        await loadUserData(tg.initDataUnsafe.user); // Загружаем данные из Supabase
-    } else {
-        // Блокировка интерфейса при открытии не через Telegram
-        document.body.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                <h2>Ошибка</h2>
-                <p>Это приложение работает только внутри Telegram.</p>
-                <button onclick="window.close()" style="margin-top: 20px;">Закрыть</button>
+    // 1. Улучшенная проверка: запущен ли бот в Telegram
+    // В браузере platform обычно 'unknown', а user — undefined
+    const isTelegram = tg?.initDataUnsafe?.user?.id !== undefined;
+
+    if (!isTelegram) {
+        document.body.innerHTML = 
+            <div style="text-align: center; padding: 40px; color: #333; font-family: sans-serif;">
+                <h2>Доступ ограничен</h2>
+                <p>Это приложение работает только внутри Telegram бота.</p>
+                <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px;">Попробовать снова</button>
             </div>
         `;
-        return; // Прерываем выполнение, если не в Telegram
+        return; // Полная остановка выполнения
     }
-        
-    // Добавляем обработчик для кнопки пополнения баланса
+
+    // Инициализация WebApp
+    tg.ready();
+    tg.expand();
+
+    // Загрузка данных
+    await loadUserData(tg.initDataUnsafe.user);
+
+    // Обработка кнопки пополнения
     const addBalanceBtn = document.querySelector('.add-balance-btn');
     if (addBalanceBtn) {
-        addBalanceBtn.addEventListener('click', showTopUpModal);
-    } else {
-        console.warn('Кнопка пополнения баланса не найдена');
+        addBalanceBtn.addEventListener('click', () => {
+            if (typeof showTopUpModal === 'function') {
+                showTopUpModal();
+            } else {
+                console.error('Функция showTopUpModal не найдена');
+            }
+        });
     }
 
-    // Инициализация модального окна (выполняется только если в Telegram)
-    initTopUpModal();
+    if (typeof initTopUpModal === 'function') {
+        initTopUpModal();
+    }
 });
 
-// Функция загрузки данных пользователя из Supabase
 async function loadUserData(telegramUser) {
+    // Проверка, что клиент Supabase вообще существует
+    if (!window.supabaseClient) {
+        console.error('Supabase Client не инициализирован в window.supabaseClient');
+        displayUserData(telegramUser);
+        return;
+    }
+
     try {
         const { data, error } = await window.supabaseClient
             .from('users')
@@ -40,143 +56,64 @@ async function loadUserData(telegramUser) {
             .single();
 
         if (error) {
-            if (error.code === 'PGRST.55000') {
-                // Пользователь не найден — создаём запись
+            // PGRST116 — стандартный код "запись не найдена" для .single()
+            if (error.code === 'PGRST116') {
                 await createUserRecord(telegramUser);
-                return await loadUserData(telegramUser); // Повторяем загрузку
+                return await loadUserData(telegramUser);
             } else {
-                console.error('Ошибка загрузки данных пользователя:', error);
-                displayUserData(telegramUser); // Отображаем базовые данные без баланса
-                return;
+                throw error;
             }
         }
 
-        window.userData = data; // Сохраняем в глобальную переменную
-        displayUserData(telegramUser, data); // Передаём данные для отображения
+        window.userData = data;
+        displayUserData(telegramUser, data);
     } catch (err) {
-        console.error('Критическая ошибка при загрузке данных:', err);
-        displayUserData(telegramUser); // Отображаем базовые данные
+        console.error('Ошибка Supabase:', err);
+        displayUserData(telegramUser);
     }
 }
 
-// Создание записи пользователя в Supabase, если её нет
 async function createUserRecord(user) {
-    const { error } = await window.supabaseClient
-        .from('users')
-        .insert([{
-            telegram_id: user.id,
-            username: user.username,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            balance_ton: 0.00,
-            created_at: new Date().toISOString()
-        }]);
-
-    if (error) console.error('Ошибка создания пользователя:', error);
+    try {
+        const { error } = await window.supabaseClient
+            .from('users')
+            .insert([{
+                telegram_id: user.id,
+                username: user.username || null,
+                first_name: user.first_name || null,
+                last_name: user.last_name || null,
+                balance_ton: 0.00,
+                created_at: new Date().toISOString()
+            }]);
+            if (error) throw error;
+    } catch (err) {
+        console.error('Не удалось создать пользователя:', err);
+    }
 }
 
-// Отображение данных пользователя
 function displayUserData(user, userData = null) {
     const usernameElement = document.getElementById('username');
     const balanceElement = document.getElementById('balance');
     const balanceContainer = document.querySelector('.balance-container');
 
-    // Имя пользователя
     if (usernameElement) {
-        usernameElement.textContent = `@${user.username || 'user'}`;
+        usernameElement.textContent = user.username ? @${user.username} : (user.first_name || 'User');
     }
 
-    // Баланс — берём из Supabase или показываем 0.00 TON
     if (balanceElement) {
-        if (userData && userData.balance_ton !== undefined) {
-            balanceElement.textContent = `${parseFloat(userData.balance_ton).toFixed(2)} TON`;
-        } else {
-            balanceElement.textContent = '0.00 TON';
-        }
+        const balance = userData?.balance_ton !== undefined ? parseFloat(userData.balance_ton).toFixed(2) : '0.00';
+        balanceElement.textContent = ${balance} TON;
     }
 
-    // Добавляем аватар, если его ещё нет
-    if (balanceContainer && !document.getElementById('user-avatar')) {
-        const avatar = document.createElement('img');
-        avatar.id = 'user-avatar';
-        avatar.alt = 'Avatar';
-        avatar.style.width = '48px';
-        avatar.style.height = '48px';
-        avatar.style.borderRadius = '50%';
-        avatar.style.marginRight = '12px';
-
-        // Формируем URL аватара через Telegram API
-        if (user.photo_url) {
-            avatar.src = user.photo_url;
-        } else {
-            // Заглушка, если фото нет
-            avatar.src = 'https://ui-avatars.com/api/?name=' +
-                encodeURIComponent(user.first_name || 'User') +
-                '&background=8a2be2&color=fff';
-        }
-
-        // Исправленная вставка аватара в начало контейнера
-        balanceContainer.prepend(avatar);
-    }
-}
-
-// Функции для работы с модальным окном
-function showTopUpModal() {
-    const modal = document.getElementById('topUpModal');
-    if (!modal) {
-        console.error('Модальное окно не найдено в DOM');
-        return;
-    }
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-function hideTopUpModal() {
-    const modal = document.getElementById('topUpModal');
-    if (!modal) return;
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-function initTopUpModal() {
-    const modal = document.getElementById('topUpModal');
-    if (!modal) {
-        console.error('Модальное окно не найдено в DOM');
-        return;
-    }
-
-    const closeBtn = modal.querySelector('.close-btn');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', hideTopUpModal);
-    } else {
-        console.warn('Кнопка закрытия не найдена в модальном окне');
-    }
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) hideTopUpModal();
-    });
-
-    const paymentButtons = modal.querySelectorAll('.payment-option');
-    paymentButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const method = button.dataset.method;
-            handleTopUp(method);
-        });
-    });
-}
-
-// Обработка пополнения
-function handleTopUp(method) {
-    hideTopUpModal();
-
-    switch (method) {
-        case 'ton':
-            alert('Пополнение через TON (бонус +10%)');
-            break;
-        case 'stars':
-            alert('Пополнение звёздами (100 звёзд = 1 TON)');
-            break;
-        default:
-            console.warn('Неизвестный метод пополнения:', method);
+    // Добавляем аватар, если его еще нет
+    if (balanceContainer && !document.querySelector('.user-avatar')) {
+        const img = document.createElement('img');
+        img.className = 'user-avatar';
+        img.src = user.photo_url || https://ui-avatars.com/api/?name=${user.first_name || 'U'}&background=random;
+        img.style.width = '30px';
+        img.style.height = '30px';
+        img.style.borderRadius = '50%';
+        img.style.marginRight = '8px';
+        balanceContainer.prepend(img);
     }
 }
