@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Towi Gifts - Кейсы</title>
 
-    <!-- Шрифты и иконки (подключаем в head для быстрой загрузки) -->
+    <!-- Шрифты и иконки -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer">
 
-    <!-- Стили (проверьте путь к файлу стилей) -->
-    <link rel="stylesheet" href="style.css"> <!-- Упростили путь, проверьте локацию файла -->
 
-    <!-- Обязательные скрипты Telegram Web App (подключаем до закрытия head) -->
+    <!-- Стили -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Обязательные скрипты Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -66,34 +67,35 @@
                         </div>
                     </div>
 
-                    <div class="payment-option" data-method="stars">
-                        <i class="fas fa-star"></i>
-                        <div>
-                            <strong>Stars</strong>
-                            <span>100 звёзд = 1 TON</span>
-                        </div>
-                    </div>
+            <div class="payment-option" data-method="stars">
+                <i class="fas fa-star"></i>
+                <div>
+                    <strong>Stars</strong>
+                    <span>100 звёзд = 1 TON</span>
                 </div>
-            </div>
-
-            <!-- Экран 2: Ввод суммы -->
-            <div id="amountScreen" class="screen">
-                <h2 id="amountTitle"></h2>
-                <input type="number" id="amountInput" placeholder="Введите сумму" min="0.1" step="0.01">
-
-                <button id="actionButton" class="action-btn">
-                    <!-- Текст будет меняться динамически -->
-                </button>
-
-                <button id="backButton" class="back-btn">Назад</button>
             </div>
         </div>
     </div>
 
-    <!-- Скрипты (подключаем в конце body для корректной работы с DOM) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="js/config/supabase.js"></script>
-    <script type="module" src="js/global.v2.js"></script>
-    <script src="js/cases.js"></script>
+    <!-- Экран 2: Ввод суммы -->
+    <div id="amountScreen" class="screen">
+        <h2 id="amountTitle"></h2>
+        <input type="number" id="amountInput" placeholder="Введите сумму" min="0.1" step="0.01">
+
+        <button id="actionButton" class="action-btn">
+            <!-- Текст будет меняться динамически -->
+        </button>
+
+        <button id="backButton" class="back-btn">Назад</button>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Скрипты -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="js/config/supabase.js"></script>
+<script type="module" src="js/global.v2.js"></script>
+<script src="js/cases.js"></script>
 </body>
 </html>
