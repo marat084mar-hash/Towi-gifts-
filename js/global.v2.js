@@ -8,19 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadUserData(tg.initDataUnsafe.user); // Загружаем данные из Supabase
     } else {
         // Блокировка интерфейса при открытии не через Telegram
-        document.body.innerHTML = `
-            <div class="auth-error">
-                <h1>Authentication Error</h1>
-                <p>Please open this app through our official Telegram bot.</p>
-            </div>
-        `;
-        document.head.insertAdjacentHTML('beforeend', `
-            <style>
-                body { display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-                .auth-error { color: #ffffff; }
-            </style>
-        `);
-    }
+        
 
     // Инициализация модального окна
     initTopUpModal();
