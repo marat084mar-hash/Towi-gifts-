@@ -4,16 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts</title>
-    <!-- Стили находятся в корневой папке -->
-    <link rel="stylesheet" href="style.css"> 
-    <!-- Иконки (один раз в хедере) -->
+    <title id="page-html-title">Towi Gifts</title>
+    <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    
     <header class="app-header">
         <div class="user-profile">
+            <!-- На главной странице нет кнопки "Назад" -->
             <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
             <div>
                 <span id="user-balance-value">0.00 TON</span>
@@ -26,24 +24,16 @@
     </header>
 
     <main>
+        <!-- На главной странице нет h1, если только вы не хотите его добавить -->
+        <h1 id="page-dynamic-title" class="page-title" style="display: none;"></h1> 
+
         <div class="main-menu">
-            <!-- ССЫЛКИ НА СТРАНИЦЫ ИЗ КОРНЕВОЙ ПАПКИ В ПОДПАПКУ -->
-            <a href="pages/cases.html" class="menu-button">
-                <i class='bx bxs-box icon'></i>
-                <span>Cases</span>
-            </a>
-            <a href="pages/upgrade.html" class="menu-button">
-                <i class='bx bxs-up-arrow-circle icon'></i>
-                <span>Upgrades</span>
-            </a>
-            <a href="pages/inventory.html" class="menu-button">
-                <i class='bx bxs-briefcase-alt-2 icon'></i>
-                <span>Inventory</span>
-            </a>
+            <!-- Ссылки на страницы из корневой папки в подпапку -->
+            <a href="pages/cases.html" class="menu-button"><i class='bx bxs-box icon'></i> <span>Кейсы</span></a>
+            <a href="pages/upgrade.html" class="menu-button"><i class='bx bxs-up-arrow-circle icon'></i> <span>Апгрейд</span></a>
+            <a href="pages/inventory.html" class="menu-button"><i class='bx bxs-briefcase-alt-2 icon'></i> <span>Инвентарь</span></a>
         </div>
     </main>
-
-    <!-- Модальное окно для пополнения -->
     <div id="deposit-modal" class="modal-overlay">
         <div class="modal-content">
             <h2>Пополнение баланса</h2>
@@ -63,7 +53,7 @@
     </div>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- СКРИПТЫ В КОРНЕВОЙ ПАПКЕ -->
+    <!-- Скрипты в корневой папке -->
     <script type="module" src="config/supabase.js"></script>
     <script src="js/global.js"></script>
 </body>
