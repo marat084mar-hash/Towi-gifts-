@@ -3,84 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Towi Gifts - Инвентарь</title>
+    <title>Инвентарь - Towi Gifts</title>
 
-    <!-- Скрипт Telegram Web App -->
-
-    <!-- Шрифты и иконки -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" referrerpolicy="no-referrer">
-
-    <!-- Стили -->
-    <link rel="stylesheet" href="..style.css">
-    <!-- Скрипты -->
+    <!-- Правильный путь к стилям на уровень выше (из папки pages) -->
+    <link rel="stylesheet" href="../style.css"> 
+    
+    <!-- Используем Boxicons для консистентности (как в index.html) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <div class="container">
-        <header class="app-header">
+    <header class="app-header">
+        <div class="user-profile">
+            <!-- Кнопка "Назад" - только для подстраниц -->
             <button class="back-button" onclick="history.back()">
-                <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                <span class="sr-only">Вернуться назад</span>
+                <i class='bx bx-chevron-left'></i>
             </button>
-            <h1 id="pageTitle"></h1>
-
-            <!-- Блок баланса и пополнения в шапке -->
-            <div class="balance-info" style="position: absolute; right: 20px; top: 15px;">
-                <button class="add-balance-btn" onclick="showTopUpModal()" aria-label="Пополнить баланс">
-                    <i class="fas fa-plus" aria-hidden="true"></i>
-                </button>
+            <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
+            <div>
+                <span id="user-balance-value">0.00 TON</span>
+                <span id="user-username">@username</span>
             </div>
-        </header>
-
-        <!-- Блок с аватаром и именем пользователя -->
-        <div class="user-info">
-            <img id="userAvatar" src="" alt="Аватар пользователя" class="avatar">
-            <span class="username-text" id="username"></span>
         </div>
-
-        <!-- Сообщение о КД на вывод подарков -->
-        <p id="cooldownMessage" style="color: var(--text-muted); text-align: center; margin: 20px 0;"></p>
-
-        <!-- Отображение текущего баланса -->
-        <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-            <span class="balance-text" id="userBalance" style="font-size: 18px;"></span>
+        <div class="balance-controls">
+            <button id="deposit-btn" title="Пополнить баланс">+</button>
         </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">Мой инвентарь</h1>
+        
+        <!-- Сообщение о КД на вывод подарков (для Telegram Stars) -->
+        <p id="cooldownMessage" class="hint-text"></p>
 
         <!-- Инвентарь -->
-        <div id="inventory-items-grid" class="card-grid">
-            <p style="text-align: center; color: var(--text-muted);" id="emptyInventoryMessage"></p>
+        <div id="inventory-items-grid" class="grid-container">
+            <p style="text-align: center; color: var(--text-hint);" id="emptyInventoryMessage">
+                Инвентарь пуст. Откройте кейс, чтобы получить предметы!
+            </p>
+            <div class="loader"></div> <!-- Анимация загрузки -->
         </div>
-    </div>
+    </main>
 
-    <!-- Модальное окно пополнения -->
-    <div id="topUpModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="topUpModalTitle">
+    <!-- Модальное окно для пополнения (копируем из index.html) -->
+    <div id="deposit-modal" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-btn" aria-label="Закрыть окно" onclick="closeTopUpModal()">&times;</span>
-            <h2 id="topUpModalTitle"></h2>
-
+            <h2>Пополнение баланса</h2>
+            <p>Выберите способ оплаты:</p>
             <div class="payment-options">
-                <button class="payment-option" data-method="ton">
-                    <i class="fas fa-coins" aria-hidden="true"></i>
-            <div>
-                        <strong id="paymentMethodTON"></strong>
-                <span id="paymentBonusTON"></span>
-            </div>
+                <button id="pay-ton-btn" class="payment-button">
+                    Пополнить через TON
+                    <span class="bonus">+10% бонус к пополнению!</span>
                 </button>
-
-                <button class="payment-option" data-method="stars">
-            <i class="fas fa-star" aria-hidden="true"></i>
-            <div>
-                <strong id="paymentMethodStars"></strong>
-                <span id="paymentRateStars"></span>
-            </div>
+                <button id="pay-stars-btn" class="payment-button">
+                    Пополнить через Telegram Stars
+                    <span class="bonus">Вывод заблокирован на 21 день</span>
                 </button>
             </div>
+            <button id="close-modal-btn" style="margin-top: 20px;">Закрыть</button>
         </div>
     </div>
-   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="js/config/supabase.js"></script>
-    <script type="module" src="js/global.v2.js"></script>
-    <script src="js/inventory.js"></script>
+    <!-- Нижняя навигация (копируем из index.html, пути относительные) -->
+    <nav class="bottom-nav main-menu">
+        <a href="cases.html" class="menu-button">
+            <i class='bx bxs-box icon'></i>
+            <span>Кейсы</span>
+        </a>
+        <a href="upgrade.html" class="menu-button">
+            <i class='bx bxs-up-arrow-circle icon'></i>
+            <span>Апгрейд</span>
+        </a>
+        <a href="inventory.html" class="menu-button active"> <!-- Добавляем класс 'active' для текущей страницы -->
+            <i class='bx bxs-briefcase-alt-2 icon'></i>
+            <span>Инвентарь</span>
+        </a>
+    </nav>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Правильные пути к скриптам на уровень выше -->
+    <script type="module" src="../config/supabase.js"></script>
+    <script src="../js/global.js"></script>
+    <script src="../js/inventory.js"></script> <!-- Скрипт для этой страницы -->
 </body>
 </html>
