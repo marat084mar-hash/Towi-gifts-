@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     tg.ready();
     tg.expand();
     document.body.classList.add('visible'); // Показываем тело страницы с анимацией
-
-    // --- БЛОКИРОВКА ДОСТУПА НЕ ИЗ TELEGRAM ---
-    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) { // ИСПРАВЛЕНО: добавлено '||'
+                          // --- БЛОКИРОВКА ДОСТУПА НЕ ИЗ TELEGRAM ---
+    // !!! ИСПРАВЛЕНО: ДОБАВЛЕН ЛОГИЧЕСКИЙ ОПЕРАТОР '||' (ИЛИ) !!!
+    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) { 
+        // !!! ИСПРАВЛЕНО: ВСЯ HTML-СТРОКА ОБЕРНУТА В ОБРАТНЫЕ КАВЫЧКИ () !!!
         document.body.innerHTML = 
             <style>
                 body { 
@@ -43,12 +44,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     let user = tg.initDataUnsafe.user; 
 
     // Отображаем данные пользователя в хедере
-    // ИСПРАВЛЕНО: использование шаблонных литералов
+    // !!! ИСПРАВЛЕНО: ОБЕРНУТО В ОБРАТНЫЕ КАВЫЧКИ () !!!
     document.getElementById('user-username').textContent = user.username ? @${user.username} : user.first_name;
     if (user.photo_url) {
         document.getElementById('user-avatar').src = user.photo_url;
     } else {
-        // ИСПРАВЛЕНО: использование шаблонного литерала
+        // !!! ИСПРАВЛЕНО: ОБЕРНУТО В ОБРАТНЫЕ КАВЫЧКИ () !!!
         document.getElementById('user-avatar').src = https://i.pravatar.cc/150?u=${user.id}`; 
     }
 
@@ -81,7 +82,7 @@ async function fetchBalance(user) {
             .eq('id', user.id)
             .single();
         if (error && error.code === 'PGRST116') { // PGRST116 = "Row not found"
-            // ИСПРАВЛЕНО: использование шаблонного литерала
+            // !!! ИСПРАВЛЕНО: ОБЕРНУТО В ОБРАТНЫЕ КАВЫЧКИ () !!!
             console.warn(Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.); 
             const { data: newProfile, error: createError } = await db
                 .from('profiles')
