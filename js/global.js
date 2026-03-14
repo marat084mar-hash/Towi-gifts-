@@ -1,17 +1,25 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const tg = window.Telegram?.WebApp;
 
-    // 1. Улучшенная проверка: запущен ли бот в Telegram
-    // В браузере platform обычно 'unknown', а user — undefined
-    const isTelegram = tg?.initDataUnsafe?.user?.id !== undefined;
+    // Улучшенная проверка: запущен ли бот в Telegram
+    const isTelegram = !!tg && !!tg.initDataUnsafe && !!tg.initDataUnsafe.user?.id;
 
     if (!isTelegram) {
-        document.body.innerHTML = 
-            <div style="text-align: center; padding: 40px; color: #333; font-family: sans-serif;">
-                <h2>Доступ ограничен</h2>
-                <p>Это приложение работает только внутри Telegram бота.</p>
-                <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px;">Попробовать снова</button>
-            </div>
+        // Создаём элемент через DOM API — безопаснее и надёжнее
+        const container = document.createElement('div');
+        container.style.cssText = 'text-align: center; padding: 40px; color: #333; font-family: sans-serif;';
+
+        container.innerHTML = `
+            <h2>Доступ ограничен</h2>
+            <p>Это приложение работает только внутри Telegram бота.</p>
+            <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px;">Попробовать снова</button>
+        `;
+
+        // Очищаем body и добавляем наш контейнер
+        document.body.innerHTML = '';
+        document.body.appendChild(container);
+    }
+});
         `;
         return; // Полная остановка выполнения
     }
