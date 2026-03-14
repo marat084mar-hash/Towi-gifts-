@@ -4,34 +4,52 @@ const db = window.supabase; // Используем window.supabase, как мы
 document.addEventListener('DOMContentLoaded', async () => {
     tg.ready();
     tg.expand();
+    document.body.classList.add('visible'); // Показываем тело страницы с анимацией
 
     // --- БЛОКИРОВКА ДОСТУПА НЕ ИЗ TELEGRAM ---
     if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
         document.body.innerHTML = 
             <style>
-                body { background-color: #18222d; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; text-align: center; padding: 20px;}
-                h1 { color: #8c52ff; }
-                p { margin-top: 15px; }
+                body { 
+                    background-color: #0f172a; 
+                    color: white; 
+                    display: flex; 
+                    flex-direction: column; 
+                    justify-content: center; 
+                    align-items: center; 
+                    height: 100vh; 
+                    font-family: 'Poppins', sans-serif; 
+                    text-align: center; 
+                    padding: 20px;
+                    opacity: 1 !important; /* Гарантируем видимость для сообщения об ошибке */
+                    visibility: visible !important;
+                }
+                h1 { color: #8c52ff; font-size: 28px; margin-bottom: 15px;}
+                p { margin-top: 10px; color: #94a3b8; font-size: 16px;}
             </style>
             <h1>Доступ запрещен</h1>
             <p>Пожалуйста, откройте это приложение через официального Telegram-бота.</p>
             <p>Это Telegram Web App и оно работает только внутри Telegram.</p>
         ;
-        // Если вы тестируете локально и вам нужен обход, можно временно раскомментировать
-        // return; // Закомментируйте эту строку, если хотите тестировать заглушкой в браузере
+        // Для локальной разработки, если вы хотите игнорировать эту проверку, раскомментируйте 3 строки ниже.
+        // Закомментируйте 'return' выше, чтобы заглушка сработала
+        // const mockUser = { id: 12345, username: 'dev_user', first_name: 'Developer', photo_url: 'https://i.pravatar.cc/150' };
+        // tg.initDataUnsafe = { user: mockUser };
+        // console.warn("Внимание: Обход проверки Telegram Web App для локальной разработки.");
+        // return; // Закомментируйте эту строку, если используете заглушку
     }
 
-    // --- Использование данных пользователя ---
-    let user = tg.initDataUnsafe.user; // Теперь мы уверены, что user существует
+    // Теперь user точно есть (либо настоящий, либо заглушка, если вы ее включили)
+    let user = tg.initDataUnsafe.user; 
 
-    document.getElementById('user-username').textContent = user.username ? @${user.username}` : user.first_name;
+    // Отображаем данные пользователя в хедере
+    document.getElementById('user-username').textContent = user.username ? @${user.username} : user.first_name;
     if (user.photo_url) {
         document.getElementById('user-avatar').src = user.photo_url;
     } else {
-        document.getElementById('user-avatar').src = 'https://i.pravatar.cc/150?u=' + user.id; // Заглушка с уникальным ID, выглядит как "случайный" аватар
+        document.getElementById('user-avatar').src = https://i.pravatar.cc/150?u=${user.id}; // Уникальная заглушка по ID
     }
-
-    // --- Загружаем баланс из базы ---
+    // Загружаем баланс из базы данных
     if (db) {
         await fetchBalance(user);
     } else {
@@ -39,14 +57,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('user-balance-value').textContent = 'DB Error';
     }
 
-    // --- Настройка модального окна пополнения ---
+    // Настраиваем модальное окно пополнения
     setupDepositModal();
 
-    // --- Активация текущей кнопки в нижней навигации ---
-    highlightActiveNavLink();
+    // Устанавливаем динамический заголовок страницы и активную кнопку навигации
+    setPageSpecifics();
 
-    document.body.style.visibility = 'visible'; // Показываем контент только после загрузки
+    // Предоставляем контейнер для специфичных скриптов
+    window.dynamicContentContainer = document.getElementById('dynamic-content-container');
+    if (!window.dynamicContentContainer) {
+        console.error("Ошибка: #dynamic-content-container не найден на странице!");
+    }
 });
+
 async function fetchBalance(user) {
     try {
         let { data: profile, error } = await db
@@ -55,11 +78,11 @@ async function fetchBalance(user) {
             .eq('id', user.id)
             .single();
 
-        if (error && error.code === 'PGRST116') { // PGRST116 = "Row not found" (пользователя нет в БД)
+        if (error && error.code === 'PGRST116') { // PGRST116 = "Row not found"
             console.warn(Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.);
             const { data: newProfile, error: createError } = await db
                 .from('profiles')
-                .insert([{ id: user.id, username: user.username || 'unknown', balance: 0 }]) // Добавляем 'unknown' если username нет
+                .insert([{ id: user.id, username: user.username || 'unknown', balance: 0, avatar_url: user.photo_url || '' }])
                 .select()
                 .single();
             if (createError) throw createError;
@@ -69,7 +92,7 @@ async function fetchBalance(user) {
         }
 
         if (profile) {
-            document.getElementById('user-balance-value').textContent = ${profile.balance.toFixed(2)} TON;
+            document.getElementById('user-balance-value').textContent = ${parseFloat(profile.balance).toFixed(2)} TON;
         }
     } catch (e) {
         console.error("Ошибка при получении/создании профиля пользователя:", e.message);
@@ -99,21 +122,49 @@ function setupDepositModal() {
     }
 }
 
-// Функция для подсветки активной ссылки в нижней навигации
-function highlightActiveNavLink() {
-    const navLinks = document.querySelectorAll('.bottom-nav .menu-button');
-    const currentPath = window.location.pathname.split('/').pop(); // Получаем имя файла (e.g., cases.html)
+function setPageSpecifics() {
+    const pageTitleElement = document.getElementById('page-dynamic-title');
+    const htmlTitleElement = document.getElementById('page-html-title');
+    const currentPath = window.location.pathname.split('/').pop();
+    let titleText = 'Towi Gifts'; // Дефолтный заголовок для HTML <title>
 
+    // Устанавливаем заголовок <h1> на странице
+    if (pageTitleElement) {
+        if (currentPath === 'cases.html') {
+            pageTitleElement.textContent = 'Доступные кейсы';
+            titleText = 'Кейсы - Towi Gifts';
+        } else if (currentPath === 'inventory.html') {
+            pageTitleElement.textContent = 'Мой инвентарь';
+            titleText = 'Инвентарь - Towi Gifts';
+        } else if (currentPath === 'upgrade.html') {
+            pageTitleElement.textContent = 'Улучшение предметов';
+            titleText = 'Апгрейд - Towi Gifts';
+        } else if (currentPath === 'index.html' || currentPath === '') {
+             pageTitleElement.style.display = 'none'; // На главной странице скрываем h1
+        }
+    }
+    // Устанавливаем заголовок в шапке браузера/приложения
+    if (htmlTitleElement) {
+        htmlTitleElement.textContent = titleText;
+    }
+    // Подсветка активной ссылки в нижней навигации
+    const navLinks = document.querySelectorAll('.bottom-nav .menu-button');
     navLinks.forEach(link => {
-        // Получаем имя файла из href ссылки
         const linkPath = link.getAttribute('href').split('/').pop();
         if (linkPath === currentPath) {
             link.classList.add('active');
-            // Опционально: отключаем клик по активной ссылке
-            link.style.pointerEvents = 'none';
+            link.style.pointerEvents = 'none'; // Отключаем клик по активной ссылке
         } else {
             link.classList.remove('active');
             link.style.pointerEvents = 'auto';
         }
     });
 }
+
+// Кастомное событие для обновления баланса (для вызова из других скриптов)
+document.addEventListener('balanceUpdated', async () => {
+    const userId = tg.initDataUnsafe?.user?.id;
+    if (userId && db) {
+        await fetchBalance({ id: userId });
+    }
+});
