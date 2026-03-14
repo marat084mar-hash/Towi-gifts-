@@ -1,37 +1,47 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Проверяем наличие объекта Telegram сразу
     const tg = window.Telegram?.WebApp;
 
-    // Инициализация Telegram WebApp
-    if (tg?.initDataUnsafe?.user?.id) {
-        tg.ready();
-        tg.expand();
-        await loadUserData(tg.initDataUnsafe.user); // Загружаем данные из Supabase
-    } else {
-        // Блокировка интерфейса при открытии не через Telegram
-        document.body.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+    // Проверка: запущен ли скрипт в Telegram
+    // initDataUnsafe может быть пустым в браузере, поэтому проверяем конкретно platform или наличие user
+    if (!tg || !tg.initDataUnsafe?.user) {
+        document.body.innerHTML = 
+            <div style="text-align: center; padding: 40px; color: black; background: white; height: 100vh;">
                 <h2>Ошибка</h2>
                 <p>Это приложение работает только внутри Telegram.</p>
                 <button onclick="window.close()" style="margin-top: 20px;">Закрыть</button>
             </div>
-        `;
-        return; // Прерываем выполнение, если не в Telegram
+        ;
+        return; 
     }
 
-    // Добавляем обработчик для кнопки пополнения баланса
+    // Если мы здесь, значит мы в Telegram
+    tg.ready();
+    tg.expand();
+
+    try {
+        await loadUserData(tg.initDataUnsafe.user);
+    } catch (e) {
+        console.error("Ошибка при старте:", e);
+    }
+
     const addBalanceBtn = document.querySelector('.add-balance-btn');
     if (addBalanceBtn) {
-        addBalanceBtn.addEventListener('click', showTopUpModal);
-    } else {
-        console.warn('Кнопка пополнения баланса не найдена');
+        addBalanceBtn.addEventListener('click', typeof showTopUpModal !== 'undefined' ? showTopUpModal : () => console.log('Modal function not found'));
     }
 
-    // Инициализация модального окна (выполняется только если в Telegram)
-    initTopUpModal();
+    if (typeof initTopUpModal === 'function') {
+        initTopUpModal();
+    }
 });
 
-// Функция загрузки данных пользователя из Supabase
 async function loadUserData(telegramUser) {
+    // Проверка инициализации Supabase
+    if (!window.supabaseClient) {
+        console.error("Supabase client не инициализирован! Проверьте подключение supabase.js");
+        return;
+    }
+
     try {
         const { data, error } = await window.supabaseClient
             .from('users')
@@ -40,34 +50,28 @@ async function loadUserData(telegramUser) {
             .single();
 
         if (error) {
-            if (error.code === 'PGRST.55000') {
-                // Пользователь не найден — создаём запись
+            // Если пользователь не найден (код ошибки P0001 или 406 в зависимости от настроек RLS/PostgREST)
+            if (error.code === 'PGRST116' || error.code === 'PGRST.55000') {
                 await createUserRecord(telegramUser);
-                return await loadUserData(telegramUser); // Повторяем загрузку
+                return await loadUserData(telegramUser);
             } else {
-                console.error('Ошибка загрузки данных пользователя:', error);
-                displayUserData(telegramUser); // Отображаем базовые данные без баланса
-                return;
+                throw error;
             }
         }
 
-        window.userData = data; // Сохраняем в глобальную переменную
-        displayUserData(telegramUser, data); // Передаём данные для отображения
+        window.userData = data;
+        displayUserData(telegramUser, data);
     } catch (err) {
-        console.error('Критическая ошибка при загрузке данных:', err);
-        displayUserData(telegramUser); // Отображаем базовые данные
+        console.error('Ошибка загрузки данных:', err);
+        displayUserData(telegramUser);
     }
 }
 
-// Создание записи пользователя в Supabase, если её нет
 async function createUserRecord(user) {
     const { error } = await window.supabaseClient
         .from('users')
         .insert([{
             telegram_id: user.id,
-            username: user.username,
-            first_name: user.first_name,
-            last_name: user.last_name,
             username: user.username || null,
             first_name: user.first_name || null,
             last_name: user.last_name || null,
@@ -78,29 +82,27 @@ async function createUserRecord(user) {
     if (error) console.error('Ошибка создания пользователя:', error);
 }
 
-// Отображение данных пользователя
 function displayUserData(user, userData = null) {
     const usernameElement = document.getElementById('username');
     const balanceElement = document.getElementById('balance');
-    const balanceContainer = document.querySelector('.balance-container');
 
-    // Имя пользователя
     if (usernameElement) {
-        usernameElement.textContent = `@${user.username || 'user'}`;
+        usernameElement.textContent = @${user.username || 'user'}`;
     }
-
-    // Баланс — берём из Supabase или показываем 0.00 TON
     if (balanceElement) {
-        if (userData && userData.balance_ton !== undefined) {
-            balanceElement.textContent = `${parseFloat(userData.balance_ton).toFixed(2)} TON`;
-        } else {
-            balanceElement.textContent = '0.00 TON';
-@@ -115,7 +115,7 @@
-                '&background=8a2be2&color=fff';
-        }
-
-        // Исправленная вставка аватара в начало контейнера
-        // Вставка аватара в начало контейнера
+        const balance = userData?.balance_ton ? parseFloat(userData.balance_ton).toFixed(2) : '0.00';
+        balanceElement.textContent = ${balance} TON;
+    }
+    
+    // Здесь удален мусор @@ и исправлена логика вставки аватара
+    const balanceContainer = document.querySelector('.balance-container');
+    if (balanceContainer && !document.querySelector('.user-avatar')) {
+        const avatar = document.createElement('img');
+        avatar.className = 'user-avatar';
+        avatar.src = user.photo_url || https://ui-avatars.com/api/?name=${user.first_name}&background=8a2be2&color=fff;
+        avatar.style.width = '32px';
+        avatar.style.borderRadius = '50%';
+        avatar.style.marginRight = '10px';
         balanceContainer.prepend(avatar);
     }
 }
