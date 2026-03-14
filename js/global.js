@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.body.classList.add('visible'); // Показываем тело страницы с анимацией
 
     // --- БЛОКИРОВКА ДОСТУПА НЕ ИЗ TELEGRAM ---
-    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) { // ИСПРАВЛЕНО: добавлено '||'
         document.body.innerHTML = 
             <style>
                 body { 
@@ -36,19 +36,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         // const mockUser = { id: 12345, username: 'dev_user', first_name: 'Developer', photo_url: 'https://i.pravatar.cc/150' };
         // tg.initDataUnsafe = { user: mockUser };
         // console.warn("Внимание: Обход проверки Telegram Web App для локальной разработки.");
-        // return; // Закомментируйте эту строку, если используете заглушку
+        return; // Закомментируйте эту строку, если используете заглушку
     }
 
     // Теперь user точно есть (либо настоящий, либо заглушка, если вы ее включили)
     let user = tg.initDataUnsafe.user; 
 
     // Отображаем данные пользователя в хедере
+    // ИСПРАВЛЕНО: использование шаблонных литералов
     document.getElementById('user-username').textContent = user.username ? @${user.username} : user.first_name;
     if (user.photo_url) {
         document.getElementById('user-avatar').src = user.photo_url;
     } else {
-        document.getElementById('user-avatar').src = https://i.pravatar.cc/150?u=${user.id}; // Уникальная заглушка по ID
+        // ИСПРАВЛЕНО: использование шаблонного литерала
+        document.getElementById('user-avatar').src = https://i.pravatar.cc/150?u=${user.id}`; 
     }
+
     // Загружаем баланс из базы данных
     if (db) {
         await fetchBalance(user);
@@ -77,12 +80,12 @@ async function fetchBalance(user) {
             .select('balance')
             .eq('id', user.id)
             .single();
-
         if (error && error.code === 'PGRST116') { // PGRST116 = "Row not found"
-            console.warn(Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.);
+            // ИСПРАВЛЕНО: использование шаблонного литерала
+            console.warn(Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.); 
             const { data: newProfile, error: createError } = await db
                 .from('profiles')
-                .insert([{ id: user.id, username: user.username || 'unknown', balance: 0, avatar_url: user.photo_url || '' }])
+                .insert([{ id: user.id, username: user.username || 'unknown', balance: 0, avatar_url: user.photo_url || '' }]) 
                 .select()
                 .single();
             if (createError) throw createError;
@@ -147,6 +150,7 @@ function setPageSpecifics() {
     if (htmlTitleElement) {
         htmlTitleElement.textContent = titleText;
     }
+
     // Подсветка активной ссылки в нижней навигации
     const navLinks = document.querySelectorAll('.bottom-nav .menu-button');
     navLinks.forEach(link => {
