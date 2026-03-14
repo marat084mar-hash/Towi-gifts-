@@ -1,38 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ... (код инициализации пользователя, как в прошлый раз)
     const tg = window.Telegram.WebApp;
-    tg.ready(); // Сообщаем Telegram, что приложение готово
-
-    // Показываем основное содержимое только после инициализации
+    tg.ready();
     document.body.style.visibility = 'visible';
-    // --- 1. Инициализация данных пользователя ---
+
     if (tg.initDataUnsafe?.user) {
-        const user = tg.initDataUnsafe.user;
-        console.log("User data:", user);
-        
-        // Эта функция будет обновлять UI на всех страницах
-        updateUserInfo(user);
-        
-        // TODO: Здесь мы будем вызывать функцию для получения баланса из нашей БД
-        // fetchUserBalance(user.id); 
+        updateUserInfo(tg.initDataUnsafe.user);
     } else {
-        // Для отладки в браузере, если вы не в Telegram
-        console.warn("Telegram user data not found. Using mock data for development.");
         const mockUser = {
             id: 12345678,
             username: 'dev_user',
             first_name: 'Dev',
-            photo_url: 'https://i.pravatar.cc/150' // URL для аватара-заглушки
+            photo_url: 'https://i.pravatar.cc/150'
         };
         updateUserInfo(mockUser);
-        // fetchUserBalance(mockUser.id);
     }
-
-    // --- 2. Функция для обновления UI ---
     function updateUserInfo(user) {
-        // Находим элементы по ID, которые должны быть на всех страницах
         const userAvatarElement = document.getElementById('user-avatar');
         const usernameElement = document.getElementById('user-username');
-        
         if (userAvatarElement && user.photo_url) {
             userAvatarElement.src = user.photo_url;
         }
@@ -41,29 +26,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 3. Функция для отображения баланса (пока заглушка) ---
-    function updateUserBalance(balance) {
-        const balanceElement = document.getElementById('user-balance');
-        if (balanceElement) {
-            // toFixed(2) оставляет 2 знака после запятой
-            balanceElement.textContent = ${parseFloat(balance).toFixed(2)} TON;
-        }
-    }
-
-    // --- 4. Окно пополнения ---
+    // --- Логика модального окна ---
     const depositButton = document.getElementById('deposit-btn');
-    const depositModal = document.getElementById('deposit-modal'); // Предполагаем, что у модального окна есть такой ID
-    
-    if (depositButton && depositModal) {
-        depositButton.addEventListener('click', () => {
-            // TODO: Реализовать логику показа модального окна
-            alert('Открыто окно пополнения (логика будет добавлена)');
-        });
-    }
+    const depositModal = document.getElementById('deposit-modal');
+    const closeModalButton = document.getElementById('close-modal-btn');
+    const payTonButton = document.getElementById('pay-ton-btn');
+    const payStarsButton = document.getElementById('pay-stars-btn');
 
-    // Сделаем функции глобально доступными, если нужно вызывать их из других скриптов
-    window.app = {
-        updateUserInfo,
-        updateUserBalance
-    };
+    depositButton.addEventListener('click', () => {
+        depositModal.style.display = 'flex'; // Показываем окно
+    });
+
+    closeModalButton.addEventListener('click', () => {
+        depositModal.style.display = 'none'; // Скрываем окно
+    });
+
+    // Закрытие по клику на фон
+    depositModal.addEventListener('click', (event) => {
+        if (event.target === depositModal) {
+            depositModal.style.display = 'none';
+        }
+    });
+
+    payTonButton.addEventListener('click', () => {
+        // TODO: Интеграция с TON кошельком
+        tg.showAlert('Интеграция с кошельком TON в разработке!');
+    });
+
+    payStarsButton.addEventListener('click', () => {
+        // TODO: Интеграция с Telegram Stars
+        // Пример вызова оплаты
+        // tg.openInvoice('...', (status) => { ... });
+        tg.showAlert('Интеграция с Telegram Stars в разработке!');
+    });
+
+    // ... (остальной код)
 });
