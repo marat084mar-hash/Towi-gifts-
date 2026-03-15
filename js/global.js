@@ -41,11 +41,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Закомментируйте 'return' выше, чтобы заглушка сработала
         // const mockUser = { id: 12345, username: 'dev_user', first_name: 'Developer', photo_url: 'https://i.pravatar.cc/150' };
         // tg.initDataUnsafe = { user: mockUser };
-        // console.warn("Внимание: Обход проверки Telegram Web App для локальной разработки.");
+        // console.warn("Внимание: Обход проверки Telegram WebApp для локальной разработки.");
         return; // Закомментируйте эту строку, если используете заглушку
     }
 
-    // Теперь user точно есть (либо настоящий, либо заглушка, если вы ее включили)
+    // Теперь user точно есть (либо настоящий, либо заглушка, если вы её включили)
     let user = tg.initDataUnsafe.user;
 
     // Отображаем данные пользователя в хедере
@@ -54,14 +54,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         usernameElement.textContent = user.username ? `@${user.username}` : user.first_name;
     }
 
-    const avatarElement = document.getElementById('user-avatar');
-    if (avatarElement) {
-        if (user.photo_url) {
-            avatarElement.src = user.photo_url;
-        } else {
-            avatarElement.src = `https://i.pravatar.cc/150?u=${user.id}`;
-        }
-    }
+    // Обновлённая логика для аватара с отображением первой буквы
+    setupUserAvatar(user);
 
     // Загружаем баланс из базы данных
     if (db) {
@@ -87,54 +81,105 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-async function fetchBalance(user) {
-  try {
-    let { data: profile, error } = await db
-      .from('profiles')
-      .select('balance_ton, balance_stars')
-      .eq('id', user.id)
-      .single();
+function setupUserAvatar(user) {
+    const avatarElement = document.getElementById('user-avatar');
+    if (!avatarElement) return;
 
-    if (error && error.code === 'PGRST116') { // Пользователь не найден
-      console.warn(`Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.`);
-      const { data: newProfile, error: createError } = await db
-        .from('profiles')
-        .insert([{
-          id: user.id,
-          username: user.username || 'unknown',
-          avatar_url: user.photo_url || '',
-          balance_ton: 0,
-          balance_stars: 0
+    // Очищаем элемент
+    avatarElement.innerHTML = '';
+    avatarElement.style.background = 'none';
+
+    function createLetterAvatar(letter) {
+        const letterElement = document.createElement('div');
+        letterElement.textContent = letter;
+        letterElement.style.cssText = `
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #8c52ff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+        `;
+        avatarElement.appendChild(letterElement);
+    }
+
+    if (user.photo_url) {
+        // Пытаемся загрузить аватар из Telegram
+        const img = new Image();
+        img.onload = () => {
+            avatarElement.innerHTML = `<img src="${user.photo_url}" alt="${user.first_name || 'Пользователь'}" style="width: 100%; height: 100%; border-radius: 50%;">`;
+        };
+        img.onerror = () => {
+            // Если не загрузилось, показываем первую букву имени
+            if (user.first_name) {
+                const firstLetter = user.first_name.charAt(0).toUpperCase();
+                createLetterAvatar(firstLetter);
+            }
+            // Иначе оставляем поле пустым
+        };
+        img.src = user.photo_url;
+    } else {
+        // Если нет photo_url, показываем первую букву или оставляем пустым
+        if (user.first_name) {
+            const firstLetter = user.first_name.charAt(0).toUpperCase();
+            createLetterAvatar(firstLetter);
+        }
+        // Иначе поле остаётся пустым
+    }
+}
+
+async function fetchBalance(user) {
+    try {
+        let { data: profile, error } = await db
+            .from('profiles')
+            .select('balance_ton, balance_stars')
+            .eq('id', Number(user.id))
+            .single();
+
+        if (error && error.code === 'PGRST116') {
+            console.warn(`Пользователь с ID ${user.id} не найден в БД, создаём новый профиль.`);
+            const { data: newProfile, error: createError } = await db
+                .from('profiles')
+                .insert([{
+                    id: Number(user.id),
+            username: user.username || 'unknown',
+            avatar_url: user.photo_url || '',
+            balance_ton: 0,
+            balance_stars: 0
         }])
         .select('balance_ton, balance_stars')
         .single();
 
-      if (createError) throw createError;
-      profile = newProfile;
-    } else if (error) {
-      throw error;
-    }
+            if (createError) throw createError;
+            profile = newProfile;
+        } else if (error) {
+            throw error;
+        }
 
-    // Обновляем отображение баланса TON
-    const balanceTonElement = document.getElementById('user-balance-value');
-    if (balanceTonElement) {
-      balanceTonElement.textContent = `${parseFloat(profile.balance_ton).toFixed(2)} TON`;
-    }
+        // Обновляем отображение баланса TON
+        const balanceTonElement = document.getElementById('user-balance-value');
+        if (balanceTonElement) {
+            balanceTonElement.textContent = `${parseFloat(profile.balance_ton).toFixed(2)} TON`;
+        }
 
-    // Дополнительно: отображаем баланс Stars, если нужно
-    const balanceStarsElement = document.getElementById('user-balance-stars');
-    if (balanceStarsElement) {
-      balanceStarsElement.textContent = `${profile.balance_stars} Stars`;
+        // Дополнительно: отображаем баланс Stars, если нужно
+        const balanceStarsElement = document.getElementById('user-balance-stars');
+        if (balanceStarsElement) {
+            balanceStarsElement.textContent = `${profile.balance_stars} Stars`;
+        }
+    } catch (e) {
+        console.error("Критическая ошибка при получении/создании профиля пользователя:", e);
+        const balanceElement = document.getElementById('user-balance-value');
+        if (balanceElement) {
+            balanceElement.textContent = '0.00 TON'; // Вместо ERR TON показываем 0.00 TON
+        }
     }
-  } catch (e) {
-    console.error("Ошибка при получении/создании профиля пользователя:", e.message);
-    const balanceElement = document.getElementById('user-balance-value');
-    if (balanceElement) {
-      balanceElement.textContent = 'ERR TON';
-    }
-  }
 }
-
 function setupDepositModal() {
     const modal = document.getElementById('deposit-modal');
     const btn = document.getElementById('deposit-btn');
@@ -196,6 +241,7 @@ function setPageSpecifics() {
         }
     });
 }
+
 // Кастомное событие для обновления баланса (для вызова из других скриптов)
 document.addEventListener('balanceUpdated', async () => {
     const userId = tg.initDataUnsafe?.user?.id;
@@ -203,3 +249,15 @@ document.addEventListener('balanceUpdated', async () => {
         await fetchBalance({ id: userId });
     }
 });
+
+// Дополнительная функция для принудительного обновления аватара (если нужно вызвать извне)
+window.updateUserAvatar = function(user) {
+    setupUserAvatar(user);
+};
+
+// Функция для принудительного обновления баланса
+window.refreshBalance = async function() {
+    if (tg?.initDataUnsafe?.user && db) {
+        await fetchBalance(tg.initDataUnsafe.user);
+    }
+};
