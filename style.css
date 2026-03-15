@@ -1,1 +1,532 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+:root {
+    --bg-color: #0f172a; /* Глубокий темно-синий/черный */
+    --card-bg: #1e293b;   /* Цвет карточек */
+@@ -6,14 +8,15 @@
+    --text-main: #ffffff;
+    --text-hint: #94a3b8;
+    --success-green: #4ade80;
+    --danger-red: #e63946;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --hover-transition: 0.3s ease-in-out;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 16px;
+    display: flex;
+@@ -28,48 +31,54 @@
+    visibility: visible;
+    opacity: 1;
+}
+
+main {
+    flex-grow: 1; /* Позволяет основной части занимать все доступное пространство */
+    padding-bottom: 90px; /* Отступ для нижней навигации */
+}
+
+/* --- Хедер профиля --- */
+.app-header {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-purple);
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(140, 82, 255, 0.3);
+}
+
+#user-balance-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--accent-purple), var(--accent-purple-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#user-username {
+    color: var(--text-hint);
+    font-size: 14px;
+    font-weight: 400;
+}
+
+/* Кнопка плюса */
+@@ -94,91 +103,90 @@
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(140, 82, 255, 0.6);
+}
+
+/* --- Кнопка "Назад" для подстраниц --- */
+.back-button {
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin-right: 15px;
+    transition: color var(--hover-transition), transform var(--hover-transition);
+}
+.back-button:hover {
+    color: var(--text-main);
+    transform: translateX(-3px);
+}
+
+/* --- Главное меню (кнопки) --- */
+.main-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-button {
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-purple-light));
+    color: white;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(140, 82, 255, 0.3);
+    transition: all var(--hover-transition);
+    overflow: hidden; /* Для эффекта света */
+    position: relative;
+}
+
+.menu-button:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(140, 82, 255, 0.5);
+}
+
+/* Эффект свечения при наведении */
+.menu-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewX(-30deg);
+    transition: left var(--hover-transition);
+}
+
+.menu-button:hover::before {
+    left: 100%;
+}
+
+.menu-button i {
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* --- Модальное окно --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 450px;
+    padding: 24px;
+@@ -203,48 +211,49 @@
+.payment-options {
+    margin-top: 25px;
+}
+
+.payment-button {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all var(--hover-transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.payment-button:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--accent-purple);
+    transform: translateY(-2px);
+}
+
+.payment-button i {
+    font-size: 20px;
+    color: var(--accent-purple-light);
+}
+
+.payment-button .bonus {
+    display: block;
+    font-size: 12px;
+    color: var(--success-green); /* Зеленый для бонуса */
+    margin-top: 5px;
+    font-weight: 400;
+}
+.payment-button span {
+    display: block;
+}
+
+/* Кнопка закрытия модального окна */
+.modal-content button[id*="close-modal-btn"] {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-hint);
+    padding: 10px 20px;
+@@ -258,70 +267,69 @@
+    color: white;
+    border-color: var(--accent-purple);
+}
+
+/* --- Нижняя навигация --- */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-color);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+    animation: slideInUp 0.5s ease-out forwards;
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.bottom-nav .menu-button {
+    background: transparent;
+    color: var(--text-hint);
+    flex-direction: column;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 5px;
+    transition: all var(--hover-transition);
+    box-shadow: none; /* Убираем тень, чтобы не конфликтовала с эффектом */
+}
+
+.bottom-nav .menu-button:hover {
+    color: var(--text-main);
+    background-color: rgba(140, 82, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.bottom-nav .menu-button.active {
+    color: var(--accent-purple); /* Активная кнопка */
+    font-weight: 600;
+    position: relative;
+    /* pointer-events: none; - Отключено в JS */
+}
+
+.bottom-nav .menu-button.active i {
+    color: var(--accent-purple);
+}
+.bottom-nav .menu-button i {
+    font-size: 20px;
+}
+
+/* --- Общие стили для страниц --- */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--accent-purple-light);
+    text-shadow: 0 0 10px rgba(140, 82, 255, 0.5);
+}
+
+@@ -336,7 +344,51 @@
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    padding-bottom: 80px; /* Отступ для нижней навигации */
+    padding-bottom: 20px; /* Отступ для нижней навигации, так как main уже имеет padding */
+}
+
+/* --- Стили карточек кейсов/предметов --- */
+.case-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.case-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    border-color: var(--accent-purple);
+}
+
+.case-card img {
+    width: 100%;
+    max-width: 100px; /* Ограничиваем размер изображения в карточке */
+    height: auto;
+    margin: 0 auto 10px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+.case-name, .item-name {
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.case-price, .item-price {
+    font-weight: 600;
+    color: var(--accent-purple-light);
+    font-size: 14px;
+}
+
+/* --- Анимация загрузки --- */
+@@ -353,3 +405,188 @@
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Стили для инвентаря --- */
+.inventory-item-card {
+    /* Inherits most styles from .case-card */
+}
+
+.inventory-item-card .item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap; /* Для маленьких экранов */
+}
+
+.inventory-item-card .item-actions button {
+    flex: 1;
+    min-width: 80px; /* Минимальная ширина для кнопок */
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all var(--hover-transition);
+}
+
+.sell-button {
+    background-color: var(--danger-red); /* Красный */
+    color: white;
+}
+.sell-button:hover {
+    background-color: #c92a37;
+    transform: translateY(-2px);
+}
+.withdraw-button {
+    background-color: var(--success-green); /* Зеленый */
+    color: white;
+}
+.withdraw-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+/* --- Стили для страницы апгрейда --- */
+.upgrade-interface {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding-bottom: 20px; /* Отступ для нижней навигации */
+}
+
+.upgrade-slot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 250px;
+}
+
+.upgrade-slot {
+    background: var(--card-bg);
+    border: 2px dashed var(--accent-purple);
+    border-radius: 15px;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text-hint);
+    font-size: 14px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 15px rgba(140, 82, 255, 0.2);
+}
+.upgrade-slot img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    padding: 10px;
+}
+
+.upgrade-slot p {
+    margin: 5px 0 0;
+}
+
+
+.select-gift-btn {
+    background: var(--accent-purple);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all var(--hover-transition);
+    box-shadow: 0 3px 10px rgba(140, 82, 255, 0.3);
+}
+.select-gift-btn:hover {
+    background: var(--accent-purple-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(140, 82, 255, 0.5);
+}
+
+.upgrade-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.upgrade-chance {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--success-green);
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+
+.upgrade-button {
+    background: linear-gradient(45deg, #FF6B6B, #FFB86B); /* Градиент для кнопки апгрейда */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 15px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--hover-transition);
+    box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+}
+.upgrade-button:hover:not(:disabled) {
+    background: linear-gradient(45deg, #FF4F4F, #FF994F);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+}
+.upgrade-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.upgrade-result {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Модальные окна выбора предметов для апгрейда */
+.gift-selection-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Уменьшенные карточки для выбора */
+    max-height: 300px; /* Ограничиваем высоту */
+    overflow-y: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-right: 10px; /* Для скроллбара */
+}
+
+.selection-card {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+.selection-card:hover {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 15px rgba(140, 82, 255, 0.3);
+    transform: translateY(-2px);
+}
+.selection-card img {
+    max-width: 80px;
+}
+.selection-card .item-name {
+    font-size: 13px;
+    font-weight: 500;
+}
+.selection-card .item-price {
+    font-size: 12px;
+    color: var(--accent-purple);
+}
