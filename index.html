@@ -1,63 +1,1678 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-html-title">Towi Gifts</title>
-    <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
-    <header class="app-header">
-        <div class="user-profile">
-            <!-- На главной странице нет кнопки "Назад" -->
-            <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
+<html lang="ru" style="background-color: rgb(18, 18, 18); --tg-viewport-height: 100vh; --tg-viewport-stable-height: 100vh;">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+        <link rel="icon" type="image/png" href="/swagaicon.png">
+        <link rel="author" type="text/plain" href="/humans.txt">
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+        <!-- #43: Preload для шрифтов - критический ресурс -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <!-- Roboto, Sora (display), JetBrains Mono (monospace) для Crash режима -->
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&amp;family=Sora:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"/>
+        </noscript>
+        <!-- #44: Preconnect к API и внешним ресурсам -->
+        <link rel="dns-prefetch" href="https://storage.googleapis.com">
+        <link rel="preconnect" href="https://storage.googleapis.com" crossorigin="">
+        <link rel="dns-prefetch" href="https://ton.org">
+        <link rel="preconnect" href="https://ton.org" crossorigin="">
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+        <!-- Preconnect to wallet providers for faster TONConnect loading -->
+        <link rel="preconnect" href="https://wallet.tg" crossorigin="">
+        <link rel="preconnect" href="https://uni.onekey-asset.com" crossorigin="">
+        <link rel="dns-prefetch" href="https://hk.tpstatic.net">
+        <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+        <!-- Primary Meta Tags -->
+        <title>Кейсы с Telegram подарками | ТГ подарки, Telegram Stars и NFT подарки | SwagaDrop</title>
+        <meta name="title" content="SwagaDrop: Кейсы с Telegram подарками | Краш игра, ТГ подарки, Telegram Stars и NFT подарки">
+        <meta name="description" content="SwagaDrop — №1 платформа для открытия кейсов с Telegram подарками! Краш игра, лутбокс с ТГ подарками. Открывайте кейсы, играйте в краш и мины, получайте Telegram Stars, NFT подарки, TON. Режим апгрейда, мгновенный вывод на аккаунт.">
+        <meta name="keywords" content="SwagaDrop, telegram подарки, тг подарки, telegram gifts, TG gifts, телеграм гифты, телеграм нфт подарки, telegram NFT gifts, nft telegram, коллекционные подарки telegram, telegram collectible gifts, подарки телеграм, telegram stars, звезды телеграм, тг звезды, TON подарки, тонкоин, Toncoin gifts, Fragment telegram, Getgems, blockchain gifts, кейсы telegram, лутбокс telegram, telegram gift cases, открыть кейс тг, gift box telegram, case opening, telegram lootbox, gift opening telegram, free telegram gift cases, краш игра telegram, crash game, multiplier game, краш тг, provably fair game, честная игра, crash rewards, instant win game, telegram crash, ton crash game, апгрейд telegram подарков, upgrade telegram gifts, улучшить тг подарки, exchange telegram gifts, boost telegram gifts, мины telegram, mines game telegram, telegram mines, mines TG rewards, mines challenge, telegram mini app, telegram web app, crypto gifts, digital collectibles, web3 gaming, telegram premium gifts, rare telegram gifts, telegram digital gifts, коллекционные тг подарки, блокчейн подарки telegram, Telegram подарки, тг подарки, ton blockchain gifts, ton wallet gifts, telegram gift marketplace, swagadrop, свагадроп, swagadrop бонус, swagadrop промокод">
+        <!-- Canonical тег будет устанавливаться динамически через React -->
+        <!-- Mobile Optimization -->
+        <meta name="theme-color" content="#0a0a0a">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="SwagaDrop">
+        <link rel="apple-touch-icon" href="/swagaicon.png">
+        <!-- Additional Meta -->
+        <meta name="author" content="SwagaDrop Team">
+        <meta name="creator" content="SwagaDrop">
+        <meta name="publisher" content="SwagaDrop">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="googlebot" content="index, follow">
+        <meta name="bingbot" content="index, follow">
+        <meta name="yandex" content="index, follow">
+        <!-- Alternate Language -->
+        <link rel="alternate" hreflang="en" href="https://swagadrop.com/">
+        <link rel="alternate" hreflang="ru" href="https://swagadrop.com/">
+        <link rel="alternate" hreflang="x-default" href="https://swagadrop.com/">
+        <!-- Open Graph / Facebook / Telegram -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://swagadrop.com/">
+        <meta property="og:title" content="SwagaDrop: Кейсы с Telegram подарками | ТГ подарки, Telegram Stars и NFT подарки">
+        <meta property="og:description" content="Открывайте кейсы с Telegram подарками и получайте ТГ подарки, звезды Telegram. Используйте режим апгрейда для улучшения подарков Telegram или играйте в режим мины. Выводите Telegram подарки и звезды на свой аккаунт. Пополнение через TON и криптовалюту.">
+        <meta property="og:image" content="https://swagadrop.com/banner.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="SwagaDrop - Кейсы с Telegram подарками, ТГ подарки и звезды">
+        <meta property="og:site_name" content="SwagaDrop">
+        <meta property="og:locale" content="ru_RU">
+        <meta property="og:locale:alternate" content="en_US">
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://swagadrop.com/">
+        <meta property="twitter:title" content="SwagaDrop: Кейсы с Telegram подарками | ТГ подарки и звезды">
+        <meta property="twitter:description" content="Открывайте кейсы с Telegram подарками, получайте ТГ подарки и Telegram Stars. Улучшайте подарки Telegram через режим апгрейда или играйте в мины. Выводите звезды Telegram на аккаунт. Пополнение через TON.">
+        <meta property="twitter:image" content="https://swagadrop.com/banner.png">
+        <!-- Google Analytics -->
+        <script async="" src="https://mc.yandex.ru/metrika/tag.js?id=106271379"></script>
+        <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-TS0Z1MX8ZB"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-TS0Z1MX8ZB');
+        </script>
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript">
+            ( (m, e, t, r, i, k, a) => {
+                m[i] = m[i] || function() {
+                    (m[i].a = m[i].a || []).push(arguments)
+                }
+                ;
+                m[i].l = 1 * new Date();
+                for (var j = 0; j < document.scripts.length; j++) {
+                    if (document.scripts[j].src === r) {
+                        return;
+                    }
+                }
+                k = e.createElement(t),
+                a = e.getElementsByTagName(t)[0],
+                k.async = 1,
+                k.src = r,
+                a.parentNode.insertBefore(k, a)
+            }
+            )(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=106271379', 'ym');
+
+            ym(106271379, 'init', {
+                ssr: true,
+                webvisor: true,
+                clickmap: true,
+                ecommerce: "dataLayer",
+                accurateTrackBounce: true,
+                trackLinks: true
+            });
+        </script>
+        <!-- /Yandex.Metrika counter -->
+        <!-- Telegram Scripts (defer to avoid render-blocking) -->
+        <script src="https://telegram.org/js/telegram-web-app.js" defer=""></script>
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "SwagaDrop",
+                "url": "https://swagadrop.com/",
+                "logo": "https://swagadrop.com/banner.png",
+                "sameAs": [
+                    "https://t.me/SwagaDropBot"
+                ]
+            }</script>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "SwagaDrop",
+                "url": "https://swagadrop.com/",
+                "alternateName": [
+                    "SwagaDrop",
+                    "SwagaDrop Telegram Gifts",
+                    "SwagaDrop TG"
+                ],
+                "description": "№1 платформа для открытия кейсов с Telegram подарками, ТГ подарками и звездами Telegram",
+                "keywords": "кейсы telegram, telegram gifts, тг подарки, telegram stars, telegram NFT",
+                "inLanguage": [
+                    "ru",
+                    "en"
+                ]
+            }</script>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Главная",
+                        "item": "https://swagadrop.com/"
+                    }
+                ]
+            }</script>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": [
+                    "VideoGame",
+                    "WebApplication"
+                ],
+                "name": "SwagaDrop - Telegram Gift Games",
+                "alternateName": [
+                    "SwagaDrop",
+                    "СвагаДроп",
+                    "SwagaDrop Telegram Gifts",
+                    "SwagaDrop TG Gifts"
+                ],
+                "applicationCategory": "GameApplication",
+                "operatingSystem": "Web Browser",
+                "browserRequirements": "Telegram WebView, Chrome, Safari, Firefox",
+                "gamePlatform": [
+                    "Web",
+                    "Telegram Mini App",
+                    "DesktopWebPlatform",
+                    "MobileWebPlatform"
+                ],
+                "url": "https://swagadrop.com/",
+                "description": "№1 платформа для игр с Telegram подарками. Кейсы с ТГ подарками, краш игра, апгрейд, мины. Получайте Telegram Stars, NFT подарки, TON. Мгновенный вывод на аккаунт.",
+                "genre": [
+                    "Multiplier Game",
+                    "Gift Games",
+                    "Digital Collectibles",
+                    "Crash Game",
+                    "Lootbox",
+                    "Case Opening"
+                ],
+                "playMode": "SinglePlayer",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/InStock"
+                },
+                "inLanguage": [
+                    "ru",
+                    "en"
+                ],
+                "featureList": [
+                    "Открытие кейсов с Telegram подарками",
+                    "Краш игра с множителем",
+                    "Режим апгрейда подарков",
+                    "Режим мины",
+                    "Вывод Telegram подарков на аккаунт",
+                    "Пополнение через TON и криптовалюту",
+                    "Мгновенный вывод ТГ подарков",
+                    "Telegram Stars rewards",
+                    "NFT подарки Telegram",
+                    "Provably fair games"
+                ]
+            }</script>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "Что такое кейсы с Telegram подарками на SwagaDrop?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "SwagaDrop — это №1 платформа для открытия кейсов с Telegram подарками. Вы открываете кейс, получаете ТГ подарки, NFT подарки или звезды Telegram и выводите их на свой Telegram аккаунт мгновенно. Все подарки настоящие и отправляются напрямую в ваш Telegram."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Как вывести ТГ подарки и Telegram Stars?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Выводите Telegram подарки и звезды Telegram напрямую на свой аккаунт в один клик. Все ТГ подарки, NFT подарки и призы отправляются мгновенно без задержек. Привяжите свой Telegram аккаунт и получайте все выигранные подарки автоматически."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Какие режимы игры доступны на SwagaDrop?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "На SwagaDrop доступны три режима: 1) Открытие кейсов с Telegram подарками - открывайте кейсы и получайте ТГ подарки; 2) Режим апгрейда - улучшайте свои Telegram подарки для получения более редких; 3) Режим мины - играйте и увеличивайте свой выигрыш. Выводите ТГ подарки и Telegram Stars мгновенно. Пополнение через TON и любую криптовалюту."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Какие способы пополнения доступны на SwagaDrop?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "На SwagaDrop доступно пополнение через TON (The Open Network), рубли и любую криптовалюту. Мы поддерживаем быстрые и безопасные платежи для покупки кейсов с Telegram подарками."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Что такое NFT подарки Telegram и как их получить?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "NFT подарки Telegram (ТГ НФТ подарки) — это коллекционные цифровые подарки в Telegram. На SwagaDrop вы можете выиграть эти уникальные NFT подарки, открывая кейсы. После выигрыша NFT подарок автоматически отправляется на ваш Telegram аккаунт."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Как работают Telegram Stars на SwagaDrop?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Telegram Stars (звезды Telegram) — это внутренняя валюта Telegram. На SwagaDrop вы можете выигрывать ТГ звезды, открывая кейсы или играя в режим мины. Все выигранные Telegram Stars можно вывести на свой аккаунт мгновенно."
+                        }
+                    }
+                ]
+            }</script>
+        <style>
+            /* Critical CSS - Inlined for faster FCP */
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            html {
+                font-size: 16px;
+                -webkit-text-size-adjust: 100%;
+            }
+
+            body {
+                font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+                background: #121212;
+                color: #fff;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            #root {
+                min-height: 100vh;
+            }
+
+            .app-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 16px;
+                min-height: 100vh;
+            }
+
+            .app-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 24px;
+                margin-bottom: 24px;
+                border-radius: 24px;
+                background-color: #1c1c1e;
+                height: auto;
+            }
+
+            .logo-container {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .logo-image {
+                height: 40px;
+                width: 40px;
+                aspect-ratio: 1;
+            }
+
+            .logo-text {
+                font-size: 22px;
+                font-weight: 700;
+                color: #fff;
+            }
+
+            @media (max-width: 768px) {
+                .app-header {
+                    padding: 12px 16px;
+                    margin-bottom: 16px;
+                }
+
+                .logo-image {
+                    height: 32px;
+                    width: 32px;
+                }
+
+                .logo-text {
+                    font-size: clamp(13px, 4.5vw, 18px);
+                }
+            }
+
+            .seo-fallback {
+                font-family: 'Roboto', Arial, sans-serif;
+                max-width: 960px;
+                margin: 0 auto;
+                padding: 32px 16px 64px;
+                color: #e8ebf5;
+                background: linear-gradient(180deg, rgba(12, 16, 32, 0.92), rgba(12, 16, 32, 0.72));
+            }
+
+            .seo-fallback h1, .seo-fallback h2 {
+                color: #d4daf0;
+                margin: 0 0 16px;
+                line-height: 1.3;
+            }
+
+            .seo-fallback p {
+                margin: 0 0 16px;
+                line-height: 1.6;
+            }
+
+            .seo-fallback ul {
+                margin: 0 0 24px 20px;
+                padding: 0;
+                line-height: 1.6;
+            }
+
+            .seo-fallback li {
+                margin-bottom: 8px;
+            }
+
+            .seo-fallback strong {
+                color: #ffffff;
+            }
+
+            @media (prefers-color-scheme: light) {
+                .seo-fallback {
+                    color: #354055;
+                    background: linear-gradient(180deg, rgba(228, 240, 255, 0.96), #ffffff);
+                }
+
+                .seo-fallback h1, .seo-fallback h2 {
+                    color: #1f3d7a;
+                }
+
+                .seo-fallback strong {
+                    color: #15263f;
+                }
+            }
+        </style>
+        <script type="module" crossorigin="" src="/assets/index-B18sMZDk.js"></script>
+        <link rel="modulepreload" crossorigin="" href="/assets/vendor_lottie-Bxby54S-.js">
+        <link rel="stylesheet" crossorigin="" href="/assets/index-Cbimb3Qt.css">
+        <link rel="manifest" href="/manifest.webmanifest">
+        <script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script>
+        <style id="_goober">
+            .go37342527 {
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 16px 64px rgba(0, 0, 0, 0.16);
+                width: fit-content;
+                margin: auto;
+            }
+
+            @media (max-width: 440px) {
+                .go37342527 {
+                    width:100%;
+                    height: fit-content;
+                    margin: auto 0 0 0;
+                }
+            }
+
+            .go3288899091 {
+                transform: translateY(-8px);
+                margin-bottom: 12px;
+            }
+
+            .go3535743411 {
+                margin-bottom: 12px;
+            }
+
+            tc-root * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, Tahoma, Verdana, sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            tc-root img {
+                -webkit-user-select: none;
+                -webkit-touch-callout: none;
+            }
+
+            tc-root *:focus {
+                outline: #08f auto 2px;
+            }
+
+            tc-root li {
+                list-style: none;
+            }
+
+            tc-root button {
+                outline: none;
+            }
+
+            body.tc-disable-scroll {
+                position: fixed;
+                overflow-y: scroll;
+                right: 0;
+                left: 0;
+            }
+
+            body.tc-using-mouse tc-root *:focus {
+                outline: none;
+            }
+        </style>
+        <style type="text/css">
+            [data-sonner-toaster][dir=ltr],html[dir=ltr] {
+                --toast-icon-margin-start: -3px;
+                --toast-icon-margin-end: 4px;
+                --toast-svg-margin-start: -1px;
+                --toast-svg-margin-end: 0px;
+                --toast-button-margin-start: auto;
+                --toast-button-margin-end: 0;
+                --toast-close-button-start: 0;
+                --toast-close-button-end: unset;
+                --toast-close-button-transform: translate(-35%, -35%)
+            }
+
+            [data-sonner-toaster][dir=rtl],html[dir=rtl] {
+                --toast-icon-margin-start: 4px;
+                --toast-icon-margin-end: -3px;
+                --toast-svg-margin-start: 0px;
+                --toast-svg-margin-end: -1px;
+                --toast-button-margin-start: 0;
+                --toast-button-margin-end: auto;
+                --toast-close-button-start: unset;
+                --toast-close-button-end: 0;
+                --toast-close-button-transform: translate(35%, -35%)
+            }
+
+            [data-sonner-toaster] {
+                position: fixed;
+                width: var(--width);
+                font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+                --gray1: hsl(0, 0%, 99%);
+                --gray2: hsl(0, 0%, 97.3%);
+                --gray3: hsl(0, 0%, 95.1%);
+                --gray4: hsl(0, 0%, 93%);
+                --gray5: hsl(0, 0%, 90.9%);
+                --gray6: hsl(0, 0%, 88.7%);
+                --gray7: hsl(0, 0%, 85.8%);
+                --gray8: hsl(0, 0%, 78%);
+                --gray9: hsl(0, 0%, 56.1%);
+                --gray10: hsl(0, 0%, 52.3%);
+                --gray11: hsl(0, 0%, 43.5%);
+                --gray12: hsl(0, 0%, 9%);
+                --border-radius: 8px;
+                box-sizing: border-box;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                outline: 0;
+                z-index: 999999999;
+                transition: transform .4s ease
+            }
+
+            @media (hover: none) and (pointer:coarse) {
+                [data-sonner-toaster][data-lifted=true] {
+                    transform:none
+                }
+            }
+
+            [data-sonner-toaster][data-x-position=right] {
+                right: var(--offset-right)
+            }
+
+            [data-sonner-toaster][data-x-position=left] {
+                left: var(--offset-left)
+            }
+
+            [data-sonner-toaster][data-x-position=center] {
+                left: 50%;
+                transform: translateX(-50%)
+            }
+
+            [data-sonner-toaster][data-y-position=top] {
+                top: var(--offset-top)
+            }
+
+            [data-sonner-toaster][data-y-position=bottom] {
+                bottom: var(--offset-bottom)
+            }
+
+            [data-sonner-toast] {
+                --y: translateY(100%);
+                --lift-amount: calc(var(--lift) * var(--gap));
+                z-index: var(--z-index);
+                position: absolute;
+                opacity: 0;
+                transform: var(--y);
+                touch-action: none;
+                transition: transform .4s,opacity .4s,height .4s,box-shadow .2s;
+                box-sizing: border-box;
+                outline: 0;
+                overflow-wrap: anywhere
+            }
+
+            [data-sonner-toast][data-styled=true] {
+                padding: 16px;
+                background: var(--normal-bg);
+                border: 1px solid var(--normal-border);
+                color: var(--normal-text);
+                border-radius: var(--border-radius);
+                box-shadow: 0 4px 12px rgba(0,0,0,.1);
+                width: var(--width);
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 6px
+            }
+
+            [data-sonner-toast]:focus-visible {
+                box-shadow: 0 4px 12px rgba(0,0,0,.1),0 0 0 2px rgba(0,0,0,.2)
+            }
+
+            [data-sonner-toast][data-y-position=top] {
+                top: 0;
+                --y: translateY(-100%);
+                --lift: 1;
+                --lift-amount: calc(1 * var(--gap))
+            }
+
+            [data-sonner-toast][data-y-position=bottom] {
+                bottom: 0;
+                --y: translateY(100%);
+                --lift: -1;
+                --lift-amount: calc(var(--lift) * var(--gap))
+            }
+
+            [data-sonner-toast][data-styled=true] [data-description] {
+                font-weight: 400;
+                line-height: 1.4;
+                color: #3f3f3f
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-styled=true] [data-description] {
+                color: inherit
+            }
+
+            [data-sonner-toaster][data-sonner-theme=dark] [data-description] {
+                color: #e8e8e8
+            }
+
+            [data-sonner-toast][data-styled=true] [data-title] {
+                font-weight: 500;
+                line-height: 1.5;
+                color: inherit
+            }
+
+            [data-sonner-toast][data-styled=true] [data-icon] {
+                display: flex;
+                height: 16px;
+                width: 16px;
+                position: relative;
+                justify-content: flex-start;
+                align-items: center;
+                flex-shrink: 0;
+                margin-left: var(--toast-icon-margin-start);
+                margin-right: var(--toast-icon-margin-end)
+            }
+
+            [data-sonner-toast][data-promise=true] [data-icon]>svg {
+                opacity: 0;
+                transform: scale(.8);
+                transform-origin: center;
+                animation: sonner-fade-in .3s ease forwards
+            }
+
+            [data-sonner-toast][data-styled=true] [data-icon]>* {
+                flex-shrink: 0
+            }
+
+            [data-sonner-toast][data-styled=true] [data-icon] svg {
+                margin-left: var(--toast-svg-margin-start);
+                margin-right: var(--toast-svg-margin-end)
+            }
+
+            [data-sonner-toast][data-styled=true] [data-content] {
+                display: flex;
+                flex-direction: column;
+                gap: 2px
+            }
+
+            [data-sonner-toast][data-styled=true] [data-button] {
+                border-radius: 4px;
+                padding-left: 8px;
+                padding-right: 8px;
+                height: 24px;
+                font-size: 12px;
+                color: var(--normal-bg);
+                background: var(--normal-text);
+                margin-left: var(--toast-button-margin-start);
+                margin-right: var(--toast-button-margin-end);
+                border: none;
+                font-weight: 500;
+                cursor: pointer;
+                outline: 0;
+                display: flex;
+                align-items: center;
+                flex-shrink: 0;
+                transition: opacity .4s,box-shadow .2s
+            }
+
+            [data-sonner-toast][data-styled=true] [data-button]:focus-visible {
+                box-shadow: 0 0 0 2px rgba(0,0,0,.4)
+            }
+
+            [data-sonner-toast][data-styled=true] [data-button]:first-of-type {
+                margin-left: var(--toast-button-margin-start);
+                margin-right: var(--toast-button-margin-end)
+            }
+
+            [data-sonner-toast][data-styled=true] [data-cancel] {
+                color: var(--normal-text);
+                background: rgba(0,0,0,.08)
+            }
+
+            [data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast][data-styled=true] [data-cancel] {
+                background: rgba(255,255,255,.3)
+            }
+
+            [data-sonner-toast][data-styled=true] [data-close-button] {
+                position: absolute;
+                left: var(--toast-close-button-start);
+                right: var(--toast-close-button-end);
+                top: 0;
+                height: 20px;
+                width: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0;
+                color: var(--gray12);
+                background: var(--normal-bg);
+                border: 1px solid var(--gray4);
+                transform: var(--toast-close-button-transform);
+                border-radius: 50%;
+                cursor: pointer;
+                z-index: 1;
+                transition: opacity .1s,background .2s,border-color .2s
+            }
+
+            [data-sonner-toast][data-styled=true] [data-close-button]:focus-visible {
+                box-shadow: 0 4px 12px rgba(0,0,0,.1),0 0 0 2px rgba(0,0,0,.2)
+            }
+
+            [data-sonner-toast][data-styled=true] [data-disabled=true] {
+                cursor: not-allowed
+            }
+
+            [data-sonner-toast][data-styled=true]:hover [data-close-button]:hover {
+                background: var(--gray2);
+                border-color: var(--gray5)
+            }
+
+            [data-sonner-toast][data-swiping=true]::before {
+                content: '';
+                position: absolute;
+                left: -100%;
+                right: -100%;
+                height: 100%;
+                z-index: -1
+            }
+
+            [data-sonner-toast][data-y-position=top][data-swiping=true]::before {
+                bottom: 50%;
+                transform: scaleY(3) translateY(50%)
+            }
+
+            [data-sonner-toast][data-y-position=bottom][data-swiping=true]::before {
+                top: 50%;
+                transform: scaleY(3) translateY(-50%)
+            }
+
+            [data-sonner-toast][data-swiping=false][data-removed=true]::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                transform: scaleY(2)
+            }
+
+            [data-sonner-toast][data-expanded=true]::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                height: calc(var(--gap) + 1px);
+                bottom: 100%;
+                width: 100%
+            }
+
+            [data-sonner-toast][data-mounted=true] {
+                --y: translateY(0);
+                opacity: 1
+            }
+
+            [data-sonner-toast][data-expanded=false][data-front=false] {
+                --scale: var(--toasts-before) * 0.05 + 1;
+                --y: translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--scale)));
+                height: var(--front-toast-height)
+            }
+
+            [data-sonner-toast]>* {
+                transition: opacity .4s
+            }
+
+            [data-sonner-toast][data-x-position=right] {
+                right: 0
+            }
+
+            [data-sonner-toast][data-x-position=left] {
+                left: 0
+            }
+
+            [data-sonner-toast][data-expanded=false][data-front=false][data-styled=true]>* {
+                opacity: 0
+            }
+
+            [data-sonner-toast][data-visible=false] {
+                opacity: 0;
+                pointer-events: none
+            }
+
+            [data-sonner-toast][data-mounted=true][data-expanded=true] {
+                --y: translateY(calc(var(--lift) * var(--offset)));
+                height: var(--initial-height)
+            }
+
+            [data-sonner-toast][data-removed=true][data-front=true][data-swipe-out=false] {
+                --y: translateY(calc(var(--lift) * -100%));
+                opacity: 0
+            }
+
+            [data-sonner-toast][data-removed=true][data-front=false][data-swipe-out=false][data-expanded=true] {
+                --y: translateY(calc(var(--lift) * var(--offset) + var(--lift) * -100%));
+                opacity: 0
+            }
+
+            [data-sonner-toast][data-removed=true][data-front=false][data-swipe-out=false][data-expanded=false] {
+                --y: translateY(40%);
+                opacity: 0;
+                transition: transform .5s,opacity .2s
+            }
+
+            [data-sonner-toast][data-removed=true][data-front=false]::before {
+                height: calc(var(--initial-height) + 20%)
+            }
+
+            [data-sonner-toast][data-swiping=true] {
+                transform: var(--y) translateY(var(--swipe-amount-y,0)) translateX(var(--swipe-amount-x,0));
+                transition: none
+            }
+
+            [data-sonner-toast][data-swiped=true] {
+                user-select: none
+            }
+
+            [data-sonner-toast][data-swipe-out=true][data-y-position=bottom],[data-sonner-toast][data-swipe-out=true][data-y-position=top] {
+                animation-duration: .2s;
+                animation-timing-function: ease-out;
+                animation-fill-mode: forwards
+            }
+
+            [data-sonner-toast][data-swipe-out=true][data-swipe-direction=left] {
+                animation-name: swipe-out-left
+            }
+
+            [data-sonner-toast][data-swipe-out=true][data-swipe-direction=right] {
+                animation-name: swipe-out-right
+            }
+
+            [data-sonner-toast][data-swipe-out=true][data-swipe-direction=up] {
+                animation-name: swipe-out-up
+            }
+
+            [data-sonner-toast][data-swipe-out=true][data-swipe-direction=down] {
+                animation-name: swipe-out-down
+            }
+
+            @keyframes swipe-out-left {
+                from {
+                    transform: var(--y) translateX(var(--swipe-amount-x));
+                    opacity: 1
+                }
+
+                to {
+                    transform: var(--y) translateX(calc(var(--swipe-amount-x) - 100%));
+                    opacity: 0
+                }
+            }
+
+            @keyframes swipe-out-right {
+                from {
+                    transform: var(--y) translateX(var(--swipe-amount-x));
+                    opacity: 1
+                }
+
+                to {
+                    transform: var(--y) translateX(calc(var(--swipe-amount-x) + 100%));
+                    opacity: 0
+                }
+            }
+
+            @keyframes swipe-out-up {
+                from {
+                    transform: var(--y) translateY(var(--swipe-amount-y));
+                    opacity: 1
+                }
+
+                to {
+                    transform: var(--y) translateY(calc(var(--swipe-amount-y) - 100%));
+                    opacity: 0
+                }
+            }
+
+            @keyframes swipe-out-down {
+                from {
+                    transform: var(--y) translateY(var(--swipe-amount-y));
+                    opacity: 1
+                }
+
+                to {
+                    transform: var(--y) translateY(calc(var(--swipe-amount-y) + 100%));
+                    opacity: 0
+                }
+            }
+
+            @media (max-width: 600px) {
+                [data-sonner-toaster] {
+                    position:fixed;
+                    right: var(--mobile-offset-right);
+                    left: var(--mobile-offset-left);
+                    width: 100%
+                }
+
+                [data-sonner-toaster][dir=rtl] {
+                    left: calc(var(--mobile-offset-left) * -1)
+                }
+
+                [data-sonner-toaster] [data-sonner-toast] {
+                    left: 0;
+                    right: 0;
+                    width: calc(100% - var(--mobile-offset-left) * 2)
+                }
+
+                [data-sonner-toaster][data-x-position=left] {
+                    left: var(--mobile-offset-left)
+                }
+
+                [data-sonner-toaster][data-y-position=bottom] {
+                    bottom: var(--mobile-offset-bottom)
+                }
+
+                [data-sonner-toaster][data-y-position=top] {
+                    top: var(--mobile-offset-top)
+                }
+
+                [data-sonner-toaster][data-x-position=center] {
+                    left: var(--mobile-offset-left);
+                    right: var(--mobile-offset-right);
+                    transform: none
+                }
+            }
+
+            [data-sonner-toaster][data-sonner-theme=light] {
+                --normal-bg: #fff;
+                --normal-border: var(--gray4);
+                --normal-text: var(--gray12);
+                --success-bg: hsl(143, 85%, 96%);
+                --success-border: hsl(145, 92%, 87%);
+                --success-text: hsl(140, 100%, 27%);
+                --info-bg: hsl(208, 100%, 97%);
+                --info-border: hsl(221, 91%, 93%);
+                --info-text: hsl(210, 92%, 45%);
+                --warning-bg: hsl(49, 100%, 97%);
+                --warning-border: hsl(49, 91%, 84%);
+                --warning-text: hsl(31, 92%, 45%);
+                --error-bg: hsl(359, 100%, 97%);
+                --error-border: hsl(359, 100%, 94%);
+                --error-text: hsl(360, 100%, 45%)
+            }
+
+            [data-sonner-toaster][data-sonner-theme=light] [data-sonner-toast][data-invert=true] {
+                --normal-bg: #000;
+                --normal-border: hsl(0, 0%, 20%);
+                --normal-text: var(--gray1)
+            }
+
+            [data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast][data-invert=true] {
+                --normal-bg: #fff;
+                --normal-border: var(--gray3);
+                --normal-text: var(--gray12)
+            }
+
+            [data-sonner-toaster][data-sonner-theme=dark] {
+                --normal-bg: #000;
+                --normal-bg-hover: hsl(0, 0%, 12%);
+                --normal-border: hsl(0, 0%, 20%);
+                --normal-border-hover: hsl(0, 0%, 25%);
+                --normal-text: var(--gray1);
+                --success-bg: hsl(150, 100%, 6%);
+                --success-border: hsl(147, 100%, 12%);
+                --success-text: hsl(150, 86%, 65%);
+                --info-bg: hsl(215, 100%, 6%);
+                --info-border: hsl(223, 43%, 17%);
+                --info-text: hsl(216, 87%, 65%);
+                --warning-bg: hsl(64, 100%, 6%);
+                --warning-border: hsl(60, 100%, 9%);
+                --warning-text: hsl(46, 87%, 65%);
+                --error-bg: hsl(358, 76%, 10%);
+                --error-border: hsl(357, 89%, 16%);
+                --error-text: hsl(358, 100%, 81%)
+            }
+
+            [data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast] [data-close-button] {
+                background: var(--normal-bg);
+                border-color: var(--normal-border);
+                color: var(--normal-text)
+            }
+
+            [data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast] [data-close-button]:hover {
+                background: var(--normal-bg-hover);
+                border-color: var(--normal-border-hover)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=success] {
+                background: var(--success-bg);
+                border-color: var(--success-border);
+                color: var(--success-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=success] [data-close-button] {
+                background: var(--success-bg);
+                border-color: var(--success-border);
+                color: var(--success-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=info] {
+                background: var(--info-bg);
+                border-color: var(--info-border);
+                color: var(--info-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=info] [data-close-button] {
+                background: var(--info-bg);
+                border-color: var(--info-border);
+                color: var(--info-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=warning] {
+                background: var(--warning-bg);
+                border-color: var(--warning-border);
+                color: var(--warning-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=warning] [data-close-button] {
+                background: var(--warning-bg);
+                border-color: var(--warning-border);
+                color: var(--warning-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=error] {
+                background: var(--error-bg);
+                border-color: var(--error-border);
+                color: var(--error-text)
+            }
+
+            [data-rich-colors=true][data-sonner-toast][data-type=error] [data-close-button] {
+                background: var(--error-bg);
+                border-color: var(--error-border);
+                color: var(--error-text)
+            }
+
+            .sonner-loading-wrapper {
+                --size: 16px;
+                height: var(--size);
+                width: var(--size);
+                position: absolute;
+                inset: 0;
+                z-index: 10
+            }
+
+            .sonner-loading-wrapper[data-visible=false] {
+                transform-origin: center;
+                animation: sonner-fade-out .2s ease forwards
+            }
+
+            .sonner-spinner {
+                position: relative;
+                top: 50%;
+                left: 50%;
+                height: var(--size);
+                width: var(--size)
+            }
+
+            .sonner-loading-bar {
+                animation: sonner-spin 1.2s linear infinite;
+                background: var(--gray11);
+                border-radius: 6px;
+                height: 8%;
+                left: -10%;
+                position: absolute;
+                top: -3.9%;
+                width: 24%
+            }
+
+            .sonner-loading-bar:first-child {
+                animation-delay: -1.2s;
+                transform: rotate(.0001deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(2) {
+                animation-delay: -1.1s;
+                transform: rotate(30deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(3) {
+                animation-delay: -1s;
+                transform: rotate(60deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(4) {
+                animation-delay: -.9s;
+                transform: rotate(90deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(5) {
+                animation-delay: -.8s;
+                transform: rotate(120deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(6) {
+                animation-delay: -.7s;
+                transform: rotate(150deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(7) {
+                animation-delay: -.6s;
+                transform: rotate(180deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(8) {
+                animation-delay: -.5s;
+                transform: rotate(210deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(9) {
+                animation-delay: -.4s;
+                transform: rotate(240deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(10) {
+                animation-delay: -.3s;
+                transform: rotate(270deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(11) {
+                animation-delay: -.2s;
+                transform: rotate(300deg) translate(146%)
+            }
+
+            .sonner-loading-bar:nth-child(12) {
+                animation-delay: -.1s;
+                transform: rotate(330deg) translate(146%)
+            }
+
+            @keyframes sonner-fade-in {
+                0% {
+                    opacity: 0;
+                    transform: scale(.8)
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: scale(1)
+                }
+            }
+
+            @keyframes sonner-fade-out {
+                0% {
+                    opacity: 1;
+                    transform: scale(1)
+                }
+
+                100% {
+                    opacity: 0;
+                    transform: scale(.8)
+                }
+            }
+
+            @keyframes sonner-spin {
+                0% {
+                    opacity: 1
+                }
+
+                100% {
+                    opacity: .15
+                }
+            }
+
+            @media (prefers-reduced-motion) {
+                .sonner-loading-bar,[data-sonner-toast],[data-sonner-toast]>* {
+                    transition: none!important;
+                    animation: none!important
+                }
+            }
+
+            .sonner-loader {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                transform-origin: center;
+                transition: opacity .2s,transform .2s
+            }
+
+            .sonner-loader[data-visible=false] {
+                opacity: 0;
+                transform: scale(.8) translate(-50%,-50%)
+            }
+        </style>
+        <link rel="canonical" href="https://swagadrop.com/" data-rh="true">
+        <meta property="og:url" content="https://swagadrop.com/" data-rh="true">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/CasesPage-DustIA-x.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/index-DyB3jPPs.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/caseService-CF-QMSkw.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/CasePage-D5ofV8-v.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/audioService-BikN4SE9.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/soundService-2HVNt2RU.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/ShareWinModal-Hhd7GyNQ.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/referralService-ChTkIVEe.js">
+        <link rel="stylesheet" crossorigin="" href="/assets/ShareWinModal-DAkeUKjK.css">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/TelegramGiftAnimation-DSh_ZUA9.js">
+        <link rel="stylesheet" crossorigin="" href="/assets/TelegramGiftAnimation-BcXdz0Dq.css">
+        <link rel="stylesheet" crossorigin="" href="/assets/CasePage-CYzfCMFp.css">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/inventoryStore-DFmKbpRH.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/InfoPanel-BfljUXlR.js">
+        <link rel="stylesheet" crossorigin="" href="/assets/InfoPanel-BN8MVaQX.css">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/useCanonical-BID1xzii.js">
+        <link rel="stylesheet" crossorigin="" href="/assets/CasesPage-CGvZETBQ.css">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/ProfilePage-BcHsp9TT.js">
+        <link rel="modulepreload" as="script" crossorigin="" href="/assets/Spinner-dckXhn3D.js">
+        <link rel="stylesheet" crossorigin="" href="/assets/Spinner-B-nsgrQB.css">
+        <link rel="stylesheet" crossorigin="" href="/assets/ProfilePage-BYgpFLvN.css">
+        <style id="jivo-modal-zindex-style">
+            jdiv, jdiv *, [id^="jivo"], [id*="jivo"], [class^="jivo"], [class*="jivo"], .__jivoMobileButton, .globalClass_ET, .wrap_NI, .button_BY, #jcont, #jivo-iframe-container, .jivo_shadow_host {
+                z-index: 1 !important;
+            }
+        </style>
+        <meta name="description" content="№1 платформа для открытия кейсов с Telegram подарками! Получайте ТГ подарки, звезды Telegram, NFT подарки. Режим апгрейда, мины. Выводите Telegram подарки на аккаунт мгновенно. Пополнение через TON и криптовалюту." data-rh="true">
+        <meta property="og:title" content="Кейсы с Telegram подарками | ТГ подарки, Telegram Stars и NFT подарки | SwagaDrop" data-rh="true">
+        <meta property="og:description" content="№1 платформа для открытия кейсов с Telegram подарками! Получайте ТГ подарки, звезды Telegram, NFT подарки. Режим апгрейда, мины. Выводите Telegram подарки на аккаунт мгновенно. Пополнение через TON и криптовалюту." data-rh="true">
+        <meta property="og:image" content="https://swagadrop.com/banner.png" data-rh="true">
+        <meta property="og:type" content="website" data-rh="true">
+        <meta name="twitter:card" content="summary_large_image" data-rh="true">
+        <meta name="twitter:title" content="Кейсы с Telegram подарками | ТГ подарки, Telegram Stars и NFT подарки | SwagaDrop" data-rh="true">
+        <meta name="twitter:description" content="№1 платформа для открытия кейсов с Telegram подарками! Получайте ТГ подарки, звезды Telegram, NFT подарки. Режим апгрейда, мины. Выводите Telegram подарки на аккаунт мгновенно. Пополнение через TON и криптовалюту." data-rh="true">
+        <meta name="twitter:image" content="https://swagadrop.com/banner.png" data-rh="true">
+    </head>
+    <body style="background-color: rgb(18, 18, 18); margin: 0px; padding: 0px; top: auto;" ontouchstart="">
+        <!-- Yandex.Metrika noscript (moved from head for HTML validation) -->
+        <noscript>
             <div>
-                <span id="user-balance-value">0.00 TON</span>
-                <span id="user-username">@username</span>
+                <img src="https://mc.yandex.ru/watch/106271379" style="position:absolute; left:-9999px;" alt=""/>
+            </div>
+        </noscript>
+        <!-- SVG Filter for Liquid Glass Effect -->
+        <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
+            <defs>
+                <filter id="liquid-glass">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch"></feTurbulence>
+                    <feColorMatrix type="saturate" values="0"></feColorMatrix>
+                    <feComponentTransfer>
+                        <feFuncR type="linear" slope="0.5"></feFuncR>
+                        <feFuncG type="linear" slope="0.5"></feFuncG>
+                        <feFuncB type="linear" slope="0.5"></feFuncB>
+                    </feComponentTransfer>
+                    <feComposite in2="SourceGraphic" operator="in"></feComposite>
+                    <feGaussianBlur stdDeviation="1"></feGaussianBlur>
+                </filter>
+                <!-- Noise texture for frosted effect -->
+                <filter id="noise">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"></feTurbulence>
+                </filter>
+            </defs>
+        </svg>
+        <div id="root">
+            <div style="width: 100%; height: 100vh;">
+                <section aria-label="Notifications alt+T" tabindex="-1" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></section>
+                <div class="language-modal-backdrop" style="opacity: 1;">
+                    <div class="language-modal-content" style="opacity: 1; transform: none;">
+                        <h2 class="language-modal-title">Choose your language</h2>
+                        <p class="language-modal-subtitle">Select your preferred language</p>
+                        <div class="language-modal-options">
+                            <button class="language-option-button">
+                                <img alt="English" src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2019%2010'%3e%3cdefs%3e%3cpath%20id='s'%20d='M0,-1%20L0.587785,0.809017%20L-0.951057,-0.309017%20L0.951057,-0.309017%20L-0.587785,0.809017%20Z'%20fill='%23fff'/%3e%3c/defs%3e%3crect%20width='19'%20height='10'%20fill='%23b22234'/%3e%3cpath%20d='M0,1%20h19%20M0,3%20h19%20M0,5%20h19%20M0,7%20h19%20M0,9%20h19'%20stroke='%23fff'%20stroke-width='1'/%3e%3crect%20width='9.5'%20height='5'%20fill='%233c3b6e'/%3e%3cg%20transform='translate(0.95,0.5)'%3e%3cg%20transform='scale(0.475)'%3e%3cuse%20href='%23s'%20x='1'/%3e%3cuse%20href='%23s'%20x='3'/%3e%3cuse%20href='%23s'%20x='5'/%3e%3cuse%20href='%23s'%20x='7'/%3e%3cuse%20href='%23s'%20x='9'/%3e%3cuse%20href='%23s'%20x='11'/%3e%3cuse%20href='%23s'%20x='0'%20y='1'/%3e%3cuse%20href='%23s'%20x='2'%20y='1'/%3e%3cuse%20href='%23s'%20x='4'%20y='1'/%3e%3cuse%20href='%23s'%20x='6'%20y='1'/%3e%3cuse%20href='%23s'%20x='8'%20y='1'/%3e%3cuse%20href='%23s'%20x='10'%20y='1'/%3e%3cuse%20href='%23s'%20x='1'%20y='2'/%3e%3cuse%20href='%23s'%20x='3'%20y='2'/%3e%3cuse%20href='%23s'%20x='5'%20y='2'/%3e%3cuse%20href='%23s'%20x='7'%20y='2'/%3e%3cuse%20href='%23s'%20x='9'%20y='2'/%3e%3cuse%20href='%23s'%20x='11'%20y='2'/%3e%3cuse%20href='%23s'%20x='0'%20y='3'/%3e%3cuse%20href='%23s'%20x='2'%20y='3'/%3e%3cuse%20href='%23s'%20x='4'%20y='3'/%3e%3cuse%20href='%23s'%20x='6'%20y='3'/%3e%3cuse%20href='%23s'%20x='8'%20y='3'/%3e%3cuse%20href='%23s'%20x='10'%20y='3'/%3e%3cuse%20href='%23s'%20x='1'%20y='4'/%3e%3cuse%20href='%23s'%20x='3'%20y='4'/%3e%3cuse%20href='%23s'%20x='5'%20y='4'/%3e%3cuse%20href='%23s'%20x='7'%20y='4'/%3e%3cuse%20href='%23s'%20x='9'%20y='4'/%3e%3cuse%20href='%23s'%20x='11'%20y='4'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e">
+                                <span>English</span>
+                            </button>
+                            <button class="language-option-button">
+                                <img alt="Русский" src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%209%206'%20width='900'%20height='600'%3e%3crect%20fill='%23fff'%20width='9'%20height='3'/%3e%3crect%20fill='%23d52b1e'%20y='3'%20width='9'%20height='3'/%3e%3crect%20fill='%230039a6'%20y='2'%20width='9'%20height='2'/%3e%3c/svg%3e">
+                                <span>Русский</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-container">
+                    <header class="app-header hidden">
+                        <div class="header-left">
+                            <a class="logo-container" href="/" data-discover="true">
+                                <img alt="SwagaDrop Logo" class="logo-image" width="56" height="56" fetchpriority="high" src="data:image/webp;base64,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">
+                                <span class="logo-text">SwagaDrop</span>
+                            </a>
+                        </div>
+                        <div class="header-center">
+                            <nav class="desktop-nav">
+                                <a aria-current="page" class="nav-link active active" href="/" data-discover="true">
+                                    <div class="nav-icon cases"></div>
+                                    <span>Кейсы</span>
+                                </a>
+                                <a class="nav-link" href="/upgrade" data-discover="true">
+                                    <div class="nav-icon upgrade"></div>
+                                    <span>Апгрейд</span>
+                                </a>
+                                <a class="nav-link" href="/mines" data-discover="true">
+                                    <div class="nav-icon mines"></div>
+                                    <span>Мины</span>
+                                </a>
+                                <a class="nav-link" href="/crash" data-discover="true">
+                                    <div class="nav-icon crash"></div>
+                                    <span>Краш</span>
+                                </a>
+                                <div class="nav-link">
+                                    <div class="nav-icon profile"></div>
+                                    <span>Профиль</span>
+                                </div>
+                            </nav>
+                        </div>
+                        <div class="header-right">
+                            <a href="https://t.me/swagadrops" target="_blank" rel="noopener noreferrer" class="telegram-mobile-button">
+                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M446.7 98.6l-67.6 318.8c-5.1 22.5-18.4 28.1-37.3 17.5l-103-75.9-49.7 47.8c-5.5 5.5-10.1 10.1-20.7 10.1l7.4-104.9 190.9-172.5c8.3-7.4-1.8-11.5-12.9-4.1L117.8 284 16.2 252.2c-22.1-6.9-22.5-22.1 4.6-32.7L418.2 66.4c18.4-6.9 34.5 4.1 28.5 32.2z"></path>
+                                </svg>
+                            </a>
+                            <button class="settings-button" aria-label="Settings">
+                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path>
+                                </svg>
+                            </button>
+                            <button class="login-button animated-gradient-button blue">Войти</button>
+                        </div>
+                    </header>
+                    <main class="main-content">
+                        <div class="live-feed-container">
+                            <div class="live-feed-header">
+                                <span class="drops-label">Drops</span>
+                                <div class="online-indicator"></div>
+                            </div>
+                            <div class="live-feed-wrapper">
+                                <div class="live-feed-scroll horizontal-scroll-container at-end">
+                                    <p class="no-drops-message">Ожидание новых дропов...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="opacity: 1; transform: none;">
+                            <script type="application/ld+json">
+                                {
+                                    "@context": "https://schema.org",
+                                    "@type": "Organization",
+                                    "name": "SwagaDrop",
+                                    "url": "https://swagadrop.com",
+                                    "logo": "https://swagadrop.com/swagaicon.png",
+                                    "description": "№1 платформа для открытия кейсов с Telegram подарками! Получайте ТГ подарки, звезды Telegram, NFT подарки. Режим апгрейда, мины. Выводите Telegram подарки на аккаунт мгновенно. Пополнение через TON и криптовалюту.",
+                                    "sameAs": [
+                                        "https://t.me/SwagaDrop"
+                                    ]
+                                }</script>
+                            <script type="application/ld+json">
+                                {
+                                    "@context": "https://schema.org",
+                                    "@type": "WebSite",
+                                    "name": "SwagaDrop",
+                                    "url": "https://swagadrop.com",
+                                    "potentialAction": {
+                                        "@type": "SearchAction",
+                                        "target": "https://swagadrop.com/?search={search_term_string}",
+                                        "query-input": "required name=search_term_string"
+                                    }
+                                }</script>
+                            <script type="application/ld+json">
+                                {
+                                    "@context": "https://schema.org",
+                                    "@type": "FAQPage",
+                                    "mainEntity": [
+                                        {
+                                            "@type": "Question",
+                                            "name": "Что такое кейсы с Telegram подарками?",
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": "Кейсы на SwagaDrop — это виртуальные коробки с Telegram подарками. Вы покупаете кейс за TON или Telegram Stars и получаете случайный подарок. Каждый кейс содержит подарки разной ценности — от обычных до редких и эксклюзивных."
+                                            }
+                                        },
+                                        {
+                                            "@type": "Question",
+                                            "name": "Как открыть кейс на SwagaDrop?",
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": "Пополните баланс через TON, Telegram Stars или криптовалюту. Выберите кейс по цене и содержимому. Нажмите «Открыть» и получите случайный Telegram подарок. Подарок мгновенно появится в вашем инвентаре."
+                                            }
+                                        },
+                                        {
+                                            "@type": "Question",
+                                            "name": "Можно ли вывести подарки из SwagaDrop?",
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": "Да! Все выигранные Telegram подарки можно мгновенно вывести на ваш Telegram аккаунт, продать за TON криптовалюту или обменять на Telegram Stars. Вывод происходит автоматически."
+                                            }
+                                        },
+                                        {
+                                            "@type": "Question",
+                                            "name": "Какие игры есть на SwagaDrop?",
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": "На SwagaDrop доступны: Кейсы с Telegram подарками, Crash (краш-игра с растущим множителем), Mines (сапёр с призами), и Upgrade (обмен подарков на более дорогие). Все игры provably fair."
+                                            }
+                                        }
+                                    ]
+                                }</script>
+                            <h1 class="sr-only">SwagaDrop — открывайте кейсы с Telegram подарками, выигрывайте NFT и TON криптовалюту</h1>
+                            <div class="cases-page-container">
+                                <div class="case-filters-container">
+                                    <div class="search-bar">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                        <input placeholder="Поиск по названию..." class="search-input" type="text" value="">
+                                    </div>
+                                    <div class="filters-controls">
+                                        <div class="custom-select-container">
+                                            <div class="custom-select-trigger">
+                                                <span>Популярные</span>
+                                                <div class="arrow ">▾</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="info-panel-container">
+                                    <div class="info-panel-header">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="info-panel-icon" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                            </svg>
+                                            <h4>Как работают Кейсы</h4>
+                                        </div>
+                                        <div style="transform: none;">
+                                            <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="info-panel-chevron" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="error-message">Failed to load cases.</div>
+                            </div>
+                        </div>
+                        <footer class="app-footer">
+                            <div class="footer-content">
+                                <div class="footer-brand">
+                                    <a href="/" class="footer-logo-container">
+                                        <img alt="SwagaDrop" class="footer-logo-img" src="/swagaicon.png">
+                                        <span class="footer-logo-text">SwagaDrop</span>
+                                    </a>
+                                    <p class="footer-tagline">Кейсы с Telegram подарками</p>
+                                </div>
+                                <div class="footer-links-grid">
+                                    <div class="footer-links-section">
+                                        <h4 class="footer-section-title">Навигация</h4>
+                                        <a href="/blog" class="footer-link">
+                                            <i class="ri-book-read-line footer-link-icon"></i>
+                                            <span>Блог</span>
+                                        </a>
+                                        <a href="/agreement" class="footer-link">
+                                            <i class="ri-file-list-3-line footer-link-icon"></i>
+                                            <span>Соглашение</span>
+                                        </a>
+                                        <a href="/privacy" class="footer-link">
+                                            <i class="ri-shield-check-line footer-link-icon"></i>
+                                            <span>Конфиденциальность</span>
+                                        </a>
+                                    </div>
+                                    <div class="footer-links-section">
+                                        <h4 class="footer-section-title">Связаться</h4>
+                                        <a href="https://t.me/swagadrop_news" target="_blank" rel="noopener noreferrer" class="footer-link footer-link-telegram">
+                                            <i class="ri-telegram-fill footer-link-icon"></i>
+                                            <span>Telegram канал</span>
+                                        </a>
+                                        <a href="https://t.me/SwagaDropSupportBot" target="_blank" rel="noopener noreferrer" class="footer-link footer-link-support">
+                                            <i class="ri-customer-service-2-fill footer-link-icon"></i>
+                                            <span>Поддержка 24/7</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <p class="footer-description">
+                                    Открывайте <a href="/" class="footer-inline-link">кейсы с Telegram подарками</a>
+                                    и получайте ТГ подарки прямо на свой аккаунт. Используйте режим апгрейда, играйте в мины или испытайте удачу в Crash. Выигрывайте звезды Telegram и выводите подарки на свой аккаунт.
+                                </p>
+                                <div class="footer-bottom">
+                                    <p class="footer-copyright">© 2026 SwagaDrop. Все права защищены.</p>
+                                    <div class="footer-badges">
+                                        <span class="footer-badge">💎 Premium Quality</span>
+                                        <span class="footer-badge">🔒 Secure</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </footer>
+                    </main>
+                    <nav class="bottom-nav hidden" role="navigation" aria-label="Main navigation">
+                        <a aria-label="Кейсы" aria-current="page" class="nav-link active active" href="/" data-discover="true">
+                            <div class="nav-icon cases" aria-hidden="true"></div>
+                            <span>Кейсы</span>
+                        </a>
+                        <a aria-label="Апгрейд" class="nav-link" href="/upgrade" data-discover="true">
+                            <div class="nav-icon upgrade" aria-hidden="true"></div>
+                            <span>Апгрейд</span>
+                        </a>
+                        <a aria-label="Мины" class="nav-link" href="/mines" data-discover="true">
+                            <div class="nav-icon mines" aria-hidden="true"></div>
+                            <span>Мины</span>
+                        </a>
+                        <a aria-label="Краш" class="nav-link" href="/crash" data-discover="true">
+                            <div class="nav-icon crash" aria-hidden="true"></div>
+                            <span>Краш</span>
+                        </a>
+                        <a aria-label="Профиль" class="nav-link" href="/profile" data-discover="true">
+                            <div class="nav-icon profile" aria-hidden="true"></div>
+                            <span>Профиль</span>
+                        </a>
+                    </nav>
+                </div>
             </div>
         </div>
-        <div class="balance-controls">
-            <button id="deposit-btn" title="Пополнить баланс">+</button>
-        </div>
-    </header>
-
-    <main>
-        <!-- На главной странице нет h1, если только вы не хотите его добавить -->
-        <h1 id="page-dynamic-title" class="page-title" style="display: none;"></h1> 
-
-        <div class="main-menu">
-            <!-- Ссылки на страницы из корневой папки в подпапку -->
-            <a href="pages/cases.html" class="menu-button"><i class='bx bxs-box icon'></i> <span>Кейсы</span></a>
-            <a href="pages/upgrade.html" class="menu-button"><i class='bx bxs-up-arrow-circle icon'></i> <span>Апгрейд</span></a>
-            <a href="pages/inventory.html" class="menu-button"><i class='bx bxs-briefcase-alt-2 icon'></i> <span>Инвентарь</span></a>
-        </div>
-    </main>
-
-    <div id="deposit-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Пополнение баланса</h2>
-            <p>Выберите способ оплаты:</p>
-            <div class="payment-options">
-                <button id="pay-ton-btn" class="payment-button">
-                    Пополнить через TON
-                    <span class="bonus">+10% бонус к пополнению!</span>
-                </button>
-                <button id="pay-stars-btn" class="payment-button">
-                    Пополнить через Telegram Stars
-                    <span class="bonus">Вывод заблокирован на 21 день</span>
-                </button>
-            </div>
-            <button id="close-modal-btn" style="margin-top: 20px;">Закрыть</button>
-        </div>
-    </div>
-    
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- 1. Загружаем CDN Supabase как ОБЫЧНЫЙ скрипт. Он добавит 'supabase' в глобальный scope -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
-    <!-- 2. Затем наш скрипт config/supabase.js, который теперь будет использовать глобальный 'supabase' -->
-    <script src="js/config/supabase.js"></script>
-    <!-- 3. Затем global.js -->
-    <script src="js/global.js"></script>
-</body>
-</html>
+        <noscript>
+            <div class="seo-fallback">
+                <h1>SwagaDrop — №1 Платформа для открытия кейсов с Telegram подарками</h1>
+                <p>
+                    <strong>SwagaDrop</strong>
+                    — это ведущая игровая платформа для открытия <strong>кейсов с Telegram
+          подарками</strong>
+                    .
+        Получайте <strong>ТГ подарки</strong>
+                    , <strong>звезды Telegram (Telegram Stars)</strong>
+                    , <strong>NFT подарки
+          Telegram</strong>
+                    и эксклюзивные награды.
+        Выводите все выигранные <strong>Telegram подарки</strong>
+                    на свой аккаунт мгновенно без задержек.
+        Пополнение через <strong>TON</strong>
+                    , рубли и любую криптовалюту.
+      
+                </p>
+                <p lang="en">
+                    <strong>SwagaDrop</strong>
+                    is the #1 platform for opening cases with <strong>Telegram gifts</strong>
+                    .
+        Win <strong>TG gifts</strong>
+                    , <strong>Telegram Stars</strong>
+                    , <strong>NFT Telegram gifts</strong>
+                    and
+        exclusive rewards.
+        Withdraw all <strong>Telegram gifts</strong>
+                    to your account instantly. Deposit with <strong>TON</strong>
+                    ,
+        rubles or any cryptocurrency.
+      
+                </p>
+                <h2>🎁 Что такое кейсы с Telegram подарками?</h2>
+                <p>
+                    <strong>Кейсы с Telegram подарками</strong>
+                    (telegram gift cases) — это лутбоксы, содержащие настоящие
+        <strong>подарки Telegram</strong>
+                    .
+        Открывая кейсы на SwagaDrop, вы получаете:
+      
+                </p>
+                <ul>
+                    <li>
+                        <strong>ТГ подарки</strong>
+                        (TG gifts) — коллекционные подарки Telegram
+                    </li>
+                    <li>
+                        <strong>NFT подарки Telegram</strong>
+                        — уникальные цифровые подарки
+                    </li>
+                    <li>
+                        <strong>Telegram Stars</strong>
+                        (звезды Telegram, ТГ звезды) — внутренняя валюта Telegram
+                    </li>
+                    <li>
+                        <strong>Premium подарки Telegram</strong>
+                        — редкие и эксклюзивные награды
+                    </li>
+                </ul>
+                <h2>🎮 Режимы игры на SwagaDrop</h2>
+                <h3>1. Открытие кейсов с Telegram подарками</h3>
+                <p>
+                    Выбирайте из множества <strong>кейсов с ТГ подарками</strong>
+                    разных ценовых категорий.
+        Каждый кейс содержит <strong>Telegram подарки</strong>
+                    , <strong>NFT подарки</strong>
+                    и <strong>Telegram
+          Stars</strong>
+                    .
+        Открывайте кейсы и выигрывайте ценные призы!
+      
+                </p>
+                <h3>2. Режим апгрейда подарков Telegram</h3>
+                <p>
+                    <strong>Улучшайте Telegram подарки</strong>
+                    для получения более редких и дорогих наград.
+        Используйте свои <strong>ТГ подарки</strong>
+                    для апгрейда и получайте шанс выиграть <strong>NFT подарки
+          Telegram</strong>
+                    премиум-класса.
+      
+                </p>
+                <h3>3. Режим мины с Telegram Stars</h3>
+                <p>
+                    Играйте в <strong>режим мины</strong>
+                    и увеличивайте свои выигрыши.
+        Ставьте <strong>Telegram Stars</strong>
+                    или <strong>ТГ подарки</strong>
+                    , открывайте безопасные ячейки и
+        умножайте свой приз.
+      
+                </p>
+                <h2>💎 Почему выбирают SwagaDrop</h2>
+                <ul>
+                    <li>
+                        <strong>Настоящие Telegram подарки:</strong>
+                        Все ТГ подарки и NFT подарки настоящие и отправляются прямо в
+          Telegram
+                    </li>
+                    <li>
+                        <strong>Мгновенный вывод:</strong>
+                        Выводите Telegram подарки и звезды Telegram на аккаунт без задержек
+                    </li>
+                    <li>
+                        <strong>Честная игра:</strong>
+                        Прозрачная система с проверяемыми результатами
+                    </li>
+                    <li>
+                        <strong>Три режима игры:</strong>
+                        Кейсы, апгрейд и мины — выбирайте свой стиль
+                    </li>
+                    <li>
+                        <strong>Удобное пополнение:</strong>
+                        TON, рубли, криптовалюта — платите как удобно
+                    </li>
+                    <li>
+                        <strong>Поддержка 24/7:</strong>
+                        Всегда готовы помочь с выводом ТГ подарков
+                    </li>
+                </ul>
+                <h2>🚀 Как начать выигрывать Telegram подарки</h2>
+                <ol>
+                    <li>
+                        <strong>Зарегистрируйтесь</strong>
+                        на SwagaDrop через Google, Steam или Telegram
+                    </li>
+                    <li>
+                        <strong>Пополните баланс</strong>
+                        через TON, рубли или криптовалюту
+                    </li>
+                    <li>
+                        <strong>Выберите кейс</strong>
+                        с Telegram подарками
+                    </li>
+                    <li>
+                        <strong>Откройте кейс</strong>
+                        и получите ТГ подарки, Telegram Stars или NFT подарки
+                    </li>
+                    <li>
+                        <strong>Выводите выигрыш</strong>
+                        на свой Telegram аккаунт мгновенно
+                    </li>
+                </ol>
+                <h2>💰 Способы пополнения</h2>
+                <p>
+                    На SwagaDrop доступны следующие способы пополнения для покупки <strong>кейсов с Telegram подарками</strong>
+                    :
+      
+                </p>
+                <ul>
+                    <li>
+                        <strong>TON (The Open Network)</strong>
+                        — быстрые транзакции в блокчейне TON
+                    </li>
+                    <li>
+                        <strong>Криптовалюта</strong>
+                        — Bitcoin, Ethereum, USDT и другие
+                    </li>
+                    <li>
+                        <strong>Рубли</strong>
+                        — банковские карты и другие способы
+                    </li>
+                </ul>
+                <h2>❓ Часто задаваемые вопросы</h2>
+                <h3>Что такое ТГ подарки (TG gifts)?</h3>
+                <p>
+                    <strong>ТГ подарки</strong>
+                    или <strong>Telegram подарки</strong>
+                    — это коллекционные цифровые подарки внутри
+        мессенджера Telegram.
+        На SwagaDrop вы можете выиграть эти <strong>telegram gifts</strong>
+                    , открывая кейсы, и получить их прямо в свой
+        Telegram.
+      
+                </p>
+                <h3>Как работают Telegram Stars (звезды Telegram)?</h3>
+                <p>
