@@ -3,61 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-html-title">Towi Gifts</title>
+    <title>Towi Gifts</title>
     <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <header class="app-header">
-        <div class="user-profile">
-            <!-- На главной странице нет кнопки "Назад" -->
-            <img id="user-avatar" src="https://i.pravatar.cc/150" alt="Avatar" class="avatar">
-            <div>
-                <span id="user-balance-value">0.00 TON</span>
-                <span id="user-username">@username</span>
+    <div id="app-container">
+        <div id="telegram-blocker" class="hidden">
+            <p>Это приложение доступно только через Telegram.</p>
+            <p>Пожалуйста, откройте его в Telegram.</p>
+        </div>
+
+        <div id="main-app-content" class="hidden">
+            <header class="app-header">
+                <h1 class="app-title">Towi Gifts</h1>
+            </header>
+
+            <main class="app-main">
+                <section class="balance-section">
+                    <div class="balance-card">
+                        <div class="balance-icon-container">
+                            <img id="user-avatar" src="" alt="User Avatar" class="user-avatar hidden">
+                            <div id="user-initials" class="user-initials hidden"></div>
+                        </div>
+                        <div class="balance-info">
+                            <span class="balance-label">Balance:</span>
+                            <span class="balance-value" id="user-balance">0.00 TON</span>
+                            <span class="user-id" id="user-telegram-id"></span>
+                        </div>
+                        <button class="top-up-button" onclick="openTopUpModal()">+</button>
+                    </div>
+                </section>
+
+                <section class="navigation-section">
+                    <button class="nav-button" onclick="navigateTo('cases')">
+                        <span class="button-icon cases-icon"></span>
+                        Cases
+                    </button>
+                    <button class="nav-button" onclick="navigateTo('upgrade')">
+                        <span class="button-icon upgrades-icon"></span>
+                        Upgrades
+                    </button>
+                    <button class="nav-button" onclick="navigateTo('inventory')">
+                        <span class="button-icon inventory-icon"></span>
+                        Inventory
+                    </button>
+                </section>
+            </main>
+        </div><!-- Модальное окно пополнения -->
+        <div id="top-up-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeTopUpModal()">&times;</span>
+                <h2>Пополнение баланса</h2>
+                <p class="modal-description">Выберите удобный способ пополнения.</p>
+
+                <div class="payment-options">
+                    <div class="payment-method-card" onclick="selectPaymentMethod('ton')">
+                        <div class="method-icon ton-icon"></div>
+                        <div class="method-info">
+                            <h3>TON Wallet / Tonkeeper</h3>
+                            <p>+10% к пополнению</p>
+                            <p class="min-amount">Минимум: 0.2 TON</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-method-card" onclick="selectPaymentMethod('stars')">
+                        <div class="method-icon stars-icon"></div>
+                        <div class="method-info">
+                            <h3>Telegram Stars</h3>
+                            <p>Блокировка вывода на 21 день</p>
+                            <p class="min-amount">Минимум: 50 Stars</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ton-payment-section" class="payment-section hidden">
+                    <h3>Пополнение через TON</h3>
+                    <input type="number" id="ton-amount" placeholder="Введите сумму в TON (мин 0.2)" min="0.2" step="0.1">
+                    <p class="bonus-info" id="ton-bonus-display">Вы получите: 0.00 TON (+10%)</p>
+                    <button class="confirm-payment-button" onclick="initiateTonPayment()">Пополнить через TON</button>
+                </div>
+
+                <div id="stars-payment-section" class="payment-section hidden">
+                    <h3>Пополнение через Telegram Stars</h3>
+                    <input type="number" id="stars-amount" placeholder="Введите сумму в Stars (мин 50)" min="50" step="10">
+                    <p class="withdrawal-info">Внимание: при пополнении через Stars, вывод подарков будет заблокирован на 21 день.</p>
+                    <button class="confirm-payment-button" onclick="initiateStarsPayment()">Пополнить через Stars</button>
+                </div>
+
             </div>
-        </div>
-        <div class="balance-controls">
-            <button id="deposit-btn" title="Пополнить баланс">+</button>
-        </div>
-    </header>
-
-    <main>
-        <!-- На главной странице нет h1, если только вы не хотите его добавить -->
-        <h1 id="page-dynamic-title" class="page-title" style="display: none;"></h1> 
-
-        <div class="main-menu">
-            <!-- Ссылки на страницы из корневой папки в подпапку -->
-            <a href="pages/cases.html" class="menu-button"><i class='bx bxs-box icon'></i> <span>Кейсы</span></a>
-            <a href="pages/upgrade.html" class="menu-button"><i class='bx bxs-up-arrow-circle icon'></i> <span>Апгрейд</span></a>
-            <a href="pages/inventory.html" class="menu-button"><i class='bx bxs-briefcase-alt-2 icon'></i> <span>Инвентарь</span></a>
-        </div>
-    </main>
-
-    <div id="deposit-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Пополнение баланса</h2>
-            <p>Выберите способ оплаты:</p>
-            <div class="payment-options">
-                <button id="pay-ton-btn" class="payment-button">
-                    Пополнить через TON
-                    <span class="bonus">+10% бонус к пополнению!</span>
-                </button>
-                <button id="pay-stars-btn" class="payment-button">
-                    Пополнить через Telegram Stars
-                    <span class="bonus">Вывод заблокирован на 21 день</span>
-                </button>
-            </div>
-            <button id="close-modal-btn" style="margin-top: 20px;">Закрыть</button>
         </div>
     </div>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- 1. Загружаем CDN Supabase как ОБЫЧНЫЙ скрипт. Он добавит 'supabase' в глобальный scope -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
-    <!-- 2. Затем наш скрипт config/supabase.js, который теперь будет использовать глобальный 'supabase' -->
-    <script src="config/supabase.js"></script>
-    <script src="js/config/supabase.js"></script>
-    <!-- 3. Затем global.js -->
-    <script src="js/global.js"></script>
+    <script type="module" src="js/global.v2.js"></script>
 </body>
+</html>
