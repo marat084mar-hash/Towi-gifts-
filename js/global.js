@@ -88,45 +88,51 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function fetchBalance(user) {
-    try {
-        let { data: profile, error } = await db
-            .from('profiles')
-            .select('balance')
-            .eq('id', user.id)
-            .single();
+  try {
+    let { data: profile, error } = await db
+      .from('profiles')
+      .select('balance_ton, balance_stars')
+      .eq('id', user.id)
+      .single();
 
-        if (error && error.code === 'PGRST116') { // PGRST116 = "Row not found"
-            console.warn(`Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.`);
-            const { data: newProfile, error: createError } = await db
-                .from('profiles')
-                .insert([{
-                    id: user.id,
-            username: user.username || 'unknown',
-            balance: 0,
-            avatar_url: user.photo_url || ''
+    if (error && error.code === 'PGRST116') { // Пользователь не найден
+      console.warn(`Пользователь с ID ${user.id} не найден в БД, создаем новый профиль.`);
+      const { data: newProfile, error: createError } = await db
+        .from('profiles')
+        .insert([{
+          id: user.id,
+          username: user.username || 'unknown',
+          avatar_url: user.photo_url || '',
+          balance_ton: 0,
+          balance_stars: 0
         }])
-        .select()
+        .select('balance_ton, balance_stars')
         .single();
 
-            if (createError) throw createError;
-            profile = newProfile;
-        } else if (error) {
-            throw error; // Другие ошибки Supabase
-        }
-
-        if (profile) {
-            const balanceElement = document.getElementById('user-balance-value');
-            if (balanceElement) {
-                balanceElement.textContent = `${parseFloat(profile.balance).toFixed(2)} TON`;
-            }
-        }
-    } catch (e) {
-        console.error("Ошибка при получении/создании профиля пользователя:", e.message);
-        const balanceElement = document.getElementById('user-balance-value');
-        if (balanceElement) {
-            balanceElement.textContent = 'ERR TON';
-        }
+      if (createError) throw createError;
+      profile = newProfile;
+    } else if (error) {
+      throw error;
     }
+
+    // Обновляем отображение баланса TON
+    const balanceTonElement = document.getElementById('user-balance-value');
+    if (balanceTonElement) {
+      balanceTonElement.textContent = `${parseFloat(profile.balance_ton).toFixed(2)} TON`;
+    }
+
+    // Дополнительно: отображаем баланс Stars, если нужно
+    const balanceStarsElement = document.getElementById('user-balance-stars');
+    if (balanceStarsElement) {
+      balanceStarsElement.textContent = `${profile.balance_stars} Stars`;
+    }
+  } catch (e) {
+    console.error("Ошибка при получении/создании профиля пользователя:", e.message);
+    const balanceElement = document.getElementById('user-balance-value');
+    if (balanceElement) {
+      balanceElement.textContent = 'ERR TON';
+    }
+  }
 }
 
 function setupDepositModal() {
