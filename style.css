@@ -1,427 +1,356 @@
 :root {
-    --bg-dark: #1a1a2e; /* Основной темный фон */
-    --bg-card: #2c2c54; /* Фон карточек и блоков */
-    --accent-purple: #8e44ad; /* Акцентный фиолетовый */
-    --accent-purple-light: #9b59b6; /* Светлее для hover */
-    --text-light: #ecf0f1; /* Светлый текст */
-    --text-secondary: #bdc3c7; /* Второстепенный текст */
-    --button-gradient-start: #6c5ce7; /* Градиент кнопок */
-    --button-gradient-end: #8e44ad;
-    --border-color: #3f3f6e; /* Цвет границы */
-    --modal-bg: rgba(0, 0, 0, 0.7); /* Фон модального окна */
-    --modal-content-bg: #1a1a2e; /* Фон контента модального окна */
-    --ton-color: #007bff; /* Цвет для TON */
-    --stars-color: #f7d547; /* Цвет для Stars */
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2a2a2a;
+    --accent-purple: #8a2be2;
+    --text-color: #ffffff;
+    --border-color: #444444;
+    --button-hover-bg: #6a1aab;
+    --button-active-bg: #5a0f9a;
 }
 
 body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-light);
+    padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Запрещаем горизонтальный скролл */
+}
+
+/* Общие стили для адаптивности */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
     padding: 10px;
     box-sizing: border-box;
 }
 
-#app-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--bg-card);
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
-    min-height: calc(100vh - 20px);
-    display: flex;
-    flex-direction: column;
-}
-/* Блокировщик Telegram */
-#telegram-blocker {
-    text-align: center;
-    padding: 20px;
-    color: #e74c3c;
-    background-color: #34495e;
-    border-radius: 10px;
-    margin: 20px;
-}
-
-#telegram-blocker p {
-    margin: 10px 0;
-    font-size: 1.1em;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Общие стили для контента приложения */
-#main-app-content {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
+/* Header */
 .app-header {
-    background-color: var(--bg-dark);
+    background-color: var(--secondary-bg);
     padding: 15px 20px;
-    text-align: center;
     border-bottom: 1px solid var(--border-color);
-}
-
-.app-title {
-    margin: 0;
-    font-size: 1.6em;
-    color: var(--text-light);
-    letter-spacing: 0.5px;
-}
-
-.app-main {
-    padding: 20px;
-    flex-grow: 1;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    justify-content: flex-end; /* Перемещаем элементы вправо */
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-/* Секция баланса */
-.balance-section {
-    width: 100%;
-}
-
-.balance-card {
-    background: linear-gradient(135deg, #3a3a6b, #5a5a9b);
-    padding: 15px 20px;
-    border-radius: 12px;
+.user-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    gap: 10px;
 }
 
-.balance-icon-container {
-    width: 45px;
-    height: 45px;
+.user-avatar-placeholder {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 2px solid var(--text-light);
-    margin-right: 15px;
-    flex-shrink: 0;
+    background-color: var(--accent-purple);
+    border: 2px solid var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Обрезаем контент по кругу */
-    background-color: #7f8c8d; /* Фоновый цвет для инициалов */
-    font-size: 1.5em;
     font-weight: bold;
-    color: var(--text-light);
-    text-transform: uppercase;
+    font-size: 1.2em;
 }
 
-.user-avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Заполнение контейнера без искажений */
-    border-radius: 50%;
+.username {
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 .balance-info {
-    flex-grow: 1;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background-color: #333;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+.ton-icon {
+    width: 20px;
+    height: 20px;
+    filter: invert(100%); /* Делаем иконку белой для лучшей видимости на темном фоне */
 }
 
-.balance-label {
-    font-size: 0.9em;
-    color: var(--text-secondary);
-}
-
-.balance-value {
-    font-size: 1.8em;
+.balance {
+    font-size: 1.1em;
     font-weight: bold;
-    color: var(--text-light);
-    line-height: 1.2;
+    color: #00e000; /* Зеленый цвет для баланса */
 }
 
-.user-id {
-    font-size: 0.8em;
-    color: var(--text-secondary);
-}
-
-.top-up-button {
-    background-color: var(--accent-purple-light);
-    color: var(--text-light);
+.replenish-btn {
+    background-color: var(--accent-purple);
+    color: var(--text-color);
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     font-size: 1.8em;
+    line-height: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    margin-left: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.top-up-button:hover {
-    background-color: var(--accent-purple);
+.replenish-btn:hover {
+    background-color: var(--button-hover-bg);
 }
 
-/* Секция навигации (кнопок) */
-.navigation-section {
+/* Navigation */
+.main-nav {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    padding: 15px;
     gap: 15px;
+    background-color: var(--secondary-bg);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap; /* Для адаптивности кнопок */
 }
 
 .nav-button {
-    width: 100%;
-    padding: 18px 20px;
-    background: linear-gradient(90deg, var(--button-gradient-start), var(--button-gradient-end));
-    color: var(--text-light);
+    background-color: var(--accent-purple);
+    color: var(--text-color);
     border: none;
+    padding: 15px 30px;
     border-radius: 10px;
-    font-size: 1.3em;
-    font-weight: 600;
+    font-size: 1.2em;
+    font-weight: bold;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .nav-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    background-color: var(--button-hover-bg);
+    transform: translateY(-2px);
 }
 
 .nav-button:active {
+    background-color: var(--button-active-bg);
     transform: translateY(0);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 
-.button-icon {
-    width: 28px;
-    height: 28px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin-right: 12px;
-    filter: invert(100%);
-}
-
-/* Иконки для кнопок (заглушки) */
-.cases-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 8h-2V7c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v1H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6-3h2v1H9V5h2v1h2V5zM5 10h14v10H5V10zm5 3H8v-2h2v2zm6 0h-2v-2h2v2z"/></svg>');
-}
-.upgrades-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L6.5 12.25l5.5 1.75l5.5-1.75L12 2zm0 10l-4.5 9h9L12 12z"/></svg>');
-}
-
-.inventory-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2h-4v2h4V4zm6 16H4V8h16v12z"/></svg>');
+.nav-button.active {
+    background-color: var(--button-active-bg);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5) inset;
 }
 
 
-/* --- Модальное окно пополнения --- */
+/* Main content */
+.app-content {
+    flex-grow: 1;
+    padding: 20px;
+    max-width: 900px; /* Ограничиваем ширину основного контента */
+    margin: 20px auto; /* Центрируем контент */
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.page-section {
+    min-height: 300px; /* Минимальная высота для секций */
+}
+
+.page-section.hidden {
+    display: none;
+}
+
+h2 {
+    color: var(--accent-purple);
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Modal */
 .modal {
-    position: fixed;
-    z-index: 1000;
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 2000; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--modal-bg);
-    display: flex;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    box-sizing: border-box;
 }
 
 .modal-content {
-    background-color: var(--modal-content-bg);
-    padding: 25px;
-    border-radius: 15px;
-    max-width: 380px;
-    width: 100%;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    background-color: var(--primary-bg);
+    margin: auto;
+    padding: 30px;
+    border: 1px solid var(--accent-purple);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
     position: relative;
-    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
 }
 
 .close-button {
-    color: var(--text-secondary);
-    font-size: 28px;
+    color: var(--text-color);
+    font-size: 2.5em;
     font-weight: bold;
     position: absolute;
     top: 10px;
-    right: 15px;
+    right: 20px;
     cursor: pointer;
     transition: color 0.2s ease;
 }
 
 .close-button:hover,
 .close-button:focus {
-    color: var(--text-light);
-}
-
-.modal h2 {
-    color: var(--text-light);
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.8em;
-}
-
-.modal-description {
-    color: var(--text-secondary);
-    margin-bottom: 25px;
-    font-size: 0.95em;
-}
-
-.payment-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.payment-method-card {
-    background-color: var(--bg-card);
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    text-align: left;
+    color: var(--accent-purple);
+    text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.payment-method-card:hover {
-    border-color: var(--accent-purple-light);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+.modal-content h3 {
+    text-align: center;
+    color: var(--accent-purple);
+    margin-bottom: 20px;
 }
 
-.method-icon {
-    width: 40px;
-    height: 40px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin-right: 15px;
-    flex-shrink: 0;
+.modal-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
 }
 
-.ton-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v4h4v2h-4v4h-2v-4H7v-2h4V8z"/></svg>'); /* Пример иконки криптовалюты */
-    filter: none; /* Не инвертируем цвет для этой иконки */
-    color: var(--ton-color);
-}
-.stars-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>'); /* Иконка звезды */
-    filter: invert(70%) sepia(90%) saturate(2000%) hue-rotate(0deg) brightness(100%) contrast(100%); /* Желтая звезда */
-}
-
-.payment-method-card h3 {
-    margin: 0 0 5px 0;
-    color: var(--text-light);
-    font-size: 1.1em;
+.tab-button {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.payment-method-card p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 0.85em;
+.tab-button:hover {
+    background-color: #333;
 }
 
-.payment-method-card .min-amount {
-    font-weight: bold;
-    color: var(--accent-purple-light);
+.tab-button.active {
+    background-color: var(--accent-purple);
+    border-color: var(--accent-purple);
 }
 
-.payment-section {
-    background-color: #343460;
-    padding: 20px;
-    border-radius: 10px;
+.tab-content {
     margin-top: 20px;
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.input-group input[type="number"],
+.input-group input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    background-color: #333;
+    color: var(--text-color);
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.quick-amounts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.quick-btn {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--accent-purple);
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.quick-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.connect-wallet-btn,
+.submit-replenish-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: var(--accent-purple);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.connect-wallet-btn:hover,
+.submit-replenish-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.cooldown-info {
+    background-color: #4a1c7c;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
     text-align: center;
 }
 
-.payment-section h3 {
-    color: var(--text-light);
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-.payment-section input[type="number"] {
-    width: calc(100% - 20px);
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--bg-dark);
-    color: var(--text-light);
-    font-size: 1em;
-    outline: none;
-    box-sizing: border-box;
-}
-.payment-section input[type="number"]::placeholder {
-    color: var(--text-secondary);
-}
-
-.bonus-info, .withdrawal-info {
-    font-size: 0.9em;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-}
-.bonus-info {
-    color: #2ecc71; /* Зеленый для бонуса */
-    font-weight: bold;
-}
-.withdrawal-info {
-    color: #e74c3c; /* Красный для предупреждения */
-    font-weight: bold;
-}
-
-
-.confirm-payment-button {
-    background: linear-gradient(90deg, #27ae60, #2ecc71);
-    color: var(--text-light);
-    border: none;
-    border-radius: 8px;
-    padding: 12px 25px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    width: 100%;
-}
-
-.confirm-payment-button:hover {
-    background: linear-gradient(90deg, #2ecc71, #27ae60);
-    transform: translateY(-1px);
-}
-
-/* Адаптивность */
-@media (max-width: 480px) {
-    #app-container {
-        border-radius: 0;
-        min-height: 100vh;
-        max-width: none;
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
-    body {
-        padding: 0;
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .main-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .nav-button {
+        width: 100%;
+        padding: 12px 20px;
     }
     .modal-content {
-        border-radius: 0;
-        min-height: 100vh;
-        max-width: none;
+        padding: 20px;
+    }
+    .close-button {
+        font-size: 2em;
     }
 }
