@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini-App</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Иконки TON, Telegram и других элементов будут добавлены позже, пока используем placeholder -->
+    <!-- Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -17,27 +17,35 @@
                 <img src="https://raw.githubusercontent.com/ton-society/icons/master/ton.svg" alt="TON Icon" class="ton-icon">
                 <span class="balance">0.00</span>
             </div>
-            <button class="replenish-btn" id="openReplenishModalBtn">+</button>
+            <button class="replenish-btn glow-on-hover" id="openReplenishModalBtn">+</button>
         </div>
     </header>
 
     <nav class="main-nav">
-        <button class="nav-button plump-button" data-page="cases">Кейсы</button>
-        <button class="nav-button plump-button" data-page="upgrade">Апгрейд</button>
-        <button class="nav-button plump-button" data-page="inventory">Инвентарь</button>
+        <button class="nav-button glow-on-hover" data-page="cases">
+            <i class="fas fa-box-open"></i>
+            <span>Кейсы</span>
+        </button>
+        <button class="nav-button glow-on-hover" data-page="upgrade">
+            <i class="fas fa-level-up-alt"></i>
+            <span>Апгрейд</span>
+        </button>
+        <button class="nav-button glow-on-hover" data-page="inventory">
+            <i class="fas fa-backpack"></i>
+            <span>Инвентарь</span>
+        </button>
     </nav>
 
     <main class="app-content" id="appContent">
-        <!-- Здесь будет загружаться контент страниц "Кейсы", "Апгрейд", "Инвентарь" -->
-        <section id="casesPage" class="page-section active">
+        <section id="casesPage" class="page-section active content-card">
             <h2>Открытие кейсов</h2>
             <p>Здесь будут отображаться доступные кейсы.</p>
         </section>
-        <section id="upgradePage" class="page-section hidden">
+        <section id="upgradePage" class="page-section hidden content-card">
             <h2>Апгрейды</h2>
             <p>Здесь будет колесо удачи для апгрейдов.</p>
         </section>
-        <section id="inventoryPage" class="page-section hidden">
+        <section id="inventoryPage" class="page-section hidden content-card">
             <h2>Инвентарь</h2>
             <p>Здесь будут ваши NFT-подарки (пусто).</p>
         </section>
@@ -45,12 +53,12 @@
 
     <!-- Модальное окно пополнения -->
     <div id="replenishModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
+        <div class="modal-content content-card">
+            <span class="close-button glow-on-hover">&times;</span>
             <h3>Пополнение баланса</h3>
             <div class="modal-tabs">
-                <button class="tab-button active" data-tab="ton">TON</button>
-                <button class="tab-button" data-tab="stars">Telegram Stars</button>
+                <button class="tab-button active glow-on-hover" data-tab="ton">TON</button>
+                <button class="tab-button glow-on-hover" data-tab="stars">Telegram Stars</button>
             </div>
             <div id="tonTab" class="tab-content active">
                 <div class="input-group">
@@ -58,17 +66,17 @@
                     <input type="number" id="tonAmount" placeholder="Введите сумму">
                 </div>
                 <div class="quick-amounts">
-                    <button class="quick-btn" data-amount="1">1 TON</button>
-                    <button class="quick-btn" data-amount="5">5 TON</button>
-                    <button class="quick-btn" data-amount="10">10 TON</button>
-                    <button class="quick-btn" data-amount="50">50 TON</button>
+                    <button class="quick-btn glow-on-hover" data-amount="1">1 TON</button>
+                    <button class="quick-btn glow-on-hover" data-amount="5">5 TON</button>
+                    <button class="quick-btn glow-on-hover" data-amount="10">10 TON</button>
+                    <button class="quick-btn glow-on-hover" data-amount="50">50 TON</button>
                 </div>
                 <div class="input-group">
                     <label for="tonPromoCode">Промокод:</label>
                     <input type="text" id="tonPromoCode" placeholder="Введите промокод">
                 </div>
-                <button class="connect-wallet-btn">Привязать кошелек</button>
-                <button class="submit-replenish-btn">Пополнить</button>
+                <button class="action-btn connect-wallet-btn glow-on-hover">Привязать кошелек</button>
+                <button class="action-btn submit-replenish-btn glow-on-hover">Пополнить</button>
             </div>
 
             <div id="starsTab" class="tab-content hidden">
@@ -78,16 +86,16 @@
                     <input type="number" id="starsAmount" placeholder="Введите сумму">
                 </div>
                 <div class="quick-amounts">
-                    <button class="quick-btn" data-amount="100">100 Stars</button>
-                    <button class="quick-btn" data-amount="500">500 Stars</button>
-                    <button class="quick-btn" data-amount="1000">1000 Stars</button>
-                    <button class="quick-btn" data-amount="5000">5000 Stars</button>
+                    <button class="quick-btn glow-on-hover" data-amount="100">100 Stars</button>
+                    <button class="quick-btn glow-on-hover" data-amount="500">500 Stars</button>
+                    <button class="quick-btn glow-on-hover" data-amount="1000">1000 Stars</button>
+                    <button class="quick-btn glow-on-hover" data-amount="5000">5000 Stars</button>
                 </div>
                 <div class="input-group">
                     <label for="starsPromoCode">Промокод:</label>
                     <input type="text" id="starsPromoCode" placeholder="Введите промокод">
                 </div>
-                <button class="submit-replenish-btn">Пополнить</button>
+                <button class="action-btn submit-replenish-btn glow-on-hover">Пополнить</button>
             </div>
         </div>
     </div>
