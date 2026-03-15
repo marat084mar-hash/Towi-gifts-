@@ -1,7 +1,8 @@
-const supabaseUrl = 'https://kkgjkqiwrppaszvkeqbe.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZ2prcWl3cnJwYXN6dmtlcWJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDI5MDksImV4cCI6MjA4NjMxODkwOX0.euUijEzkXldhHFbIuZuzePn2ppcON78Ub-MPLKm5a9Y';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const SUPABASE_URL = 'https://kkgjkqiwrppaszvkeqbe.supabase.co';
+const SUPABASE_ANNON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZ2prcWl3cnBwYXN6dmtlcWJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDI5MDksImV4cCI6MjA4NjMxODkwOX0.euUijEzkXldhHFbIuZuzePn2ppwON78Ub-MPLKm5a9Y';
 
-console.log("Supabase initialized:", !!window.supabase);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANNON_KEY);
 
+console.log("Supabase client initialized.");
